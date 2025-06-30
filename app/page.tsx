@@ -1,100 +1,56 @@
-"use client";
-import React, { useState } from "react";
-import { Sidebar, SidebarBody, SidebarLink } from "../components/ui/sidebar";
-import {
-  IconArrowLeft,
-  IconBrandTabler,
-  IconSettings,
-  IconUserBolt,
-} from "@tabler/icons-react";
-import { motion } from "motion/react";
-import { cn } from "@/lib/utils";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { Avatar } from "@heroui/avatar";
+import { Link } from "@heroui/link";
+import { Snippet } from "@heroui/snippet";
+import { Code } from "@heroui/code";
+import { button as buttonStyles } from "@heroui/theme";
 
-export default function SidebarDemo() {
-  const links = [
-    {
-      label: "Dashboard",
-      href: "#",
-      icon: <IconBrandTabler className="h-5 w-5 shrink-0 text-foreground" />,
-    },
-    {
-      label: "Profile",
-      href: "#",
-      icon: <IconUserBolt className="h-5 w-5 shrink-0 text-foreground" />,
-    },
-    {
-      label: "Settings",
-      href: "#",
-      icon: <IconSettings className="h-5 w-5 shrink-0 text-foreground" />,
-    },
-    {
-      label: "Logout",
-      href: "#",
-      icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-foreground" />,
-    },
-  ];
-  const [open, setOpen] = useState(false);
+import { siteConfig } from "@/config/site";
+import { title, subtitle } from "@/components/primitives";
+import { GithubIcon } from "@/components/icons";
+
+export default function Home() {
   return (
-    <Sidebar open={open} setOpen={setOpen}>
-      <SidebarBody className="justify-between gap-10">
-        <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
-          {open ? <Logo /> : <LogoIcon />}
-          <div className="mt-8 flex flex-col gap-2">
-            {links.map((link, idx) => (
-              <SidebarLink key={idx} link={link} />
-            ))}
-          </div>
+    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+      <div className="inline-block max-w-xl text-center justify-center">
+        <span className={title()}>Make&nbsp;</span>
+        <span className={title({ color: "violet" })}>beautiful&nbsp;</span>
+        <br />
+        <span className={title()}>
+          websites regardless of your design experience.
+        </span>
+        <div className={subtitle({ class: "mt-4" })}>
+          Beautiful, fast and modern React UI library.
         </div>
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <SidebarLink
-              link={{
-                label: "Manu Arora",
-                href: "#",
-                icon: (
-                  <Avatar
-                    src="https://assets.aceternity.com/manu.png"
-                    className="h-7 w-7 shrink-0"
-                    size="sm"
-                  />
-                ),
-              }}
-            />
-            <ThemeToggle />
-          </div>
-        </div>
-      </SidebarBody>
-    </Sidebar>
+      </div>
+
+      <div className="flex gap-3">
+        <Link
+          isExternal
+          className={buttonStyles({
+            color: "primary",
+            radius: "full",
+            variant: "shadow",
+          })}
+          href={siteConfig.links.docs}
+        >
+          Documentation
+        </Link>
+        <Link
+          isExternal
+          className={buttonStyles({ variant: "bordered", radius: "full" })}
+          href={siteConfig.links.github}
+        >
+          <GithubIcon size={20} />
+          GitHub
+        </Link>
+      </div>
+
+      <div className="mt-8">
+        <Snippet hideCopyButton hideSymbol variant="bordered">
+          <span>
+            Get started by editing <Code color="primary">app/page.tsx</Code>
+          </span>
+        </Snippet>
+      </div>
+    </section>
   );
 }
-
-export const Logo = () => {
-  return (
-    <button
-      className="flex items-center py-1 relative space-x-2 text-foreground text-sm font-normal z-20"
-      type="button"
-    >
-      <div className="bg-foreground h-5 w-6 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm shrink-0" />
-      <motion.span
-        animate={{ opacity: 1 }}
-        className="font-medium whitespace-pre text-foreground"
-        initial={{ opacity: 0 }}
-      >
-        Acet Labs
-      </motion.span>
-    </button>
-  );
-};
-
-export const LogoIcon = () => {
-  return (
-    <button
-      className="flex items-center py-1 relative space-x-2 text-foreground text-sm font-normal z-20"
-      type="button"
-    >
-      <div className="bg-foreground h-5 w-6 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm shrink-0" />
-    </button>
-  );
-};
