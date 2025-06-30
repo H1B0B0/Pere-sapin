@@ -44,7 +44,10 @@ export default function RootLayout({
             enableSystem: true,
           }}
         >
-          <SidebarDemo />
+          <div className="flex w-full h-screen flex-col overflow-hidden md:flex-row bg-background">
+            <SidebarDemo />
+            <div className="flex-1 h-full overflow-auto">{children}</div>
+          </div>
         </Providers>
       </body>
     </html>
