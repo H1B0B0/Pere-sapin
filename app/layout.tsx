@@ -34,10 +34,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="en">
+    <html suppressHydrationWarning lang="en" className="h-full">
       <head />
-      <body>
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+      <body className="h-full overflow-hidden bg-background text-foreground">
+        <Providers
+          themeProps={{
+            attribute: "class",
+            defaultTheme: "dark",
+            enableSystem: true,
+          }}
+        >
           <SidebarDemo />
         </Providers>
       </body>
