@@ -13,8 +13,10 @@ export default function Home() {
         transition={{ duration: 0.5 }}
         className="text-center mb-12"
       >
-        <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-green-600 to-red-600 bg-clip-text text-transparent">
-          🎄 Père Sapin
+        <h1 className="text-6xl font-bold mb-4">
+          <span className="bg-gradient-to-r from-green-600 to-red-600 dark:from-green-400 dark:to-red-400 bg-clip-text text-transparent">
+            🎄 Père Sapin
+          </span>
         </h1>
         <p className="text-xl text-default-600 mb-8 max-w-2xl">
           Bienvenue dans l'univers magique du Père Sapin ! Découvrez nos chalets
@@ -100,22 +102,34 @@ export default function Home() {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="mt-16 text-center"
       >
-        <Card className="bg-gradient-to-r from-green-50 to-red-50 dark:from-green-950/20 dark:to-red-950/20 border-none">
+        <Card className=" border-none">
           <CardBody className="p-8">
             <h2 className="text-3xl font-bold mb-4">Prêt pour l'aventure ?</h2>
             <p className="text-lg text-default-600 mb-6">
-              Réservez dès maintenant votre chalet et préparez-vous à vivre des
-              moments magiques !
+              Contactez-nous directement pour réserver votre chalet et préparer
+              votre séjour sur mesure !
             </p>
-            <Button
-              as={Link}
-              href="/booking"
-              color="success"
-              size="lg"
-              className="font-semibold"
-            >
-              Réserver maintenant
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                as={Link}
+                href="tel:+33611233767"
+                color="success"
+                size="lg"
+                className="font-semibold"
+              >
+                📞 Appeler M. STEPHAN
+              </Button>
+              <Button
+                as={Link}
+                href="/contact"
+                color="primary"
+                variant="flat"
+                size="lg"
+                className="font-semibold"
+              >
+                📧 Nous contacter
+              </Button>
+            </div>
           </CardBody>
         </Card>
       </motion.div>

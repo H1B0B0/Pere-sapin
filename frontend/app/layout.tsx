@@ -99,19 +99,20 @@ export default function RootLayout({
             <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
               {children}
             </main>
-
-            <footer className="w-full flex items-center justify-center py-3 border-t">
-              <Link
-                isExternal
-                className="flex items-center gap-1 text-current"
-                href={siteConfig.links.github}
-                title="GitHub"
-              >
-                <span className="text-default-600">Propulsé par</span>
-                <p className="text-primary">Père Sapin 🎄</p>
-              </Link>
-            </footer>
           </div>
+          <footer>
+            <div className="container mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-4 px-6">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🎄</span>
+                <span className="font-semibold text-default-700">
+                  Père Sapin
+                </span>
+              </div>
+              <p className="text-sm text-default-500 text-center md:text-left">
+                © 2025 Père Sapin. Tous droits réservés.
+              </p>
+            </div>
+          </footer>
         </Providers>
       </body>
     </html>
