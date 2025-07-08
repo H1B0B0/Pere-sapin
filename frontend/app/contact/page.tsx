@@ -21,7 +21,7 @@ export default function ContactPage() {
         transition={{ duration: 0.5 }}
         className="text-center"
       >
-        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-green-600 to-red-600 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-green-600 to-red-600 dark:from-green-400 dark:to-red-400 bg-clip-text text-transparent">
           📞 Contactez-nous
         </h1>
         <p className="text-xl text-default-600 max-w-3xl mx-auto">

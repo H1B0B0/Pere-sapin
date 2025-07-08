@@ -2,7 +2,7 @@
 
 import { Link, Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { motion } from "framer-motion";
-
+import { BsTree } from "react-icons/bs";
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
@@ -14,8 +14,9 @@ export default function Home() {
         className="text-center mb-12"
       >
         <h1 className="text-6xl font-bold mb-4">
-          <span className="bg-gradient-to-r from-green-600 to-red-600 dark:from-green-400 dark:to-red-400 bg-clip-text text-transparent">
-            🎄 Père Sapin
+          <span className="bg-gradient-to-r from-green-600 to-red-600 dark:from-green-400 dark:to-red-400 bg-clip-text text-transparent flex items-center justify-center gap-3">
+            <BsTree className="h-16 w-16 text-green-600 dark:text-green-400" />
+            Père Sapin
           </span>
         </h1>
         <p className="text-xl text-default-600 mb-8 max-w-2xl">

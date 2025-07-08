@@ -22,6 +22,7 @@ import {
 import { motion } from "framer-motion";
 import { chaletService } from "@/lib/services/chalets";
 import { Chalet } from "@/types";
+import { BsTree } from "react-icons/bs";
 
 // Données des chalets basées sur le site officiel chaletduperesapin.fr
 const chaletData = [
@@ -714,8 +715,9 @@ export default function ChaletsPage() {
       >
         <Card className="border-none">
           <CardBody className="p-8">
-            <h2 className="text-3xl font-bold mb-4">
-              🎄 Prêt pour l'aventure ?
+            <h2 className="text-3xl font-bold mb-4 flex items-center justify-center gap-3">
+              <BsTree className="h-8 w-8 text-green-600 dark:text-green-400" />
+              Prêt pour l'aventure ?
             </h2>
             <p className="text-lg text-default-600 mb-6">
               Tous nos chalets sont équipés pour vous offrir une expérience

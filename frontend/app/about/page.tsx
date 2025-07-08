@@ -2,6 +2,7 @@
 
 import { Card, CardBody, CardHeader, Button, Chip, Image } from "@heroui/react";
 import { motion } from "framer-motion";
+import { BsTree } from "react-icons/bs";
 
 export default function AboutPage() {
   return (
@@ -13,8 +14,9 @@ export default function AboutPage() {
         transition={{ duration: 0.5 }}
         className="text-center"
       >
-        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-green-600 to-red-600 bg-clip-text text-transparent">
-          🎄 À propos du Père Sapin
+        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-green-600 to-red-600 dark:from-green-400 dark:to-red-400 bg-clip-text text-transparent flex items-center justify-center gap-3">
+          <BsTree className="h-10 w-10 text-green-600 dark:text-green-400" />À
+          propos du Père Sapin
         </h1>
         <p className="text-xl text-default-600 max-w-3xl mx-auto">
           Découvrez l'histoire de nos chalets d'exception dans les Vosges et

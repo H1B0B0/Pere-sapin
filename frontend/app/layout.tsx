@@ -16,6 +16,7 @@ import {
   Button,
 } from "@heroui/react";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import { BsTree } from "react-icons/bs";
 import clsx from "clsx";
 
 export default function RootLayout({
@@ -39,8 +40,12 @@ export default function RootLayout({
               <NavbarContent>
                 <NavbarMenuToggle className="sm:hidden" />
                 <NavbarBrand>
-                  <Link href="/" className="font-bold text-inherit">
-                    🎄 Père Sapin
+                  <Link
+                    href="/"
+                    className="font-bold text-inherit flex items-center gap-2"
+                  >
+                    <BsTree className="h-6 w-6 text-green-600 dark:text-green-400" />
+                    Père Sapin
                   </Link>
                 </NavbarBrand>
               </NavbarContent>
@@ -103,7 +108,7 @@ export default function RootLayout({
           <footer>
             <div className="container mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-4 px-6">
               <div className="flex items-center gap-2">
-                <span className="text-lg">🎄</span>
+                <BsTree className="h-5 w-5 text-green-600 dark:text-green-400" />
                 <span className="font-semibold text-default-700">
                   Père Sapin
                 </span>
