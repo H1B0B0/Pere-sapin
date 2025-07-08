@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { User } from "@/types";
 import Cookies from "js-cookie";
+
+import { User } from "@/types";
 
 interface AuthState {
   user: User | null;
@@ -37,6 +38,7 @@ export const useAuthStore = create<AuthState>()(
       },
       checkAuth: async () => {
         const state = get();
+
         if (state.initialized) return;
 
         console.log("🔍 Store: Checking auth state...");
@@ -54,7 +56,7 @@ export const useAuthStore = create<AuthState>()(
             set({ isAuthenticated: true, initialized: true, loading: false });
           } else {
             console.log(
-              "🔍 Store: Token found but no user, verifying with server..."
+              "🔍 Store: Token found but no user, verifying with server...",
             );
             try {
               // Verify token with server and get user info
@@ -67,6 +69,7 @@ export const useAuthStore = create<AuthState>()(
 
               if (response.ok) {
                 const user = await response.json();
+
                 console.log("✅ Store: Token valid, user retrieved:", user);
                 set({
                   user,
@@ -108,6 +111,7 @@ export const useAuthStore = create<AuthState>()(
       initialize: () => {
         console.log("🚀 Store: Initialize called");
         const state = get();
+
         if (!state.initialized && !state.loading) {
           state.checkAuth();
         }
@@ -119,6 +123,6 @@ export const useAuthStore = create<AuthState>()(
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
-    }
-  )
+    },
+  ),
 );

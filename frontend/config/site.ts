@@ -1,69 +1,68 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Next.js + HeroUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "Père Sapin",
+  description:
+    "Découvrez nos chalets enchantés pour des vacances de Noël magiques en famille.",
   navItems: [
     {
-      label: "Home",
+      label: "Accueil",
       href: "/",
     },
     {
-      label: "Docs",
-      href: "/docs",
+      label: "Chalets",
+      href: "/chalets",
     },
     {
-      label: "Pricing",
-      href: "/pricing",
+      label: "Réservations",
+      href: "/booking",
     },
     {
-      label: "Blog",
-      href: "/blog",
-    },
-    {
-      label: "About",
+      label: "À propos",
       href: "/about",
+    },
+    {
+      label: "Contact",
+      href: "/contact",
     },
   ],
   navMenuItems: [
     {
-      label: "Profile",
+      label: "Accueil",
+      href: "/",
+    },
+    {
+      label: "Chalets",
+      href: "/chalets",
+    },
+    {
+      label: "Réservations",
+      href: "/booking",
+    },
+    {
+      label: "À propos",
+      href: "/about",
+    },
+    {
+      label: "Contact",
+      href: "/contact",
+    },
+    {
+      label: "Mon Compte",
       href: "/profile",
     },
     {
-      label: "Dashboard",
-      href: "/dashboard",
+      label: "Mes Réservations",
+      href: "/my-bookings",
     },
     {
-      label: "Projects",
-      href: "/projects",
-    },
-    {
-      label: "Team",
-      href: "/team",
-    },
-    {
-      label: "Calendar",
-      href: "/calendar",
-    },
-    {
-      label: "Settings",
-      href: "/settings",
-    },
-    {
-      label: "Help & Feedback",
-      href: "/help-feedback",
-    },
-    {
-      label: "Logout",
-      href: "/logout",
+      label: "Connexion",
+      href: "/login",
     },
   ],
   links: {
-    github: "https://github.com/heroui-inc/heroui",
-    twitter: "https://twitter.com/hero_ui",
-    docs: "https://heroui.com",
-    discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev",
+    github: "https://github.com/votre-repo/pere-sapin",
+    contact: "/contact",
+    booking: "/booking",
   },
 };
