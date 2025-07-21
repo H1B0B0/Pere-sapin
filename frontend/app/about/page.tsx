@@ -14,8 +14,8 @@ export default function AboutPage() {
         transition={{ duration: 0.5 }}
         className="text-center"
       >
-        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-green-600 to-red-600 dark:from-green-400 dark:to-red-400 bg-clip-text text-transparent flex items-center justify-center gap-3">
-          <BsTree className="h-10 w-10 text-green-600 dark:text-green-400" />À
+        <h1 className="text-4xl font-bold mb-4 font-display gradient-festive bg-clip-text text-transparent flex items-center justify-center gap-3">
+          <BsTree className="h-10 w-10 text-primary" />À
           propos du Père Sapin
         </h1>
         <p className="text-xl text-default-600 max-w-3xl mx-auto">
@@ -30,9 +30,9 @@ export default function AboutPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        <Card className="shadow-lg">
+        <Card className="alpine-card">
           <CardHeader>
-            <h2 className="text-2xl font-bold">🏔️ Notre Histoire</h2>
+            <h2 className="text-2xl font-bold font-display">🏔️ Notre Histoire</h2>
           </CardHeader>
           <CardBody className="space-y-4">
             <p className="text-default-600">
@@ -58,9 +58,9 @@ export default function AboutPage() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        <Card className="shadow-md">
+        <Card className="alpine-card">
           <CardHeader className="text-center">
-            <h3 className="text-xl font-bold">🌟 Qualité</h3>
+            <h3 className="text-xl font-bold font-display">🌟 Qualité</h3>
           </CardHeader>
           <CardBody className="text-center">
             <p className="text-default-600">
@@ -70,9 +70,9 @@ export default function AboutPage() {
           </CardBody>
         </Card>
 
-        <Card className="shadow-md">
+        <Card className="alpine-card">
           <CardHeader className="text-center">
-            <h3 className="text-xl font-bold">🤝 Service</h3>
+            <h3 className="text-xl font-bold font-display">🤝 Service</h3>
           </CardHeader>
           <CardBody className="text-center">
             <p className="text-default-600">
@@ -82,9 +82,9 @@ export default function AboutPage() {
           </CardBody>
         </Card>
 
-        <Card className="shadow-md">
+        <Card className="alpine-card">
           <CardHeader className="text-center">
-            <h3 className="text-xl font-bold">🌲 Nature</h3>
+            <h3 className="text-xl font-bold font-display">🌲 Nature</h3>
           </CardHeader>
           <CardBody className="text-center">
             <p className="text-default-600">
@@ -100,9 +100,9 @@ export default function AboutPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
-        <Card className="border-none">
+        <Card className="alpine-card">
           <CardHeader>
-            <h2 className="text-2xl font-bold">🏆 Nos Classifications</h2>
+            <h2 className="text-2xl font-bold font-display">🏆 Nos Classifications</h2>
           </CardHeader>
           <CardBody>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -143,22 +143,22 @@ export default function AboutPage() {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="text-center"
       >
-        <Card className="border-none">
+        <Card className="alpine-card">
           <CardBody className="p-8">
-            <h2 className="text-3xl font-bold mb-4">📞 Contactez-nous</h2>
+            <h2 className="text-3xl font-bold mb-4 font-display">📞 Contactez-nous</h2>
             <p className="text-lg text-default-600 mb-6">
               Une question ? Un projet de séjour ? N'hésitez pas à nous
               contacter pour une demande personnalisée.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button color="primary" size="lg" className="font-semibold">
+              <Button color="primary" size="lg" className="font-semibold btn-alpine text-primary-foreground">
                 📧 Nous écrire
               </Button>
               <Button
                 color="success"
                 variant="flat"
                 size="lg"
-                className="font-semibold"
+                className="font-semibold backdrop-blur-sm"
               >
                 📱 Voir les chalets
               </Button>

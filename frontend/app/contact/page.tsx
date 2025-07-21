@@ -21,7 +21,7 @@ export default function ContactPage() {
         transition={{ duration: 0.5 }}
         className="text-center"
       >
-        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-green-600 to-red-600 dark:from-green-400 dark:to-red-400 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold mb-4 font-display gradient-festive bg-clip-text text-transparent">
           📞 Contactez-nous
         </h1>
         <p className="text-xl text-default-600 max-w-3xl mx-auto">
@@ -37,9 +37,9 @@ export default function ContactPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <Card className="shadow-lg">
+          <Card className="alpine-card">
             <CardHeader>
-              <h2 className="text-2xl font-bold">
+              <h2 className="text-2xl font-bold font-display">
                 ✉️ Demande de renseignements
               </h2>
             </CardHeader>
@@ -91,7 +91,7 @@ export default function ContactPage() {
               <Button
                 color="primary"
                 size="lg"
-                className="w-full font-semibold"
+                className="w-full font-semibold btn-alpine text-primary-foreground"
               >
                 📧 Envoyer ma demande
               </Button>
@@ -111,9 +111,9 @@ export default function ContactPage() {
           className="space-y-6"
         >
           {/* Contact direct */}
-          <Card className="shadow-md">
+          <Card className="alpine-card">
             <CardHeader>
-              <h3 className="text-xl font-bold">📱 Contact direct</h3>
+              <h3 className="text-xl font-bold font-display">📱 Contact direct</h3>
             </CardHeader>
             <CardBody className="space-y-4">
               <div className="space-y-3">
@@ -157,9 +157,9 @@ export default function ContactPage() {
           </Card>
 
           {/* Localisation */}
-          <Card className="shadow-md">
+          <Card className="alpine-card">
             <CardHeader>
-              <h3 className="text-xl font-bold">📍 Localisation</h3>
+              <h3 className="text-xl font-bold font-display">📍 Localisation</h3>
             </CardHeader>
             <CardBody>
               <div className="space-y-3">
@@ -183,7 +183,7 @@ export default function ContactPage() {
                   color="primary"
                   variant="flat"
                   size="sm"
-                  className="w-full"
+                  className="w-full backdrop-blur-sm"
                 >
                   🗺️ Voir sur la carte
                 </Button>
@@ -192,9 +192,9 @@ export default function ContactPage() {
           </Card>
 
           {/* Horaires */}
-          <Card className="shadow-md">
+          <Card className="alpine-card">
             <CardHeader>
-              <h3 className="text-xl font-bold">🕒 Disponibilité</h3>
+              <h3 className="text-xl font-bold font-display">🕒 Disponibilité</h3>
             </CardHeader>
             <CardBody>
               <div className="space-y-2 text-sm">
@@ -228,9 +228,9 @@ export default function ContactPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
-        <Card className="border-none">
+        <Card className="alpine-card">
           <CardHeader>
-            <h2 className="text-2xl font-bold">❓ Questions fréquentes</h2>
+            <h2 className="text-2xl font-bold font-display">❓ Questions fréquentes</h2>
           </CardHeader>
           <CardBody>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

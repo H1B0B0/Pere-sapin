@@ -246,7 +246,7 @@ const ChaletCard = ({ chalet }: { chalet: (typeof chaletData)[0] }) => {
         transition={{ duration: 0.5 }}
         whileHover={{ scale: 1.02 }}
       >
-        <Card className="h-full shadow-lg hover:shadow-xl transition-all duration-300">
+        <Card className="h-full alpine-card hover:shadow-xl transition-all duration-300">
           {/* Image carousel */}
           <div className="relative h-48 overflow-hidden">
             <Image
@@ -307,7 +307,7 @@ const ChaletCard = ({ chalet }: { chalet: (typeof chaletData)[0] }) => {
             <div className="flex justify-between items-start w-full mb-2">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{chalet.icon}</span>
-                <h3 className="text-2xl font-bold">{chalet.name}</h3>
+                <h3 className="text-2xl font-bold font-display">{chalet.name}</h3>
               </div>
               <Badge
                 content="3★"
@@ -399,7 +399,7 @@ const ChaletCard = ({ chalet }: { chalet: (typeof chaletData)[0] }) => {
                   color={chalet.color as any}
                   variant="solid"
                   onPress={onOpen}
-                  className="flex-1"
+                  className="flex-1 btn-alpine text-primary-foreground"
                 >
                   Voir plus
                 </Button>
@@ -408,7 +408,7 @@ const ChaletCard = ({ chalet }: { chalet: (typeof chaletData)[0] }) => {
                   href="tel:+33611233767"
                   color="success"
                   variant="flat"
-                  className="flex-1"
+                  className="flex-1 backdrop-blur-sm"
                 >
                   📞 Contacter
                 </Button>
@@ -431,7 +431,7 @@ const ChaletCard = ({ chalet }: { chalet: (typeof chaletData)[0] }) => {
               <ModalHeader className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="text-2xl">{chalet.icon}</span>
-                  <h2 className="text-2xl font-bold">Chalet {chalet.name}</h2>
+                  <h2 className="text-2xl font-bold font-display">Chalet {chalet.name}</h2>
                 </div>
                 <p className="text-lg text-default-600">
                   {chalet.capacity} • {chalet.rooms}
@@ -637,8 +637,8 @@ export default function ChaletsPage() {
         transition={{ duration: 0.5 }}
         className="text-center"
       >
-        <h1 className="text-4xl font-bold mb-4">
-          <span className="bg-gradient-to-r from-green-600 to-red-600 dark:from-green-400 dark:to-red-400 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold mb-4 font-display">
+          <span className="gradient-festive bg-clip-text text-transparent">
             🏔️ Nos Chalets d'Exception
           </span>
         </h1>
@@ -655,11 +655,11 @@ export default function ChaletsPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        <Card className="border-none bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/20 dark:to-blue-950/20">
+        <Card className="alpine-card">
           <CardBody className="p-6">
             <div className="flex flex-col md:flex-row items-center gap-4">
               <div className="flex-1">
-                <h3 className="text-lg font-semibold mb-2">
+                <h3 className="text-lg font-semibold mb-2 font-display">
                   ℹ️ Informations importantes
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
@@ -680,6 +680,7 @@ export default function ChaletsPage() {
                   variant="flat"
                   as={Link}
                   href="tel:+33611233767"
+                  className="backdrop-blur-sm"
                 >
                   📞 06 11 23 37 67
                 </Button>
@@ -713,10 +714,10 @@ export default function ChaletsPage() {
         transition={{ duration: 0.5, delay: 0.6 }}
         className="text-center"
       >
-        <Card className="border-none">
+        <Card className="alpine-card">
           <CardBody className="p-8">
-            <h2 className="text-3xl font-bold mb-4 flex items-center justify-center gap-3">
-              <BsTree className="h-8 w-8 text-green-600 dark:text-green-400" />
+            <h2 className="text-3xl font-bold mb-4 flex items-center justify-center gap-3 font-display">
+              <BsTree className="h-8 w-8 text-primary" />
               Prêt pour l'aventure ?
             </h2>
             <p className="text-lg text-default-600 mb-6">
@@ -724,14 +725,14 @@ export default function ChaletsPage() {
               unique. Contactez-nous pour personnaliser votre séjour !
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button color="success" size="lg" className="font-semibold">
+              <Button color="success" size="lg" className="font-semibold btn-success text-white">
                 📧 Demande personnalisée
               </Button>
               <Button
                 color="primary"
                 variant="flat"
                 size="lg"
-                className="font-semibold"
+                className="font-semibold backdrop-blur-sm"
               >
                 📋 Voir les disponibilités
               </Button>
@@ -749,7 +750,7 @@ export default function ChaletsPage() {
           className="space-y-6"
         >
           <div className="text-center">
-            <h2 className="text-3xl font-bold mb-4">
+            <h2 className="text-3xl font-bold mb-4 font-display">
               📝 Guides & Explications
             </h2>
             <p className="text-lg text-default-600">
@@ -761,10 +762,10 @@ export default function ChaletsPage() {
             {chalets.map((chalet) => (
               <Card
                 key={chalet._id}
-                className="shadow-md hover:shadow-lg transition-shadow"
+                className="alpine-card hover:shadow-lg transition-shadow"
               >
                 <CardHeader>
-                  <h3 className="text-xl font-semibold">{chalet.name}</h3>
+                  <h3 className="text-xl font-semibold font-display">{chalet.name}</h3>
                 </CardHeader>
                 <CardBody>
                   <p className="text-default-600 mb-4">
@@ -775,7 +776,7 @@ export default function ChaletsPage() {
                     <Chip size="sm" variant="flat">
                       {chalet.pages?.length || 0} guide(s)
                     </Chip>
-                    <Button size="sm" color="primary" variant="flat">
+                    <Button size="sm" color="primary" variant="flat" className="backdrop-blur-sm">
                       Voir les guides
                     </Button>
                   </div>

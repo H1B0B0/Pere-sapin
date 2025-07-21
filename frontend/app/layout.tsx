@@ -1,6 +1,5 @@
 "use client";
-import type { Metadata } from "next";
-import { fontSans, fontMono } from "@/config/fonts";
+import { fontSans, fontMono, fontDisplay } from "@/config/fonts";
 import { siteConfig } from "@/config/site";
 import { Providers } from "./providers";
 import "../styles/globals.css";
@@ -16,6 +15,7 @@ import {
   Button,
 } from "@heroui/react";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import Background from "@/components/Background";
 import { BsTree } from "react-icons/bs";
 import clsx from "clsx";
 
@@ -31,20 +31,25 @@ export default function RootLayout({
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
           fontSans.variable,
-          fontMono.variable
+          fontMono.variable,
+          fontDisplay.variable
         )}
       >
         <Providers>
           <div className="relative flex flex-col h-screen">
-            <Navbar maxWidth="xl" position="sticky">
+            {/* Absolute background layer */}
+            <div className="absolute inset-0 -z-10 w-full h-full">
+              <Background />
+            </div>
+            <Navbar maxWidth="xl" position="sticky" className="alpine-nav">
               <NavbarContent>
                 <NavbarMenuToggle className="sm:hidden" />
                 <NavbarBrand>
                   <Link
                     href="/"
-                    className="font-bold text-inherit flex items-center gap-2"
+                    className="font-bold text-inherit flex items-center gap-2 font-display text-xl"
                   >
-                    <BsTree className="h-6 w-6 text-green-600 dark:text-green-400" />
+                    <BsTree className="h-6 w-6 text-primary" />
                     Père Sapin
                   </Link>
                 </NavbarBrand>
@@ -79,6 +84,7 @@ export default function RootLayout({
                     color="primary"
                     href="/register"
                     variant="flat"
+                    className="btn-alpine text-primary-foreground"
                   >
                     S'inscrire
                   </Button>
@@ -106,10 +112,10 @@ export default function RootLayout({
             </main>
           </div>
           <footer>
-            <div className="container mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-4 px-6">
+            <div className="container mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-4 px-6 mb-2  ">
               <div className="flex items-center gap-2">
-                <BsTree className="h-5 w-5 text-green-600 dark:text-green-400" />
-                <span className="font-semibold text-default-700">
+                <BsTree className="h-5 w-5 text-primary" />
+                <span className="font-semibold text-default-700 font-display">
                   Père Sapin
                 </span>
               </div>

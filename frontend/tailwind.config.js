@@ -15,6 +15,9 @@ const config = {
   			],
   			mono: [
   				'var(--font-mono)'
+  			],
+  			display: [
+  				'var(--font-display)'
   			]
   		},
   		borderRadius: {

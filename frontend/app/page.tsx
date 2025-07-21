@@ -13,9 +13,9 @@ export default function Home() {
         transition={{ duration: 0.5 }}
         className="text-center mb-12"
       >
-        <h1 className="text-6xl font-bold mb-4">
-          <span className="bg-gradient-to-r from-green-600 to-red-600 dark:from-green-400 dark:to-red-400 bg-clip-text text-transparent flex items-center justify-center gap-3">
-            <BsTree className="h-16 w-16 text-green-600 dark:text-green-400" />
+        <h1 className="text-6xl font-bold mb-4 font-display">
+          <span className="gradient-festive bg-clip-text text-transparent flex items-center justify-center gap-3">
+            <BsTree className="h-16 w-16 text-primary" />
             Père Sapin
           </span>
         </h1>
@@ -30,7 +30,7 @@ export default function Home() {
             href="/chalets"
             color="primary"
             size="lg"
-            className="font-semibold"
+            className="font-semibold btn-alpine text-primary-foreground"
           >
             Découvrir nos chalets
           </Button>
@@ -39,7 +39,7 @@ export default function Home() {
             href="/about"
             variant="bordered"
             size="lg"
-            className="font-semibold"
+            className="font-semibold backdrop-blur-sm"
           >
             En savoir plus
           </Button>
@@ -53,9 +53,9 @@ export default function Home() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl"
       >
-        <Card className="border-none shadow-md">
+        <Card className="alpine-card">
           <CardHeader className="pb-0">
-            <h3 className="text-xl font-bold text-center w-full">
+            <h3 className="text-xl font-bold text-center w-full font-display">
               🏠 Chalets Authentiques
             </h3>
           </CardHeader>
@@ -67,9 +67,9 @@ export default function Home() {
           </CardBody>
         </Card>
 
-        <Card className="border-none shadow-md">
+        <Card className="alpine-card">
           <CardHeader className="pb-0">
-            <h3 className="text-xl font-bold text-center w-full">
+            <h3 className="text-xl font-bold text-center w-full font-display">
               ✨ Expérience Magique
             </h3>
           </CardHeader>
@@ -81,9 +81,9 @@ export default function Home() {
           </CardBody>
         </Card>
 
-        <Card className="border-none shadow-md">
+        <Card className="alpine-card">
           <CardHeader className="pb-0">
-            <h3 className="text-xl font-bold text-center w-full">
+            <h3 className="text-xl font-bold text-center w-full font-display">
               🎁 Service Premium
             </h3>
           </CardHeader>
@@ -103,9 +103,9 @@ export default function Home() {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="mt-16 text-center"
       >
-        <Card className=" border-none">
+        <Card className="alpine-card">
           <CardBody className="p-8">
-            <h2 className="text-3xl font-bold mb-4">Prêt pour l'aventure ?</h2>
+            <h2 className="text-3xl font-bold mb-4 font-display">Prêt pour l'aventure ?</h2>
             <p className="text-lg text-default-600 mb-6">
               Contactez-nous directement pour réserver votre chalet et préparer
               votre séjour sur mesure !
@@ -116,7 +116,7 @@ export default function Home() {
                 href="tel:+33611233767"
                 color="success"
                 size="lg"
-                className="font-semibold"
+                className="font-semibold btn-success text-white"
               >
                 📞 Appeler M. STEPHAN
               </Button>
@@ -126,7 +126,7 @@ export default function Home() {
                 color="primary"
                 variant="flat"
                 size="lg"
-                className="font-semibold"
+                className="font-semibold backdrop-blur-sm"
               >
                 📧 Nous contacter
               </Button>
