@@ -2,7 +2,15 @@
 
 import { Link, Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { motion } from "framer-motion";
-import { BsTree } from "react-icons/bs";
+import {
+  BsTree,
+  BsHouseDoor,
+  BsStars,
+  BsGift,
+  BsTelephone,
+  BsEnvelope,
+} from "react-icons/bs";
+
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
@@ -54,9 +62,10 @@ export default function Home() {
         className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl"
       >
         <Card className="alpine-card">
-          <CardHeader className="pb-0">
+          <CardHeader className="pb-0 flex flex-col items-center">
+            <BsHouseDoor className="h-8 w-8 text-primary mb-2" />
             <h3 className="text-xl font-bold text-center w-full font-display">
-              🏠 Chalets Authentiques
+              Chalets Authentiques
             </h3>
           </CardHeader>
           <CardBody className="text-center">
@@ -68,9 +77,10 @@ export default function Home() {
         </Card>
 
         <Card className="alpine-card">
-          <CardHeader className="pb-0">
+          <CardHeader className="pb-0 flex flex-col items-center">
+            <BsStars className="h-8 w-8 text-primary mb-2" />
             <h3 className="text-xl font-bold text-center w-full font-display">
-              ✨ Expérience Magique
+              Expérience Magique
             </h3>
           </CardHeader>
           <CardBody className="text-center">
@@ -82,9 +92,10 @@ export default function Home() {
         </Card>
 
         <Card className="alpine-card">
-          <CardHeader className="pb-0">
+          <CardHeader className="pb-0 flex flex-col items-center">
+            <BsGift className="h-8 w-8 text-primary mb-2" />
             <h3 className="text-xl font-bold text-center w-full font-display">
-              🎁 Service Premium
+              Service Premium
             </h3>
           </CardHeader>
           <CardBody className="text-center">
@@ -105,7 +116,9 @@ export default function Home() {
       >
         <Card className="alpine-card">
           <CardBody className="p-8">
-            <h2 className="text-3xl font-bold mb-4 font-display">Prêt pour l'aventure ?</h2>
+            <h2 className="text-3xl font-bold mb-4 font-display">
+              Prêt pour l'aventure ?
+            </h2>
             <p className="text-lg text-default-600 mb-6">
               Contactez-nous directement pour réserver votre chalet et préparer
               votre séjour sur mesure !
@@ -116,9 +129,10 @@ export default function Home() {
                 href="tel:+33611233767"
                 color="success"
                 size="lg"
-                className="font-semibold btn-success text-white"
+                className="font-semibold btn-success text-white flex items-center gap-2"
               >
-                📞 Appeler M. STEPHAN
+                <BsTelephone className="h-5 w-5" />
+                Appeler M. STEPHAN
               </Button>
               <Button
                 as={Link}
@@ -126,9 +140,10 @@ export default function Home() {
                 color="primary"
                 variant="flat"
                 size="lg"
-                className="font-semibold backdrop-blur-sm"
+                className="font-semibold backdrop-blur-sm flex items-center gap-2"
               >
-                📧 Nous contacter
+                <BsEnvelope className="h-5 w-5" />
+                Nous contacter
               </Button>
             </div>
           </CardBody>

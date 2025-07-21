@@ -6,12 +6,12 @@ const Background: React.FC = () => {
   const { resolvedTheme } = useTheme();
   const rootRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
-  
+
   // Ensure component is mounted to avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
-  
+
   // Use next-themes to determine if dark mode is active
   const isDark = useMemo(() => {
     if (!mounted) return true; // Default to dark during SSR
@@ -56,7 +56,7 @@ const Background: React.FC = () => {
       mountain2: isDark ? ["#4a5568", "#2d3748"] : ["#dbeafe", "#a0aec0"],
       mountain3: isDark ? ["#718096", "#4a5568"] : ["#f8fafc", "#cbd5e1"],
       snow: isDark ? "#e2e8f0" : "#fff",
-      motif: isDark ? "#2e7d32" : "#4ade80"
+      motif: isDark ? "#2e7d32" : "#4ade80",
     };
   }, [isDark]);
 

@@ -14,10 +14,6 @@ export const siteConfig = {
       href: "/chalets",
     },
     {
-      label: "Réservations",
-      href: "/booking",
-    },
-    {
       label: "À propos",
       href: "/about",
     },
@@ -36,28 +32,12 @@ export const siteConfig = {
       href: "/chalets",
     },
     {
-      label: "Réservations",
-      href: "/booking",
-    },
-    {
       label: "À propos",
       href: "/about",
     },
     {
       label: "Contact",
       href: "/contact",
-    },
-    {
-      label: "Mon Compte",
-      href: "/profile",
-    },
-    {
-      label: "Mes Réservations",
-      href: "/my-bookings",
-    },
-    {
-      label: "Connexion",
-      href: "/login",
     },
   ],
   links: {
