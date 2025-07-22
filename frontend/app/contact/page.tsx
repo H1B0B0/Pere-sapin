@@ -10,6 +10,29 @@ import {
   Chip,
 } from "@heroui/react";
 import { motion } from "framer-motion";
+import { 
+  FaPhoneAlt, 
+  FaUser, 
+  FaCar, 
+  FaSmokingBan,
+  FaExclamationTriangle,
+  FaMapMarkerAlt,
+  FaClock,
+  FaQuestionCircle,
+  FaReceipt,
+  FaBroom
+} from "react-icons/fa";
+import { 
+  MdEmail, 
+  MdMap, 
+  MdChat 
+} from "react-icons/md";
+import { 
+  GiMountains 
+} from "react-icons/gi";
+import { 
+  HiMail 
+} from "react-icons/hi";
 
 export default function ContactPage() {
   return (
@@ -21,8 +44,8 @@ export default function ContactPage() {
         transition={{ duration: 0.5 }}
         className="text-center"
       >
-        <h1 className="text-4xl font-bold mb-4 font-display gradient-festive bg-clip-text text-transparent">
-          📞 Contactez-nous
+        <h1 className="text-4xl font-bold mb-4 font-display gradient-festive bg-clip-text text-transparent flex items-center justify-center gap-3">
+          <FaPhoneAlt className="h-8 w-8" /> Contactez-nous
         </h1>
         <p className="text-xl text-default-600 max-w-3xl mx-auto">
           Une question ? Un projet de séjour ? Nous sommes là pour vous
@@ -39,8 +62,8 @@ export default function ContactPage() {
         >
           <Card className="alpine-card">
             <CardHeader>
-              <h2 className="text-2xl font-bold font-display">
-                ✉️ Demande de renseignements
+              <h2 className="text-2xl font-bold font-display flex items-center gap-2">
+                <HiMail className="text-primary" /> Demande de renseignements
               </h2>
             </CardHeader>
             <CardBody className="space-y-4">
@@ -93,7 +116,7 @@ export default function ContactPage() {
                 size="lg"
                 className="w-full font-semibold btn-alpine text-primary-foreground"
               >
-                📧 Envoyer ma demande
+                <MdEmail className="mr-2" /> Envoyer ma demande
               </Button>
 
               <p className="text-xs text-default-500 text-center">
@@ -113,12 +136,12 @@ export default function ContactPage() {
           {/* Contact direct */}
           <Card className="alpine-card">
             <CardHeader>
-              <h3 className="text-xl font-bold font-display">📱 Contact direct</h3>
+              <h3 className="text-xl font-bold font-display flex items-center gap-2"><FaPhoneAlt className="text-success" /> Contact direct</h3>
             </CardHeader>
             <CardBody className="space-y-4">
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">👤</span>
+                  <FaUser className="text-2xl text-primary" />
                   <div>
                     <p className="font-semibold">M. STEPHAN</p>
                     <p className="text-sm text-default-600">Propriétaire</p>
@@ -126,7 +149,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">📧</span>
+                  <MdEmail className="text-2xl text-success" />
                   <div>
                     <p className="font-semibold">
                       contact@chaletduperesapin.fr
@@ -136,7 +159,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">📞</span>
+                  <FaPhoneAlt className="text-2xl text-warning" />
                   <div>
                     <p className="font-semibold">06 XX XX XX XX</p>
                     <p className="text-sm text-default-600">7j/7 - 9h-20h</p>
@@ -146,7 +169,7 @@ export default function ContactPage() {
 
               <div className="pt-4 border-t">
                 <Chip color="warning" variant="flat" size="sm">
-                  ⚠️ Attention : Évitez les commissions LeBonCoin
+                  <FaExclamationTriangle className="mr-1" /> Attention : Évitez les commissions LeBonCoin
                 </Chip>
                 <p className="text-xs text-default-500 mt-2">
                   Contactez-nous directement pour éviter les frais
@@ -159,12 +182,12 @@ export default function ContactPage() {
           {/* Localisation */}
           <Card className="alpine-card">
             <CardHeader>
-              <h3 className="text-xl font-bold font-display">📍 Localisation</h3>
+              <h3 className="text-xl font-bold font-display flex items-center gap-2"><FaMapMarkerAlt className="text-danger" /> Localisation</h3>
             </CardHeader>
             <CardBody>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">🏔️</span>
+                  <GiMountains className="text-2xl text-primary" />
                   <div>
                     <p className="font-semibold">Les Vosges</p>
                     <p className="text-sm text-default-600">France</p>
@@ -185,7 +208,7 @@ export default function ContactPage() {
                   size="sm"
                   className="w-full backdrop-blur-sm"
                 >
-                  🗺️ Voir sur la carte
+                  <MdMap className="mr-2" /> Voir sur la carte
                 </Button>
               </div>
             </CardBody>
@@ -194,7 +217,7 @@ export default function ContactPage() {
           {/* Horaires */}
           <Card className="alpine-card">
             <CardHeader>
-              <h3 className="text-xl font-bold font-display">🕒 Disponibilité</h3>
+              <h3 className="text-xl font-bold font-display flex items-center gap-2"><FaClock className="text-warning" /> Disponibilité</h3>
             </CardHeader>
             <CardBody>
               <div className="space-y-2 text-sm">
@@ -213,8 +236,8 @@ export default function ContactPage() {
               </div>
 
               <div className="mt-4 p-3 rounded-lg">
-                <p className="text-xs text-center">
-                  💬 Réponse garantie sous 24h pour toute demande par email
+                <p className="text-xs text-center flex items-center justify-center gap-1">
+                  <MdChat /> Réponse garantie sous 24h pour toute demande par email
                 </p>
               </div>
             </CardBody>
@@ -230,14 +253,14 @@ export default function ContactPage() {
       >
         <Card className="alpine-card">
           <CardHeader>
-            <h2 className="text-2xl font-bold font-display">❓ Questions fréquentes</h2>
+            <h2 className="text-2xl font-bold font-display flex items-center gap-2"><FaQuestionCircle className="text-info" /> Questions fréquentes</h2>
           </CardHeader>
           <CardBody>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <div>
-                  <h4 className="font-semibold text-sm">
-                    🧾 Que comprend la location ?
+                  <h4 className="font-semibold text-sm flex items-center gap-2">
+                    <FaReceipt className="text-success" /> Que comprend la location ?
                   </h4>
                   <p className="text-xs text-default-600">
                     Linge de lit, serviettes, peignoirs jacuzzi, WiFi,
@@ -246,8 +269,8 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-sm">
-                    🧹 Le ménage est-il inclus ?
+                  <h4 className="font-semibold text-sm flex items-center gap-2">
+                    <FaBroom className="text-warning" /> Le ménage est-il inclus ?
                   </h4>
                   <p className="text-xs text-default-600">
                     Forfait ménage obligatoire (100-150€ selon le chalet)
@@ -257,8 +280,8 @@ export default function ContactPage() {
 
               <div className="space-y-3">
                 <div>
-                  <h4 className="font-semibold text-sm">
-                    🚗 Y a-t-il un parking ?
+                  <h4 className="font-semibold text-sm flex items-center gap-2">
+                    <FaCar className="text-primary" /> Y a-t-il un parking ?
                   </h4>
                   <p className="text-xs text-default-600">
                     Parking privé gratuit disponible pour tous les chalets
@@ -266,7 +289,7 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-sm">🚭 Peut-on fumer ?</h4>
+                  <h4 className="font-semibold text-sm flex items-center gap-2"><FaSmokingBan className="text-danger" /> Peut-on fumer ?</h4>
                   <p className="text-xs text-default-600">
                     Tous nos chalets sont non-fumeur (extérieur autorisé)
                   </p>

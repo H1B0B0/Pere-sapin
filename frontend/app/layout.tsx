@@ -12,7 +12,6 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   Link,
-  Button,
 } from "@heroui/react";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import Background from "@/components/Background";

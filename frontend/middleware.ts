@@ -5,16 +5,16 @@ import { NextResponse } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  console.log("🔍 Middleware - Pathname:", pathname);
+  console.log("[MIDDLEWARE] Pathname:", pathname);
 
   // Only protect admin routes, excluding login
   if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
     const token = request.cookies.get("auth-token")?.value;
 
-    console.log("� Middleware - Admin route, token:", !!token);
+    console.log("[MIDDLEWARE] Admin route, token:", !!token);
 
     if (!token) {
-      console.log("❌ Middleware - No token, redirecting to login");
+      console.log("[MIDDLEWARE] No token, redirecting to login");
 
       return NextResponse.redirect(new URL("/admin/login", request.url));
     }

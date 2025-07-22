@@ -21,8 +21,24 @@ import {
   BsStars,
   BsGeoAlt,
 } from "react-icons/bs";
+import { FaCheck, FaExclamationTriangle, FaBullseye } from "react-icons/fa";
+import { GiSparkles, GiMountains, GiPineTree, GiOakLeaf } from "react-icons/gi";
+import { MdChat } from "react-icons/md";
+
+// Icon mapping function
+const getIconComponent = (iconName: string) => {
+  const icons = {
+    "pine-tree": GiPineTree,
+    "mountains": GiMountains,
+    "leaf": GiOakLeaf,
+    "sparkles": GiSparkles,
+  };
+  return icons[iconName as keyof typeof icons] || GiPineTree;
+};
 
 const ChaletPreviewCard = ({ chalet, index }: { chalet: (typeof chaletData)[0]; index: number }) => {
+  const IconComponent = getIconComponent(chalet.icon);
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -32,12 +48,14 @@ const ChaletPreviewCard = ({ chalet, index }: { chalet: (typeof chaletData)[0]; 
     >
       <Card className="h-full alpine-card hover:shadow-2xl transition-all duration-500 overflow-hidden group">
         {/* Image principale avec overlay */}
-        <div className="relative h-64 overflow-hidden">
+        <div className="relative h-64 overflow-hidden bg-default-100">
           <Image
             src={chalet.images[0]}
             alt={`Chalet ${chalet.name}`}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700"
             radius="none"
+            loading="lazy"
+            fill
           />
           
           {/* Overlay avec informations */}
@@ -62,7 +80,7 @@ const ChaletPreviewCard = ({ chalet, index }: { chalet: (typeof chaletData)[0]; 
             {chalet.name === "DOUGLAS" && (
               <div className="absolute top-4 left-4">
                 <Chip color="secondary" variant="solid" size="sm">
-                  ✨ NOUVEAU 2024
+                  <GiSparkles className="inline mr-1" /> NOUVEAU 2024
                 </Chip>
               </div>
             )}
@@ -74,7 +92,7 @@ const ChaletPreviewCard = ({ chalet, index }: { chalet: (typeof chaletData)[0]; 
           <div className="w-full">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-3">
-                <span className="text-2xl">{chalet.icon}</span>
+                <IconComponent className="text-2xl text-primary" />
                 <h3 className="text-2xl font-bold font-display">{chalet.name}</h3>
               </div>
             </div>
@@ -119,7 +137,7 @@ const ChaletPreviewCard = ({ chalet, index }: { chalet: (typeof chaletData)[0]; 
 
           {/* Équipements phares */}
           <div>
-            <h4 className="font-semibold mb-2 text-success">🎯 Équipements phares</h4>
+            <h4 className="font-semibold mb-2 text-success flex items-center gap-2"><FaBullseye className="text-success" /> Équipements phares</h4>
             <div className="text-sm text-default-600">
               {chalet.features.slice(0, 3).join(" • ")}
               <span className="text-primary font-medium"> et {chalet.features.length - 3} autres...</span>
@@ -210,19 +228,19 @@ export default function ChaletsPage() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                   <div className="flex items-center gap-2">
-                    <span className="text-success">✓</span>
+                    <FaCheck className="text-success" />
                     <span>Chalets classés 3 étoiles</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-success">✓</span>
+                    <FaCheck className="text-success" />
                     <span>Résidences secondaires déclarées</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-success">✓</span>
+                    <FaCheck className="text-success" />
                     <span>Non fumeur (extérieur autorisé)</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-success">✓</span>
+                    <FaCheck className="text-success" />
                     <span>Linge et équipements fournis</span>
                   </div>
                 </div>
@@ -244,7 +262,7 @@ export default function ChaletsPage() {
                   06 11 23 37 67
                 </Button>
                 <div className="text-xs text-warning-600 bg-warning-50 dark:bg-warning-950/50 px-3 py-2 rounded-lg">
-                  ⚠️ Évitez les commissions LeBonCoin
+                  <FaExclamationTriangle className="inline mr-1" /> Évitez les commissions LeBonCoin
                 </div>
               </div>
             </div>
@@ -298,8 +316,8 @@ export default function ChaletsPage() {
                 Demande personnalisée
               </Button>
             </div>
-            <p className="text-xs text-default-500 mt-4">
-              💬 Réponse garantie sous 24h • 🏔️ Au cœur des Vosges
+            <p className="text-xs text-default-500 mt-4 flex items-center justify-center gap-2">
+              <MdChat /> Réponse garantie sous 24h • <GiMountains /> Au cœur des Vosges
             </p>
           </CardBody>
         </Card>

@@ -37,6 +37,9 @@ import {
   BsGear,
 } from "react-icons/bs";
 import { IoBed } from "react-icons/io5";
+import { FaExclamationTriangle } from "react-icons/fa";
+import { MdChat } from "react-icons/md";
+import { GiPineTree, GiMountains, GiOakLeaf, GiSparkles } from "react-icons/gi";
 
 interface ChaletDetailClientProps {
   chalet: {
@@ -62,6 +65,17 @@ interface ChaletDetailClientProps {
   };
 }
 
+// Icon mapping function
+const getIconComponent = (iconName: string) => {
+  const icons = {
+    "pine-tree": GiPineTree,
+    mountains: GiMountains,
+    leaf: GiOakLeaf,
+    sparkles: GiSparkles,
+  };
+  return icons[iconName as keyof typeof icons] || GiPineTree;
+};
+
 export default function ChaletDetailClient({
   chalet,
 }: ChaletDetailClientProps) {
@@ -70,17 +84,19 @@ export default function ChaletDetailClient({
   const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  const IconComponent = getIconComponent(chalet.icon);
+
   return (
     <>
       <div className="min-h-screen">
         {/* Hero Section avec image principale */}
-        <div className="relative h-[60vh] md:h-[70vh] overflow-hidden">
+        <div className="relative h-[60vh] md:h-[70vh] overflow-hidden rounded-lg">
           <div className="absolute inset-0 z-0">
-            <Image
+            <img
               src={chalet.images[currentImageIndex]}
               alt={`Chalet ${chalet.name}`}
-              className="w-full h-full object-cover"
-              radius="none"
+              className="w-full h-full object-cover object-center"
+              loading="eager"
             />
           </div>
 
@@ -156,7 +172,7 @@ export default function ChaletDetailClient({
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 md:gap-3 mb-2 flex-wrap">
-                    <span className="text-3xl md:text-4xl">{chalet.icon}</span>
+                    <IconComponent className="text-3xl md:text-4xl text-primary" />
                     <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white font-display leading-tight">
                       Chalet {chalet.name}
                     </h1>
@@ -344,11 +360,11 @@ export default function ChaletDetailClient({
                             setLightboxOpen(true);
                           }}
                         >
-                          <Image
+                          <img
                             src={image}
                             alt={`${chalet.name} - Photo ${index + 1}`}
-                            className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                            radius="md"
+                            className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
                           />
                           <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
                             <BsImages
@@ -371,7 +387,7 @@ export default function ChaletDetailClient({
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="sticky top-4 md:top-6 z-40"
+                className="sticky top-4 md:top-20 z-40"
               >
                 <Card className="alpine-card shadow-lg">
                   <CardHeader>
@@ -437,11 +453,11 @@ export default function ChaletDetailClient({
 
                     <div className="text-xs text-default-500 text-center space-y-1">
                       <p className="flex items-center justify-center gap-1">
-                        <span className="text-warning">⚠️</span>
+                        <FaExclamationTriangle className="text-warning" />
                         Évitez les commissions LeBonCoin
                       </p>
                       <p className="flex items-center justify-center gap-1">
-                        <span className="text-primary">💬</span>
+                        <MdChat className="text-primary" />
                         Réponse garantie sous 24h
                       </p>
                     </div>
@@ -558,12 +574,12 @@ export default function ChaletDetailClient({
           <ModalContent>
             <div className="relative w-full h-full flex items-center justify-center p-4">
               {/* Image principale */}
-              <div className="relative max-w-full max-h-full">
-                <Image
+              <div className="relative max-w-full max-h-full flex items-center justify-center">
+                <img
                   src={chalet.images[lightboxImageIndex]}
                   alt={`${chalet.name} - Photo ${lightboxImageIndex + 1}`}
-                  className="max-w-full max-h-[90vh] object-contain"
-                  radius="lg"
+                  className="max-w-full max-h-[90vh] object-contain rounded-lg"
+                  loading="eager"
                 />
               </div>
 
@@ -571,7 +587,7 @@ export default function ChaletDetailClient({
               <Button
                 isIconOnly
                 variant="flat"
-                className="absolute top-4 right-4 z-50 bg-white/20 backdrop-blur-md text-white hover:bg-white/30"
+                className="absolute top-4 right-4 z-50 bg-white/20 backdrop-blur-md text-white hover:bg-white/30 m-2 border border-red-500"
                 onPress={() => setLightboxOpen(false)}
               >
                 <BsX size={24} />
@@ -582,7 +598,7 @@ export default function ChaletDetailClient({
                 <>
                   <Button
                     isIconOnly
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 z-50 bg-white/20 backdrop-blur-md text-white hover:bg-white/30"
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 z-50 bg-white/20 backdrop-blur-md text-white hover:bg-white/30 m-2 border border-primary/50"
                     onPress={() =>
                       setLightboxImageIndex(
                         (prev) =>
@@ -595,7 +611,7 @@ export default function ChaletDetailClient({
                   </Button>
                   <Button
                     isIconOnly
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 z-50 bg-white/20 backdrop-blur-md text-white hover:bg-white/30"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 z-50 bg-white/20 backdrop-blur-md text-white hover:bg-white/30  m-2 border border-primary/50"
                     onPress={() =>
                       setLightboxImageIndex(
                         (prev) => (prev + 1) % chalet.images.length

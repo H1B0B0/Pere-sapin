@@ -24,12 +24,12 @@ export const useAuthStore = create<AuthState>()(
       loading: false,
       initialized: false,
       login: (user: User, token: string) => {
-        console.log("🔐 Store: Login with user:", user);
+        console.log("[AUTH] Store: Login with user:", user);
         Cookies.set("auth-token", token, { expires: 1 }); // 1 day
         set({ user, isAuthenticated: true, initialized: true });
       },
       logout: () => {
-        console.log("🚪 Store: Logout");
+        console.log("[AUTH] Store: Logout");
         Cookies.remove("auth-token");
         set({ user: null, isAuthenticated: false, initialized: true });
       },
@@ -41,22 +41,22 @@ export const useAuthStore = create<AuthState>()(
 
         if (state.initialized) return;
 
-        console.log("🔍 Store: Checking auth state...");
+        console.log("[AUTH] Store: Checking auth state...");
         set({ loading: true });
 
         const token = Cookies.get("auth-token");
         const hasUser = state.user;
 
-        console.log("🔍 Store: Token exists:", !!token);
-        console.log("🔍 Store: User exists:", !!hasUser);
+        console.log("[AUTH] Store: Token exists:", !!token);
+        console.log("[AUTH] Store: User exists:", !!hasUser);
 
         if (token) {
           if (hasUser) {
-            console.log("✅ Store: User authenticated (from cache)");
+            console.log("[AUTH] Store: User authenticated (from cache)");
             set({ isAuthenticated: true, initialized: true, loading: false });
           } else {
             console.log(
-              "🔍 Store: Token found but no user, verifying with server...",
+              "[AUTH] Store: Token found but no user, verifying with server...",
             );
             try {
               // Verify token with server and get user info
@@ -70,7 +70,7 @@ export const useAuthStore = create<AuthState>()(
               if (response.ok) {
                 const user = await response.json();
 
-                console.log("✅ Store: Token valid, user retrieved:", user);
+                console.log("[AUTH] Store: Token valid, user retrieved:", user);
                 set({
                   user,
                   isAuthenticated: true,
@@ -78,7 +78,7 @@ export const useAuthStore = create<AuthState>()(
                   loading: false,
                 });
               } else {
-                console.log("❌ Store: Token invalid, clearing auth");
+                console.log("[AUTH] Store: Token invalid, clearing auth");
                 Cookies.remove("auth-token");
                 set({
                   user: null,
@@ -88,7 +88,7 @@ export const useAuthStore = create<AuthState>()(
                 });
               }
             } catch (error) {
-              console.error("❌ Store: Error verifying token:", error);
+              console.error("[AUTH] Store: Error verifying token:", error);
               Cookies.remove("auth-token");
               set({
                 user: null,
@@ -99,7 +99,7 @@ export const useAuthStore = create<AuthState>()(
             }
           }
         } else {
-          console.log("❌ Store: No token found");
+          console.log("[AUTH] Store: No token found");
           set({
             user: null,
             isAuthenticated: false,
@@ -109,7 +109,7 @@ export const useAuthStore = create<AuthState>()(
         }
       },
       initialize: () => {
-        console.log("🚀 Store: Initialize called");
+        console.log("[AUTH] Store: Initialize called");
         const state = get();
 
         if (!state.initialized && !state.loading) {

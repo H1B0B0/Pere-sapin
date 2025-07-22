@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
+import { FaMoon, FaSun } from "react-icons/fa";
 
 export function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
@@ -23,13 +24,16 @@ export function ThemeSwitcher() {
       transition={{ duration: 0.3 }}
     >
       <Button
-        isIconOnly
         variant="light"
         onClick={() => setTheme(theme === "light" ? "dark" : "light")}
         aria-label="Changer le thème"
         className="text-lg"
       >
-        {theme === "light" ? "🌙" : "☀️"}
+        {theme === "light" ? (
+          <><FaMoon className="mr-2" /> Dark</>
+        ) : (
+          <><FaSun className="mr-2" /> Light</>
+        )}
       </Button>
     </motion.div>
   );

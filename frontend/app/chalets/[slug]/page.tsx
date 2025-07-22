@@ -17,17 +17,17 @@ export async function generateStaticParams() {
 // Métadonnées dynamiques pour le SEO
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const chalet = getChaletBySlug(params.slug);
-  
+
   if (!chalet) {
     return {
-      title: 'Chalet non trouvé',
+      title: "Chalet non trouvé",
     };
   }
 
   return {
     title: `Chalet ${chalet.name} - Location 3★ dans les Vosges | Père Sapin`,
     description: `${chalet.description} ${chalet.capacity}, ${chalet.rooms}. Réservez dès maintenant votre séjour dans ce magnifique chalet 3 étoiles.`,
-    keywords: `chalet ${chalet.name.toLowerCase()}, location chalet vosges, chalet 3 étoiles, père sapin, ${chalet.features.slice(0, 5).join(', ').toLowerCase()}`,
+    keywords: `chalet ${chalet.name.toLowerCase()}, location chalet vosges, chalet 3 étoiles, père sapin, ${chalet.features.slice(0, 5).join(", ").toLowerCase()}`,
     openGraph: {
       title: `Chalet ${chalet.name} - Père Sapin`,
       description: chalet.description,

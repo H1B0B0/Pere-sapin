@@ -17,15 +17,15 @@ async function createDefaultAdmin() {
         name: 'Administrateur',
       });
 
-      console.log('✅ Default admin user created:');
+      console.log('[SETUP] Default admin user created:');
       console.log('Email: admin@pere-sapin.com');
       console.log('Password: admin123');
       console.log('Please change the password after first login!');
     } else {
-      console.log('ℹ️  Admin user already exists');
+      console.log('[SETUP] Admin user already exists');
     }
   } catch (error) {
-    console.error('❌ Error creating admin user:', error);
+    console.error('[SETUP] Error creating admin user:', error);
   }
 
   await app.close();

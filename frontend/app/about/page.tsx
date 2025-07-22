@@ -1,8 +1,11 @@
 "use client";
 
-import { Card, CardBody, CardHeader, Button, Chip, Image } from "@heroui/react";
+import { Card, CardBody, CardHeader, Button, Chip } from "@heroui/react";
 import { motion } from "framer-motion";
 import { BsTree } from "react-icons/bs";
+import { FaStar, FaHandshake, FaPhoneAlt, FaMobileAlt, FaTrophy } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
+import { GiMountains, GiPineTree } from "react-icons/gi";
 
 export default function AboutPage() {
   return (
@@ -32,7 +35,7 @@ export default function AboutPage() {
       >
         <Card className="alpine-card">
           <CardHeader>
-            <h2 className="text-2xl font-bold font-display">🏔️ Notre Histoire</h2>
+            <h2 className="text-2xl font-bold font-display flex items-center gap-2"><GiMountains className="text-primary" /> Notre Histoire</h2>
           </CardHeader>
           <CardBody className="space-y-4">
             <p className="text-default-600">
@@ -60,7 +63,7 @@ export default function AboutPage() {
       >
         <Card className="alpine-card">
           <CardHeader className="text-center">
-            <h3 className="text-xl font-bold font-display">🌟 Qualité</h3>
+            <h3 className="text-xl font-bold font-display flex items-center justify-center gap-2"><FaStar className="text-warning" /> Qualité</h3>
           </CardHeader>
           <CardBody className="text-center">
             <p className="text-default-600">
@@ -72,7 +75,7 @@ export default function AboutPage() {
 
         <Card className="alpine-card">
           <CardHeader className="text-center">
-            <h3 className="text-xl font-bold font-display">🤝 Service</h3>
+            <h3 className="text-xl font-bold font-display flex items-center justify-center gap-2"><FaHandshake className="text-success" /> Service</h3>
           </CardHeader>
           <CardBody className="text-center">
             <p className="text-default-600">
@@ -84,7 +87,7 @@ export default function AboutPage() {
 
         <Card className="alpine-card">
           <CardHeader className="text-center">
-            <h3 className="text-xl font-bold font-display">🌲 Nature</h3>
+            <h3 className="text-xl font-bold font-display flex items-center justify-center gap-2"><GiPineTree className="text-success" /> Nature</h3>
           </CardHeader>
           <CardBody className="text-center">
             <p className="text-default-600">
@@ -102,7 +105,7 @@ export default function AboutPage() {
       >
         <Card className="alpine-card">
           <CardHeader>
-            <h2 className="text-2xl font-bold font-display">🏆 Nos Classifications</h2>
+            <h2 className="text-2xl font-bold font-display flex items-center gap-2"><FaTrophy className="text-warning" /> Nos Classifications</h2>
           </CardHeader>
           <CardBody>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -145,14 +148,14 @@ export default function AboutPage() {
       >
         <Card className="alpine-card">
           <CardBody className="p-8">
-            <h2 className="text-3xl font-bold mb-4 font-display">📞 Contactez-nous</h2>
+            <h2 className="text-3xl font-bold mb-4 font-display flex items-center justify-center gap-2"><FaPhoneAlt className="text-primary" /> Contactez-nous</h2>
             <p className="text-lg text-default-600 mb-6">
               Une question ? Un projet de séjour ? N'hésitez pas à nous
               contacter pour une demande personnalisée.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button color="primary" size="lg" className="font-semibold btn-alpine text-primary-foreground">
-                📧 Nous écrire
+                <MdEmail className="mr-2" /> Nous écrire
               </Button>
               <Button
                 color="success"
@@ -160,7 +163,7 @@ export default function AboutPage() {
                 size="lg"
                 className="font-semibold backdrop-blur-sm"
               >
-                📱 Voir les chalets
+                <FaMobileAlt className="mr-2" /> Voir les chalets
               </Button>
             </div>
           </CardBody>

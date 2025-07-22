@@ -47,7 +47,7 @@ export const chaletData = [
       cleaning: "100€",
     },
     color: "success",
-    icon: "🌲",
+    icon: "pine-tree",
     bedrooms:
       "1 chambre 2 lits doubles + 1 chambre lit double + 1 chambre lit double et simple",
     bathrooms: "2 salles de bain (1 douche, 1 baignoire) + 2 toilettes",
@@ -102,7 +102,7 @@ export const chaletData = [
       cleaning: "150€",
     },
     color: "primary",
-    icon: "🏔️",
+    icon: "mountains",
     bedrooms:
       "2 chambres lit double + 1 chambre lit double et simple + 2 chambres 2 lits doubles",
     bathrooms: "4 douches + 1 baignoire + 4 toilettes",
@@ -157,7 +157,7 @@ export const chaletData = [
       cleaning: "150€",
     },
     color: "warning",
-    icon: "🍂",
+    icon: "leaf",
     bedrooms:
       "2 chambres lit double + 1 chambre lit double et simple + 2 chambres 2 lits doubles",
     bathrooms: "5 douches + 1 baignoire + 3 toilettes",
@@ -212,7 +212,7 @@ export const chaletData = [
       cleaning: "150€",
     },
     color: "secondary",
-    icon: "✨",
+    icon: "sparkles",
     bedrooms:
       "2 chambres lit double + 1 chambre lit double et simple + 1 chambre lit double et 2 lits simples + chambre PMR",
     bathrooms: "5 salles de bain avec douche + 4 toilettes",
