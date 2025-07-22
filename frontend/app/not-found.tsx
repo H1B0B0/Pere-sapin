@@ -2,10 +2,14 @@
 import Link from "next/link";
 import { BsTree } from "react-icons/bs";
 import { motion } from "framer-motion";
+import Background from "@/components/Background";
 
 export default function NotFound() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] text-center">
+      <div className="absolute inset-0 -z-10 w-full h-full">
+        <Background />
+      </div>
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}

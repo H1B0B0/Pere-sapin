@@ -2,65 +2,73 @@
 
 import { useState, useEffect } from "react";
 import { useParams, notFound } from "next/navigation";
-import { Card, CardBody, Button, Chip } from "@heroui/react";
-import { motion } from "framer-motion";
-import { BsArrowLeft, BsTree, BsQrCode, BsEye } from "react-icons/bs";
-import Link from "next/link";
 import { chaletService } from "@/lib/services/chalets";
 import { pageService } from "@/lib/services/pages";
 import { usePageViews } from "@/lib/hooks/usePageViews";
 import { Chalet, Page } from "@/types";
 
-// Simple markdown parser for basic formatting
+// Notion dark style markdown parser
 const parseMarkdown = (markdown: string) => {
   let html = markdown;
   
-  // Headers
-  html = html.replace(/^### (.*$)/gm, '<h3 class="text-lg font-semibold mb-3 text-foreground">$1</h3>');
-  html = html.replace(/^## (.*$)/gm, '<h2 class="text-xl font-semibold mb-4 text-foreground">$1</h2>');
-  html = html.replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold mb-6 text-foreground">$1</h1>');
+  // Headers avec style Notion sombre
+  html = html.replace(/^### (.*$)/gm, '<h3 style="font-size: 1.25em; font-weight: 600; margin: 24px 0 4px 0; color: rgba(255, 255, 255, 0.9); line-height: 1.2;">$1</h3>');
+  html = html.replace(/^## (.*$)/gm, '<h2 style="font-size: 1.5em; font-weight: 600; margin: 28px 0 4px 0; color: rgba(255, 255, 255, 0.9); line-height: 1.2;">$1</h2>');
+  html = html.replace(/^# (.*$)/gm, '<h1 style="font-size: 2em; font-weight: 600; margin: 32px 0 4px 0; color: rgba(255, 255, 255, 0.9); line-height: 1.2;">$1</h1>');
   
-  // Bold and italic
-  html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>');
-  html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
+  // Bold et italic
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: 600; color: rgba(255, 255, 255, 0.9);">$1</strong>');
+  html = html.replace(/\*(.*?)\*/g, '<em style="font-style: italic; color: rgba(255, 255, 255, 0.9);">$1</em>');
   
-  // Lists
-  html = html.replace(/^\d+\.\s+(.*$)/gm, '<li class="mb-1">$1</li>');
-  html = html.replace(/^-\s+(.*$)/gm, '<li class="mb-1">$1</li>');
-  html = html.replace(/(<li.*<\/li>)/gs, '<ul class="list-disc list-inside mb-4 space-y-1 text-foreground">$1</ul>');
+  // Code avec style Notion
+  html = html.replace(/`([^`]+)`/g, '<code style="background: rgba(135, 131, 120, 0.15); color: rgb(235, 87, 87); padding: 0.2em 0.4em; border-radius: 3px; font-size: 85%; font-family: \'SFMono-Regular\', Consolas, \'Liberation Mono\', Menlo, Courier, monospace;">$1</code>');
+  html = html.replace(/```([\\s\\S]*?)```/g, '<pre style="background: rgba(135, 131, 120, 0.15); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 3px; padding: 16px; margin: 8px 0; font-family: \'SFMono-Regular\', Consolas, \'Liberation Mono\', Menlo, Courier, monospace; font-size: 14px; line-height: 1.45; overflow-x: auto;"><code style="background: none; color: inherit; padding: 0;">$1</code></pre>');
   
-  // Paragraphs
-  html = html.replace(/\n\n/g, '</p><p class="mb-4 text-foreground leading-relaxed">');
-  html = `<p class="mb-4 text-foreground leading-relaxed">${html}</p>`;
+  // Listes
+  html = html.replace(/^\d+\. (.*)$/gm, '<li style="margin: 2px 0; color: rgba(255, 255, 255, 0.9);">$1</li>');
+  html = html.replace(/^[-*] (.*)$/gm, '<li style="margin: 2px 0; color: rgba(255, 255, 255, 0.9);">$1</li>');
+  html = html.replace(/(<li[^>]*>.*?<\/li>)/gs, '<ul style="margin: 4px 0; padding-left: 24px; color: rgba(255, 255, 255, 0.9);">$1</ul>');
   
-  // Clean up empty paragraphs
-  html = html.replace(/<p class="[^"]*">\s*<\/p>/g, '');
+  // Citations Notion style
+  html = html.replace(/^> (.*)$/gm, '<blockquote style="border-left: 3px solid rgba(255, 255, 255, 0.2); padding-left: 14px; margin: 4px 0; color: rgba(255, 255, 255, 0.7); font-style: normal;">$1</blockquote>');
+  
+  // Liens
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: rgba(94, 138, 255, 1); text-decoration: underline; text-decoration-color: rgba(94, 138, 255, 0.4);" target="_blank" rel="noopener noreferrer">$1</a>');
+  
+  // Paragraphes avec style Notion
+  html = html.replace(/\n\n/g, '</p><p style="margin: 3px 0; color: rgba(255, 255, 255, 0.9); min-height: 1em;">');
+  html = `<p style="margin: 3px 0; color: rgba(255, 255, 255, 0.9); min-height: 1em;">${html}</p>`;
+  
+  // Nettoyage
+  html = html.replace(/<p[^>]*>\s*<\/p>/g, "");
+  html = html.replace(/<ul[^>]*>(<ul[^>]*>.*?<\/ul>)<\/ul>/gs, '$1');
   
   return html;
 };
 
-export default function PublicPageView() {
+export default function NotionStylePageViewer() {
   const [chalet, setChalet] = useState<Chalet | null>(null);
   const [page, setPage] = useState<Page | null>(null);
   const [loading, setLoading] = useState(true);
   const params = useParams();
 
-  // Hook pour incrémenter les vues
-  usePageViews(page?._id || '');
+  usePageViews(page?._id || "");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const chaletId = params.chaletId as string;
         const pageSlug = params.pageSlug as string;
-        
+
         const [chaletData, pagesData] = await Promise.all([
           chaletService.getById(chaletId),
           pageService.getByChaletId(chaletId),
         ]);
 
-        const pageData = pagesData.find(p => p.slug === pageSlug && p.isActive !== false);
-        
+        const pageData = pagesData.find(
+          (p) => p.slug === pageSlug && p.isActive !== false
+        );
+
         if (!pageData) {
           notFound();
           return;
@@ -79,164 +87,149 @@ export default function PublicPageView() {
     fetchData();
   }, [params.chaletId, params.pageSlug]);
 
-  const getTagColor = (tag: string) => {
-    const colors = ["primary", "success", "warning", "secondary", "default"];
-    const hash = tag.split("").reduce((a, b) => {
-      a = ((a << 5) - a) + b.charCodeAt(0);
-      return a & a;
-    }, 0);
-    return colors[Math.abs(hash) % colors.length];
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Chargement...</p>
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgb(37, 37, 37)'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '32px',
+            height: '32px',
+            border: '3px solid rgba(255, 255, 255, 0.1)',
+            borderTop: '3px solid rgba(255, 255, 255, 0.9)',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 16px'
+          }}></div>
+          <p style={{ 
+            color: 'rgba(255, 255, 255, 0.6)', 
+            margin: 0,
+            fontSize: '14px'
+          }}>
+            Chargement...
+          </p>
         </div>
       </div>
     );
   }
 
   if (!chalet || !page) {
-    return null; // Will trigger notFound()
+    return null;
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* En-tête mobile-optimized */}
-      <div className="bg-card/50 backdrop-blur-sm border-b border-border sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-full bg-primary/20">
-              <BsTree className="h-5 w-5 text-primary" />
+    <>
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+      
+      <div style={{
+        minHeight: '100vh',
+        backgroundColor: 'rgb(37, 37, 37)',
+        color: 'rgba(255, 255, 255, 0.9)'
+      }}>
+        <div style={{
+          maxWidth: '708px',
+          margin: '0 auto',
+          padding: '96px 96px 40px',
+          minHeight: '100vh'
+        }}>
+          {/* Titre principal - Style Notion */}
+          <div style={{ marginBottom: '24px' }}>
+            <h1 style={{
+              fontSize: '40px',
+              lineHeight: '1.2',
+              fontWeight: '700',
+              color: 'rgba(255, 255, 255, 0.9)',
+              margin: '0 0 8px 0',
+              wordBreak: 'break-word'
+            }}>
+              {page.title}
+            </h1>
+          </div>
+
+          {/* Tags - Style Notion sombre */}
+          {page.tags && page.tags.length > 0 && (
+            <div style={{ marginBottom: '24px' }}>
+              {page.tags.map((tag, index) => (
+                <span
+                  key={tag}
+                  style={{
+                    display: 'inline-block',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    padding: '2px 6px',
+                    borderRadius: '3px',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    marginRight: index < page.tags.length - 1 ? '6px' : '0',
+                    marginBottom: '4px'
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="font-semibold text-foreground truncate">{chalet.name}</h2>
-              <p className="text-sm text-muted-foreground truncate">{page.title}</p>
-            </div>
-            <Button
-              variant="light"
-              size="sm"
-              startContent={<BsQrCode className="h-4 w-4" />}
-              className="shrink-0"
-            >
-              QR
-            </Button>
+          )}
+
+          {/* Meta info */}
+          <div style={{
+            fontSize: '14px',
+            color: 'rgba(255, 255, 255, 0.4)',
+            marginBottom: '48px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px'
+          }}>
+            <span>{chalet.name}</span>
+            {page.views && page.views > 0 && (
+              <span>{page.views} vues</span>
+            )}
+          </div>
+
+          {/* Contenu - Style Notion sombre pur */}
+          <div
+            dangerouslySetInnerHTML={{ 
+              __html: parseMarkdown(page.content) 
+            }}
+            style={{
+              fontSize: '16px',
+              lineHeight: '1.5'
+            }}
+          />
+
+          {/* Footer minimaliste */}
+          <div style={{
+            marginTop: '64px',
+            paddingTop: '24px',
+            borderTop: '1px solid rgba(255, 255, 255, 0.09)',
+            textAlign: 'center'
+          }}>
+            <p style={{
+              fontSize: '14px',
+              color: 'rgba(255, 255, 255, 0.4)',
+              margin: '0 0 8px 0'
+            }}>
+              Besoin d'aide avec autre chose ?
+            </p>
+            <p style={{
+              fontSize: '14px',
+              color: 'rgba(255, 255, 255, 0.4)',
+              margin: '0'
+            }}>
+              Scannez un autre QR code ou contactez-nous.
+            </p>
           </div>
         </div>
       </div>
-
-      {/* Contenu principal */}
-      <div className="container mx-auto px-4 py-6 max-w-4xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Card className="alpine-card">
-            <CardBody className="p-6 md:p-8">
-              {/* Titre et tags */}
-              <div className="mb-8">
-                <h1 className="text-3xl md:text-4xl font-bold font-display gradient-festive bg-clip-text text-transparent mb-4">
-                  {page.title}
-                </h1>
-                
-                {page.tags && page.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {page.tags.map((tag) => (
-                      <Chip
-                        key={tag}
-                        color={getTagColor(tag) as any}
-                        variant="flat"
-                        size="sm"
-                      >
-                        {tag}
-                      </Chip>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Contenu markdown */}
-              <div className="prose prose-lg max-w-none">
-                <div 
-                  dangerouslySetInnerHTML={{ 
-                    __html: parseMarkdown(page.content) 
-                  }}
-                  className="markdown-content"
-                />
-              </div>
-
-              {/* Footer de la page */}
-              <div className="mt-12 pt-6 border-t border-border">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <BsTree className="h-4 w-4" />
-                    <span>{chalet.name}</span>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Père Sapin
-                  </div>
-                </div>
-              </div>
-            </CardBody>
-          </Card>
-        </motion.div>
-
-        {/* Navigation vers d'autres pages */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-8"
-        >
-          <Card className="alpine-card">
-            <CardBody className="p-4">
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-3">
-                  Besoin d'aide avec autre chose ?
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Scannez un autre QR code ou contactez-nous si vous avez des questions.
-                </p>
-              </div>
-            </CardBody>
-          </Card>
-        </motion.div>
-      </div>
-
-      <style jsx>{`
-        .markdown-content h1,
-        .markdown-content h2,
-        .markdown-content h3 {
-          margin-top: 2rem;
-          margin-bottom: 1rem;
-        }
-        
-        .markdown-content h1:first-child,
-        .markdown-content h2:first-child,
-        .markdown-content h3:first-child {
-          margin-top: 0;
-        }
-        
-        .markdown-content ul {
-          padding-left: 1.5rem;
-        }
-        
-        .markdown-content li {
-          list-style-type: disc;
-        }
-        
-        .markdown-content strong {
-          color: hsl(var(--foreground));
-        }
-        
-        .markdown-content em {
-          color: hsl(var(--muted-foreground));
-        }
-      `}</style>
-    </div>
+    </>
   );
 }
