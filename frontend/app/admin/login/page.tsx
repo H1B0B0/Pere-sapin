@@ -20,7 +20,12 @@ export default function LoginPage() {
     setError(null);
     try {
       const res = await authService.login({ email, password });
-      console.log("Login successful:", res);
+      if (res && "token" in res && res.token) {
+        document.cookie = `auth-token=${res.token}; path=/; max-age=${60 * 60 * 12}; SameSite=Lax`;
+        router.push("/admin");
+      } else {
+        setError("Erreur de connexion");
+      }
     } catch (err) {
       setError("Erreur réseau");
     } finally {
