@@ -90,4 +90,107 @@ export class PageService {
       .findByIdAndUpdate(id, { qrCodeUrl }, { new: true })
       .exec();
   }
+
+  async findBySlugAndIncrementView(
+    slug: string,
+    viewData: { ip: string; userAgent: string },
+  ): Promise<Page | null> {
+    const page = (await this.pageModel
+      .findOne({ slug, isActive: true })
+      .populate('chalet')
+      .exec()) as Page & { _id: any };
+
+    if (page) {
+      await this.incrementView(page._id.toString(), viewData);
+    }
+
+    return page;
+  }
+
+  async incrementView(
+    id: string,
+    viewData: { ip: string; userAgent: string },
+  ): Promise<Page | null> {
+    const now = new Date();
+    const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    // Check if this IP already viewed this page in the last 24 hours
+    const existingView = await this.pageModel.findOne({
+      _id: id,
+      'viewHistory.ip': viewData.ip,
+      'viewHistory.timestamp': { $gt: twentyFourHoursAgo },
+    });
+
+    if (!existingView) {
+      // Add new view only if IP hasn't viewed in last 24 hours
+      return this.pageModel
+        .findByIdAndUpdate(
+          id,
+          {
+            $inc: { views: 1 },
+            $push: {
+              viewHistory: {
+                ip: viewData.ip,
+                timestamp: now,
+                userAgent: viewData.userAgent,
+              },
+            },
+          },
+          { new: true },
+        )
+        .populate('chalet')
+        .exec();
+    }
+
+    // Return the page without incrementing view count
+    return this.pageModel.findById(id).populate('chalet').exec();
+  }
+
+  async getPageStats(id: string): Promise<{
+    views: number;
+    uniqueViews: number;
+    dailyViews: { date: string; count: number }[];
+    topUserAgents: { userAgent: string; count: number }[];
+  } | null> {
+    const page = await this.pageModel.findById(id);
+    if (!page) return null;
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    // Get recent views for analytics
+    const recentViews = page.viewHistory.filter(
+      (view) => view.timestamp >= thirtyDaysAgo,
+    );
+
+    // Calculate daily views for the last 30 days
+    const dailyViewsMap = new Map<string, number>();
+    recentViews.forEach((view) => {
+      const dateKey = view.timestamp.toISOString().split('T')[0];
+      dailyViewsMap.set(dateKey, (dailyViewsMap.get(dateKey) || 0) + 1);
+    });
+
+    const dailyViews = Array.from(dailyViewsMap.entries()).map(
+      ([date, count]) => ({ date, count }),
+    );
+
+    // Calculate top user agents
+    const userAgentMap = new Map<string, number>();
+    recentViews.forEach((view) => {
+      const agent = view.userAgent || 'Unknown';
+      userAgentMap.set(agent, (userAgentMap.get(agent) || 0) + 1);
+    });
+
+    const topUserAgents = Array.from(userAgentMap.entries())
+      .map(([userAgent, count]) => ({ userAgent, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
+    return {
+      views: page.views,
+      uniqueViews: new Set(page.viewHistory.map((v) => v.ip)).size,
+      dailyViews,
+      topUserAgents,
+    };
+  }
 }

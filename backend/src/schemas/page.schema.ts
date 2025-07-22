@@ -5,6 +5,7 @@ export type PageDocument = Page & Document;
 
 @Schema({ timestamps: true })
 export class Page {
+
   @Prop({ required: true })
   title: string;
 
@@ -25,6 +26,15 @@ export class Page {
 
   @Prop({ default: true })
   isActive: boolean;
+
+  @Prop({ default: 0 })
+  views: number;
+
+  @Prop({
+    type: [{ ip: String, timestamp: Date, userAgent: String }],
+    default: [],
+  })
+  viewHistory: { ip: string; timestamp: Date; userAgent: string }[];
 }
 
 export const PageSchema = SchemaFactory.createForClass(Page);

@@ -30,11 +30,25 @@ export const chaletService = {
     await api.delete(`/chalets/${id}`);
   },
 
-  async downloadQRCodesPDF(id: string): Promise<Blob> {
-    const response = await api.get(`/pdf/chalet/${id}/qr-codes`, {
-      responseType: "blob",
-    });
+  async downloadQRCodesPDF(id: string): Promise<void> {
+    try {
+      const response = await api.get(`/pdf/chalet/${id}/qr-codes`, {
+        responseType: "blob",
+      });
 
-    return response.data;
+      // Create download link
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `chalet-${id}-qr-codes.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Erreur lors du téléchargement du PDF:', error);
+      throw error;
+    }
   },
 };

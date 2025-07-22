@@ -30,8 +30,23 @@ export interface Page {
   chaletId: string;
   qrCodeUrl?: string;
   isActive: boolean;
+  views: number;
+  viewHistory: ViewHistory[];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ViewHistory {
+  ip: string;
+  timestamp: Date;
+  userAgent: string;
+}
+
+export interface PageStats {
+  views: number;
+  uniqueViews: number;
+  dailyViews: { date: string; count: number }[];
+  topUserAgents: { userAgent: string; count: number }[];
 }
 
 export interface CreateChaletDto {
