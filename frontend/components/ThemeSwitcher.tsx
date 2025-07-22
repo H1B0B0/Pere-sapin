@@ -1,10 +1,9 @@
-// app/components/ThemeSwitcher.tsx
 "use client";
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Button } from "@heroui/react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaMoon, FaSun } from "react-icons/fa";
 
 export function ThemeSwitcher() {
@@ -24,16 +23,37 @@ export function ThemeSwitcher() {
       transition={{ duration: 0.3 }}
     >
       <Button
+        isIconOnly
         variant="light"
         onClick={() => setTheme(theme === "light" ? "dark" : "light")}
         aria-label="Changer le thème"
         className="text-lg"
       >
-        {theme === "light" ? (
-          <><FaMoon className="mr-2" /> Dark</>
-        ) : (
-          <><FaSun className="mr-2" /> Light</>
-        )}
+        <AnimatePresence mode="wait" initial={false}>
+          {theme === "light" ? (
+            <motion.span
+              key="moon"
+              initial={{ rotate: -90, opacity: 0, scale: 0.7 }}
+              animate={{ rotate: 0, opacity: 1, scale: 1 }}
+              exit={{ rotate: 90, opacity: 0, scale: 0.7 }}
+              transition={{ duration: 0.3 }}
+              style={{ display: "inline-block" }}
+            >
+              <FaMoon />
+            </motion.span>
+          ) : (
+            <motion.span
+              key="sun"
+              initial={{ rotate: 90, opacity: 0, scale: 0.7 }}
+              animate={{ rotate: 0, opacity: 1, scale: 1 }}
+              exit={{ rotate: -90, opacity: 0, scale: 0.7 }}
+              transition={{ duration: 0.3 }}
+              style={{ display: "inline-block" }}
+            >
+              <FaSun />
+            </motion.span>
+          )}
+        </AnimatePresence>
       </Button>
     </motion.div>
   );
