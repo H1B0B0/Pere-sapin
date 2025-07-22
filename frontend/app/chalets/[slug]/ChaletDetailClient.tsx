@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Button,
   Card,
@@ -35,6 +35,8 @@ import {
   BsCameraFill,
   BsCash,
   BsGear,
+  BsPlay,
+  BsPause,
 } from "react-icons/bs";
 import { IoBed } from "react-icons/io5";
 import { FaExclamationTriangle } from "react-icons/fa";
@@ -82,21 +84,117 @@ export default function ChaletDetailClient({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [slideDirection, setSlideDirection] = useState<"left" | "right">(
+    "right"
+  );
+  const [previousImageIndex, setPreviousImageIndex] = useState(0);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const IconComponent = getIconComponent(chalet.icon);
+
+  // Auto-play functionality
+  const nextImage = useCallback(() => {
+    if (chalet.images.length > 1) {
+      setSlideDirection("right");
+      setPreviousImageIndex(currentImageIndex);
+      setCurrentImageIndex((prev) => (prev + 1) % chalet.images.length);
+    }
+  }, [chalet.images.length, currentImageIndex]);
+
+  const prevImage = useCallback(() => {
+    if (chalet.images.length > 1) {
+      setSlideDirection("left");
+      setPreviousImageIndex(currentImageIndex);
+      setCurrentImageIndex(
+        (prev) => (prev - 1 + chalet.images.length) % chalet.images.length
+      );
+    }
+  }, [chalet.images.length, currentImageIndex]);
+
+  // Auto-play timer
+  useEffect(() => {
+    if (!isAutoPlaying || isPaused || chalet.images.length <= 1) return;
+
+    const interval = setInterval(nextImage, 4000);
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, isPaused, nextImage, chalet.images.length]);
+
+  // Touch handlers for swipe gestures
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      setSlideDirection("right");
+      nextImage();
+    } else if (isRightSwipe) {
+      setSlideDirection("left");
+      prevImage();
+    }
+
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
+  // Pause auto-play on hover
+  const handleMouseEnter = () => setIsPaused(true);
+  const handleMouseLeave = () => setIsPaused(false);
 
   return (
     <>
       <div className="min-h-screen">
         {/* Hero Section avec image principale */}
-        <div className="relative h-[60vh] md:h-[70vh] overflow-hidden rounded-lg">
-          <div className="absolute inset-0 z-0">
-            <img
+        <div
+          className="relative h-[60vh] md:h-[70vh] overflow-hidden rounded-lg"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            {/* Image précédente (sortante) */}
+            <motion.img
+              key={`prev-${previousImageIndex}`}
+              src={chalet.images[previousImageIndex]}
+              alt={`Chalet ${chalet.name} - Previous`}
+              className="absolute inset-0 w-full h-full object-cover object-center"
+              loading="eager"
+              initial={{ x: 0 }}
+              animate={{
+                x: slideDirection === "right" ? "-100%" : "100%",
+              }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+            />
+
+            {/* Image actuelle (entrante) */}
+            <motion.img
+              key={`current-${currentImageIndex}`}
               src={chalet.images[currentImageIndex]}
               alt={`Chalet ${chalet.name}`}
-              className="w-full h-full object-cover object-center"
+              className="absolute inset-0 w-full h-full object-cover object-center"
               loading="eager"
+              initial={{
+                x: slideDirection === "right" ? "100%" : "-100%",
+              }}
+              animate={{ x: 0 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
             />
           </div>
 
@@ -121,42 +219,63 @@ export default function ChaletDetailClient({
               <>
                 <Button
                   isIconOnly
-                  size="sm"
-                  className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-md text-white hover:bg-white/30 border border-white/20 z-30"
-                  onPress={() =>
-                    setCurrentImageIndex(
-                      (prev) =>
-                        (prev - 1 + chalet.images.length) % chalet.images.length
-                    )
-                  }
+                  size="md"
+                  className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-black/30 backdrop-blur-md text-white hover:bg-black/50 border border-white/30 z-30 rounded-full transition-all duration-300 hover:scale-110"
+                  onPress={prevImage}
                 >
-                  <BsChevronLeft />
+                  <BsChevronLeft size={16} />
                 </Button>
                 <Button
                   isIconOnly
-                  size="sm"
-                  className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-md text-white hover:bg-white/30 border border-white/20 z-30"
-                  onPress={() =>
-                    setCurrentImageIndex(
-                      (prev) => (prev + 1) % chalet.images.length
-                    )
-                  }
+                  size="md"
+                  className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-black/30 backdrop-blur-md text-white hover:bg-black/50 border border-white/30 z-30 rounded-full transition-all duration-300 hover:scale-110"
+                  onPress={nextImage}
                 >
-                  <BsChevronRight />
+                  <BsChevronRight size={16} />
                 </Button>
+
+                {/* Play/Pause button */}
+                <Button
+                  isIconOnly
+                  size="sm"
+                  className="absolute top-4 right-4 md:top-6 md:right-6 bg-black/30 backdrop-blur-md text-white hover:bg-black/50 border border-white/30 z-30 rounded-full transition-all duration-300"
+                  onPress={() => setIsAutoPlaying(!isAutoPlaying)}
+                >
+                  {isAutoPlaying ? <BsPause size={14} /> : <BsPlay size={14} />}
+                </Button>
+
+                {/* Progress bar for auto-play */}
+                {isAutoPlaying && !isPaused && (
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-white/20 z-30">
+                    <motion.div
+                      key={currentImageIndex}
+                      className="h-full bg-primary"
+                      initial={{ width: "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 4, ease: "linear" }}
+                    />
+                  </div>
+                )}
 
                 <div className="absolute bottom-4 md:bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 z-30">
                   {chalet.images.map((_, index) => (
-                    <button
+                    <motion.button
                       key={index}
-                      className={`w-3 h-3 rounded-full transition-all ${
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
                         index === currentImageIndex
                           ? "bg-white scale-110"
                           : "bg-white/60 hover:bg-white/80"
                       }`}
                       onClick={() => setCurrentImageIndex(index)}
+                      whileHover={{ scale: 1.2 }}
+                      whileTap={{ scale: 0.9 }}
                     />
                   ))}
+                </div>
+
+                {/* Image counter */}
+                <div className="absolute bottom-3 md:bottom-3 right-4 md:right-4 bg-black/40 backdrop-blur-md text-white px-3 py-1 rounded-lg text-sm z-30">
+                  {currentImageIndex + 1} / {chalet.images.length}
                 </div>
               </>
             )}
@@ -222,13 +341,14 @@ export default function ChaletDetailClient({
                     </h2>
                   </CardHeader>
                   <CardBody>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div className="flex flex-wrap gap-2">
                       {chalet.highlights.map((highlight, index) => (
                         <Chip
                           key={index}
                           color="warning"
                           variant="flat"
-                          className="justify-center"
+                          size="sm"
+                          className="flex-shrink-0"
                         >
                           {highlight}
                         </Chip>
@@ -378,6 +498,75 @@ export default function ChaletDetailClient({
                   </CardBody>
                 </Card>
               </motion.div>
+
+              {/* Informations pratiques */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
+                <Card className="alpine-card">
+                  <CardHeader>
+                    <h2 className="text-2xl font-bold font-display flex items-center gap-2">
+                      <BsInfoCircle className="text-primary" />
+                      Informations Pratiques
+                    </h2>
+                  </CardHeader>
+                  <CardBody className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex items-center gap-3 p-3 bg-default-50 dark:bg-default-100 rounded-lg">
+                        <BsGeoAlt
+                          className="text-primary flex-shrink-0"
+                          size={16}
+                        />
+                        <span className="font-medium">Les Vosges, France</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 bg-success-50 dark:bg-success-100 rounded-lg">
+                        <BsCheckCircle
+                          className="text-success flex-shrink-0"
+                          size={16}
+                        />
+                        <span className="text-success-700 dark:text-success-600">
+                          Linge fourni complet
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 bg-success-50 dark:bg-success-100 rounded-lg">
+                        <BsCheckCircle
+                          className="text-success flex-shrink-0"
+                          size={16}
+                        />
+                        <span className="text-success-700 dark:text-success-600">
+                          Parking privé gratuit
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 bg-warning-50 dark:bg-warning-100 rounded-lg">
+                        <BsShield
+                          className="text-warning flex-shrink-0"
+                          size={16}
+                        />
+                        <span className="text-warning-700 dark:text-warning-600">
+                          Non-fumeur (extérieur OK)
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 bg-danger-50 dark:bg-danger-100 rounded-lg">
+                        <BsX className="text-danger flex-shrink-0" size={16} />
+                        <span className="text-danger-700 dark:text-danger-600">
+                          Animaux non admis
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 bg-primary-50 dark:bg-primary-100 rounded-lg">
+                        <BsInfoCircle
+                          className="text-primary flex-shrink-0"
+                          size={16}
+                        />
+                        <span className="text-primary-700 dark:text-primary-600">
+                          Arrivée: 16h / Départ: 11h
+                        </span>
+                      </div>
+                    </div>
+                  </CardBody>
+                </Card>
+              </motion.div>
             </div>
 
             {/* Sidebar - Réservation et contact */}
@@ -387,7 +576,7 @@ export default function ChaletDetailClient({
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="sticky top-4 md:top-20 z-40"
+                className="md:sticky md:top-20 z-40"
               >
                 <Card className="alpine-card shadow-lg">
                   <CardHeader>
@@ -567,18 +756,18 @@ export default function ChaletDetailClient({
           size="5xl"
           hideCloseButton
           classNames={{
-            base: "bg-transparent shadow-none",
+            base: "bg-transparent shadow-none md:m-auto md:max-w-5xl md:max-h-5xl m-0 max-w-full max-h-full",
             backdrop: "bg-black/90",
           }}
         >
           <ModalContent>
-            <div className="relative w-full h-full flex items-center justify-center p-4">
+            <div className="relative md:w-full md:h-full w-screen h-screen flex items-center justify-center md:p-4 p-0">
               {/* Image principale */}
-              <div className="relative max-w-full max-h-full flex items-center justify-center">
+              <div className="relative md:max-w-full md:max-h-full flex items-center justify-center">
                 <img
                   src={chalet.images[lightboxImageIndex]}
                   alt={`${chalet.name} - Photo ${lightboxImageIndex + 1}`}
-                  className="max-w-full max-h-[90vh] object-contain rounded-lg"
+                  className="md:max-w-full md:max-h-[90vh] max-w-[95vw] max-h-[95vh] object-contain rounded-lg"
                   loading="eager"
                 />
               </div>
@@ -587,10 +776,11 @@ export default function ChaletDetailClient({
               <Button
                 isIconOnly
                 variant="flat"
-                className="absolute top-4 right-4 z-50 bg-white/20 backdrop-blur-md text-white hover:bg-white/30 m-2 border border-red-500"
+                size="md"
+                className="absolute top-4 right-4 z-50 bg-black/40 backdrop-blur-md text-white hover:bg-black/60 border border-white/20 rounded-full transition-all duration-200 m-2"
                 onPress={() => setLightboxOpen(false)}
               >
-                <BsX size={24} />
+                <BsX size={20} />
               </Button>
 
               {/* Contrôles navigation */}
@@ -598,7 +788,9 @@ export default function ChaletDetailClient({
                 <>
                   <Button
                     isIconOnly
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 z-50 bg-white/20 backdrop-blur-md text-white hover:bg-white/30 m-2 border border-primary/50"
+                    variant="flat"
+                    size="md"
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 z-50 bg-black/40 backdrop-blur-md text-white hover:bg-black/60 border border-white/20 rounded-full transition-all duration-200 hover:scale-110 m-2"
                     onPress={() =>
                       setLightboxImageIndex(
                         (prev) =>
@@ -607,18 +799,20 @@ export default function ChaletDetailClient({
                       )
                     }
                   >
-                    <BsChevronLeft size={20} />
+                    <BsChevronLeft size={18} />
                   </Button>
                   <Button
                     isIconOnly
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 z-50 bg-white/20 backdrop-blur-md text-white hover:bg-white/30  m-2 border border-primary/50"
+                    variant="flat"
+                    size="md"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 z-50 bg-black/40 backdrop-blur-md text-white hover:bg-black/60 border border-white/20 rounded-full transition-all duration-200 hover:scale-110 m-2"
                     onPress={() =>
                       setLightboxImageIndex(
                         (prev) => (prev + 1) % chalet.images.length
                       )
                     }
                   >
-                    <BsChevronRight size={20} />
+                    <BsChevronRight size={18} />
                   </Button>
 
                   {/* Indicateurs */}

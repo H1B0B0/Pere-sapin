@@ -96,11 +96,11 @@ export default function RootLayout({
           <div className="container mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-4 px-6 m-6">
             <div className="flex items-center gap-2">
               <BsTree className="h-5 w-5 text-primary" />
-              <span className="font-semibold text-default-700 font-display">
+              <span className="font-semibold font-display text-white">
                 Père Sapin
               </span>
             </div>
-            <p className="text-sm text-default-500 text-center md:text-left">
+            <p className="text-smtext-center md:text-left text-white">
               © 2025 Père Sapin. Tous droits réservés.
             </p>
           </div>

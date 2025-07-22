@@ -28,9 +28,9 @@ export default function Home() {
           </span>
         </h1>
         <p className="text-xl text-default-600 mb-8 max-w-2xl">
-          Bienvenue dans l'univers magique du Père Sapin ! Découvrez nos chalets
-          enchantés et vivez une expérience inoubliable pendant les fêtes de fin
-          d'année.
+          Bienvenue chez Père Sapin ! Découvrez nos chalets authentiques et
+          profitez d’un séjour inoubliable dans un cadre naturel exceptionnel,
+          au cœur des montagnes Vosgiennes, toute l’année.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
