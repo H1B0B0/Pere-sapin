@@ -1,7 +1,9 @@
 "use client";
 
-import { fontSans, fontMono, fontDisplay } from "@/config/fonts";
 import { Providers } from "./providers";
+
+import { fontSans, fontMono, fontDisplay } from "@/config/fonts";
+
 import "../styles/globals.css";
 import clsx from "clsx";
 
@@ -11,14 +13,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html suppressHydrationWarning lang="fr">
       <head />
       <body
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
           fontSans.variable,
           fontMono.variable,
-          fontDisplay.variable
+          fontDisplay.variable,
         )}
       >
         <Providers>{children}</Providers>

@@ -1,6 +1,5 @@
 "use client";
 
-import { siteConfig } from "@/config/site";
 import {
   Navbar,
   NavbarBrand,
@@ -11,9 +10,11 @@ import {
   NavbarMenuItem,
   Link,
 } from "@heroui/react";
+import { BsTree } from "react-icons/bs";
+
+import { siteConfig } from "@/config/site";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import Background from "@/components/Background";
-import { BsTree } from "react-icons/bs";
 
 export default function PublicLayout({
   children,
@@ -27,13 +28,13 @@ export default function PublicLayout({
         <div className="absolute inset-0 -z-10 w-full h-full">
           <Background />
         </div>
-        <Navbar maxWidth="xl" position="sticky" className="alpine-nav">
+        <Navbar className="alpine-nav" maxWidth="xl" position="sticky">
           <NavbarContent>
             <NavbarMenuToggle className="sm:hidden" />
             <NavbarBrand>
               <Link
-                href="/"
                 className="font-bold text-inherit flex items-center gap-2 font-display text-xl"
+                href="/"
               >
                 <BsTree className="h-6 w-6 text-primary" />
                 Père Sapin
@@ -44,9 +45,9 @@ export default function PublicLayout({
             {siteConfig.navItems.map((item) => (
               <NavbarItem key={item.href}>
                 <Link
+                  className="text-sm font-medium"
                   color="foreground"
                   href={item.href}
-                  className="text-sm font-medium"
                 >
                   {item.label}
                 </Link>
@@ -62,8 +63,8 @@ export default function PublicLayout({
             {siteConfig.navMenuItems.map((item, index) => (
               <NavbarMenuItem key={`${item}-${index}`}>
                 <Link
-                  color="foreground"
                   className="w-full"
+                  color="foreground"
                   href={item.href}
                   size="lg"
                 >

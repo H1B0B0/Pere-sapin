@@ -13,7 +13,7 @@ export default function LoginLayout({
       <div className="absolute inset-0 -z-10 w-full h-full">
         <Background />
       </div>
-      
+
       {/* Content */}
       <div className="flex items-center justify-center min-h-screen">
         {children}

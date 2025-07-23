@@ -47,9 +47,12 @@ export const dashboardService = {
 
       // Add recent chalets
       chalets
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        )
         .slice(0, 2)
-        .forEach(chalet => {
+        .forEach((chalet) => {
           activities.push({
             id: chalet._id,
             type: "chalet_created",
@@ -60,20 +63,25 @@ export const dashboardService = {
 
       // Add recent pages
       pages
-        .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+        .sort(
+          (a, b) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+        )
         .slice(0, 3)
-        .forEach(page => {
-          const chaletName = page.chalet 
-            ? (typeof page.chalet === 'string' 
-                ? chalets.find(c => c._id === page.chalet)?.name 
-                : page.chalet?.name)
+        .forEach((page) => {
+          const chaletName = page.chalet
+            ? typeof page.chalet === "string"
+              ? chalets.find((c) => c._id === page.chalet)?.name
+              : page.chalet?.name
             : undefined;
 
           activities.push({
             id: page._id,
-            type: new Date(page.createdAt).getTime() === new Date(page.updatedAt).getTime() 
-              ? "page_created" 
-              : "page_updated",
+            type:
+              new Date(page.createdAt).getTime() ===
+              new Date(page.updatedAt).getTime()
+                ? "page_created"
+                : "page_updated",
             title: page.title,
             timestamp: this.formatRelativeTime(page.updatedAt),
             chaletName,
@@ -81,7 +89,11 @@ export const dashboardService = {
         });
 
       return activities
-        .sort((a, b) => this.parseRelativeTime(a.timestamp) - this.parseRelativeTime(b.timestamp))
+        .sort(
+          (a, b) =>
+            this.parseRelativeTime(a.timestamp) -
+            this.parseRelativeTime(b.timestamp),
+        )
         .slice(0, 5);
     } catch (error) {
       console.error("Error fetching recent activity:", error);
@@ -92,17 +104,20 @@ export const dashboardService = {
   formatRelativeTime(dateString: string): string {
     const date = new Date(dateString);
     const now = new Date();
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-    
+    const diffInHours = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60),
+    );
+
     if (diffInHours < 1) {
       return "Il y a quelques minutes";
     } else if (diffInHours < 24) {
-      return `Il y a ${diffInHours} heure${diffInHours > 1 ? 's' : ''}`;
+      return `Il y a ${diffInHours} heure${diffInHours > 1 ? "s" : ""}`;
     } else if (diffInHours < 48) {
       return "Hier";
     } else {
       const diffInDays = Math.floor(diffInHours / 24);
-      return `Il y a ${diffInDays} jour${diffInDays > 1 ? 's' : ''}`;
+
+      return `Il y a ${diffInDays} jour${diffInDays > 1 ? "s" : ""}`;
     }
   },
 
@@ -110,13 +125,16 @@ export const dashboardService = {
     if (timeString.includes("quelques minutes")) return 0;
     if (timeString.includes("heure")) {
       const hours = parseInt(timeString.match(/\d+/)?.[0] || "1");
+
       return hours;
     }
     if (timeString === "Hier") return 24;
     if (timeString.includes("jour")) {
       const days = parseInt(timeString.match(/\d+/)?.[0] || "1");
+
       return days * 24;
     }
+
     return 999;
   },
 };

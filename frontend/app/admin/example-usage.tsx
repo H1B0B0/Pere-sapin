@@ -1,13 +1,15 @@
 "use client";
 
 // Exemple d'utilisation du système de store global pour les actions CRUD
+import { Button } from "@heroui/react";
+
 import { useAdminActions } from "@/lib/hooks/useAdminActions";
 import { useAdminStore } from "@/lib/stores/admin-store";
-import { Button } from "@heroui/react";
 
 export function ExampleCRUDUsage() {
   const { chalets, loading } = useAdminStore();
-  const { createChalet, updateChalet, deleteChalet, createPage } = useAdminActions();
+  const { createChalet, updateChalet, deleteChalet, createPage } =
+    useAdminActions();
 
   const handleCreateChalet = async () => {
     try {
@@ -15,9 +17,9 @@ export function ExampleCRUDUsage() {
       const newChalet = await createChalet({
         name: "Nouveau Chalet",
         description: "Description du chalet",
-        location: "Localisation"
+        location: "Localisation",
       });
-      
+
       console.log("Chalet créé:", newChalet);
       // La sidebar et toutes les autres composants utilisant le store
       // seront automatiquement mis à jour !
@@ -31,9 +33,9 @@ export function ExampleCRUDUsage() {
       // Mettre à jour un chalet existant
       const updatedChalet = await updateChalet(chaletId, {
         name: "Nom modifié",
-        description: "Description modifiée"
+        description: "Description modifiée",
       });
-      
+
       console.log("Chalet mis à jour:", updatedChalet);
       // Mise à jour automatique partout !
     } catch (error) {
@@ -59,9 +61,9 @@ export function ExampleCRUDUsage() {
         title: "Nouvelle Page",
         slug: "nouvelle-page",
         content: "<p>Contenu de la page</p>",
-        chalet: chaletId
+        chalet: chaletId,
       });
-      
+
       console.log("Page créée:", newPage);
       // La sidebar affichera automatiquement la nouvelle page !
     } catch (error) {
@@ -76,8 +78,8 @@ export function ExampleCRUDUsage() {
   return (
     <div className="space-y-4">
       <h2>Exemple d&apos;utilisation CRUD avec store global</h2>
-      
-      <Button onClick={handleCreateChalet} color="primary">
+
+      <Button color="primary" onClick={handleCreateChalet}>
         Créer un chalet
       </Button>
 
@@ -86,23 +88,23 @@ export function ExampleCRUDUsage() {
           <h3>{chalet.name}</h3>
           <div className="space-x-2 mt-2">
             <Button
+              color="warning"
               size="sm"
               onClick={() => handleUpdateChalet(chalet._id)}
-              color="warning"
             >
               Modifier
             </Button>
             <Button
+              color="danger"
               size="sm"
               onClick={() => handleDeleteChalet(chalet._id)}
-              color="danger"
             >
               Supprimer
             </Button>
             <Button
+              color="success"
               size="sm"
               onClick={() => handleCreatePage(chalet._id)}
-              color="success"
             >
               Ajouter une page
             </Button>

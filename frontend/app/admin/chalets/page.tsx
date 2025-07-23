@@ -35,6 +35,7 @@ import {
   BsQrCode,
 } from "react-icons/bs";
 import Link from "next/link";
+
 import { chaletService } from "@/lib/services/chalets";
 import { pageService } from "@/lib/services/pages";
 import { Chalet } from "@/types";
@@ -46,7 +47,9 @@ interface ChaletWithPages extends Chalet {
 export default function ChaletsManagement() {
   const [chalets, setChalets] = useState<ChaletWithPages[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedChalet, setSelectedChalet] = useState<ChaletWithPages | null>(null);
+  const [selectedChalet, setSelectedChalet] = useState<ChaletWithPages | null>(
+    null,
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -59,15 +62,18 @@ export default function ChaletsManagement() {
         ]);
 
         // Add page count to each chalet
-        const chaletsWithPages: ChaletWithPages[] = chaletsData.map(chalet => ({
-          ...chalet,
-          pagesCount: allPages.filter(page => {
-            if (!page.chalet) return false;
-            return typeof page.chalet === 'string' 
-              ? page.chalet === chalet._id 
-              : page.chalet._id === chalet._id;
-          }).length,
-        }));
+        const chaletsWithPages: ChaletWithPages[] = chaletsData.map(
+          (chalet) => ({
+            ...chalet,
+            pagesCount: allPages.filter((page) => {
+              if (!page.chalet) return false;
+
+              return typeof page.chalet === "string"
+                ? page.chalet === chalet._id
+                : page.chalet._id === chalet._id;
+            }).length,
+          }),
+        );
 
         setChalets(chaletsWithPages);
       } catch (error) {
@@ -84,7 +90,7 @@ export default function ChaletsManagement() {
   const handleDeleteChalet = async (chalet: ChaletWithPages) => {
     try {
       await chaletService.delete(chalet._id);
-      setChalets(prev => prev.filter(c => c._id !== chalet._id));
+      setChalets((prev) => prev.filter((c) => c._id !== chalet._id));
       onClose();
     } catch (error) {
       console.error("Erreur lors de la suppression:", error);
@@ -103,7 +109,7 @@ export default function ChaletsManagement() {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
           <p className="text-muted-foreground">Chargement des chalets...</p>
         </div>
       </div>
@@ -114,10 +120,10 @@ export default function ChaletsManagement() {
     <div className="space-y-6">
       {/* En-tête */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
         className="flex items-center justify-between"
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5 }}
       >
         <div>
           <h1 className="text-3xl font-bold font-display gradient-festive bg-clip-text text-transparent">
@@ -129,8 +135,8 @@ export default function ChaletsManagement() {
         </div>
         <Link href="/admin/chalets/new">
           <Button
-            color="primary"
             className="btn-alpine text-primary-foreground"
+            color="primary"
             startContent={<BsPlus className="h-4 w-4" />}
           >
             Nouveau Chalet
@@ -140,8 +146,8 @@ export default function ChaletsManagement() {
 
       {/* Table des chalets */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
         <Card className="alpine-card">
@@ -169,8 +175,12 @@ export default function ChaletsManagement() {
                           <BsTree className="h-4 w-4 text-primary" />
                         </div>
                         <div>
-                          <p className="font-medium text-foreground">{chalet.name}</p>
-                          <p className="text-sm text-muted-foreground">/{chalet._id}</p>
+                          <p className="font-medium text-foreground">
+                            {chalet.name}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            /{chalet._id}
+                          </p>
                         </div>
                       </div>
                     </TableCell>
@@ -182,10 +192,11 @@ export default function ChaletsManagement() {
                     <TableCell>
                       <Chip
                         color={chalet.pagesCount > 0 ? "success" : "warning"}
-                        variant="flat"
                         size="sm"
+                        variant="flat"
                       >
-                        {chalet.pagesCount} page{chalet.pagesCount !== 1 ? "s" : ""}
+                        {chalet.pagesCount} page
+                        {chalet.pagesCount !== 1 ? "s" : ""}
                       </Chip>
                     </TableCell>
                     <TableCell>
@@ -202,41 +213,43 @@ export default function ChaletsManagement() {
                       <Dropdown>
                         <DropdownTrigger>
                           <Button
-                            variant="light"
                             isIconOnly
                             size="sm"
-                            startContent={<BsThreeDotsVertical className="h-4 w-4" />}
+                            startContent={
+                              <BsThreeDotsVertical className="h-4 w-4" />
+                            }
+                            variant="light"
                           />
                         </DropdownTrigger>
                         <DropdownMenu>
                           <DropdownItem
                             key="view"
-                            startContent={<BsEye className="h-4 w-4" />}
                             as={Link}
                             href={`/admin/chalets/${chalet._id}`}
+                            startContent={<BsEye className="h-4 w-4" />}
                           >
                             Voir détails
                           </DropdownItem>
                           <DropdownItem
                             key="edit"
-                            startContent={<BsPencil className="h-4 w-4" />}
                             as={Link}
                             href={`/admin/chalets/${chalet._id}/edit`}
+                            startContent={<BsPencil className="h-4 w-4" />}
                           >
                             Modifier
                           </DropdownItem>
                           <DropdownItem
                             key="qr"
-                            startContent={<BsQrCode className="h-4 w-4" />}
                             as={Link}
                             href={`/admin/chalets/${chalet._id}/qr-codes`}
+                            startContent={<BsQrCode className="h-4 w-4" />}
                           >
                             QR Codes
                           </DropdownItem>
                           <DropdownItem
                             key="delete"
-                            startContent={<BsTrash className="h-4 w-4" />}
                             color="danger"
+                            startContent={<BsTrash className="h-4 w-4" />}
                             onClick={() => {
                               setSelectedChalet(chalet);
                               onOpen();
@@ -269,8 +282,8 @@ export default function ChaletsManagement() {
               <strong>{selectedChalet?.name}</strong> ?
             </p>
             <p className="text-sm text-muted-foreground">
-              Cette action supprimera également toutes les pages associées et ne peut pas
-              être annulée.
+              Cette action supprimera également toutes les pages associées et ne
+              peut pas être annulée.
             </p>
           </ModalBody>
           <ModalFooter>
@@ -279,7 +292,9 @@ export default function ChaletsManagement() {
             </Button>
             <Button
               color="danger"
-              onPress={() => selectedChalet && handleDeleteChalet(selectedChalet)}
+              onPress={() =>
+                selectedChalet && handleDeleteChalet(selectedChalet)
+              }
             >
               Supprimer
             </Button>

@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { BsTree } from "react-icons/bs";
 import { motion } from "framer-motion";
+
 import Background from "@/components/Background";
 
 export default function NotFound() {
@@ -11,10 +12,10 @@ export default function NotFound() {
         <Background />
       </div>
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
         className="mb-8"
+        initial={{ opacity: 0, y: 30 }}
+        transition={{ duration: 0.5 }}
       >
         <div className="flex items-center justify-center mb-4">
           <BsTree className="h-16 w-16 text-primary drop-shadow-lg" />
@@ -31,8 +32,8 @@ export default function NotFound() {
           Retournez à l'accueil pour retrouver la magie de Père Sapin !
         </p>
         <Link
-          href="/"
           className="inline-block btn-alpine text-primary-foreground px-6 py-3 rounded-lg font-semibold text-lg shadow-lg hover:scale-105 transition-transform"
+          href="/"
         >
           Retour à l'accueil
         </Link>

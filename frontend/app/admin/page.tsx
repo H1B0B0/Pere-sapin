@@ -10,9 +10,9 @@ import {
   BsEye,
   BsPlus,
   BsDownload,
-  BsPencil,
 } from "react-icons/bs";
 import Link from "next/link";
+
 import {
   dashboardService,
   DashboardStats,
@@ -87,7 +87,7 @@ export default function AdminDashboard() {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
           <p className="text-muted-foreground">Chargement du dashboard...</p>
         </div>
       </div>
@@ -98,8 +98,8 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       {/* En-tête */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5 }}
       >
         <div className="flex items-center justify-between">
@@ -114,8 +114,8 @@ export default function AdminDashboard() {
           <div className="flex gap-3">
             <Link href="/admin/chalets/new">
               <Button
-                color="primary"
                 className="btn-alpine text-primary-foreground"
+                color="primary"
                 startContent={<BsPlus className="h-4 w-4" />}
               >
                 Nouveau Chalet
@@ -127,10 +127,10 @@ export default function AdminDashboard() {
 
       {/* Statistiques */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
       >
         <Card className="alpine-card">
           <CardBody className="flex flex-row items-center gap-4 p-6">
@@ -192,8 +192,8 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Activité récente */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <Card className="alpine-card">
@@ -211,9 +211,9 @@ export default function AdminDashboard() {
                   >
                     <Chip
                       color={getActivityColor(activity.type) as any}
-                      variant="flat"
-                      startContent={getActivityIcon(activity.type)}
                       size="sm"
+                      startContent={getActivityIcon(activity.type)}
+                      variant="flat"
                     />
                     <div className="flex-1">
                       <p className="font-medium text-foreground">
@@ -237,8 +237,8 @@ export default function AdminDashboard() {
 
         {/* Actions rapides */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <Card className="alpine-card">
@@ -251,10 +251,10 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-2 gap-4">
                 <Link href="/admin/chalets">
                   <Button
-                    variant="flat"
-                    color="primary"
                     className="h-20 w-full flex-col gap-2"
+                    color="primary"
                     startContent={<BsTree className="h-6 w-6" />}
+                    variant="flat"
                   >
                     Gérer les chalets
                   </Button>
@@ -262,10 +262,10 @@ export default function AdminDashboard() {
 
                 <Link href="/admin/pages">
                   <Button
-                    variant="flat"
-                    color="success"
                     className="h-20 w-full flex-col gap-2"
+                    color="success"
                     startContent={<BsFileText className="h-6 w-6" />}
+                    variant="flat"
                   >
                     Toutes les pages
                   </Button>
@@ -273,20 +273,20 @@ export default function AdminDashboard() {
 
                 <Link href="/admin/qr-codes">
                   <Button
-                    variant="flat"
-                    color="warning"
                     className="h-20 w-full flex-col gap-2"
+                    color="warning"
                     startContent={<BsQrCode className="h-6 w-6" />}
+                    variant="flat"
                   >
                     QR Codes
                   </Button>
                 </Link>
 
                 <Button
-                  variant="flat"
-                  color="secondary"
                   className="h-20 w-full flex-col gap-2"
+                  color="secondary"
                   startContent={<BsDownload className="h-6 w-6" />}
+                  variant="flat"
                 >
                   Export PDF
                 </Button>

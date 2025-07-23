@@ -2,10 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardBody, CardHeader, Button, Input, Textarea } from "@heroui/react";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Button,
+  Input,
+  Textarea,
+} from "@heroui/react";
 import { motion } from "framer-motion";
 import { BsArrowLeft, BsTree, BsCheck } from "react-icons/bs";
 import Link from "next/link";
+
 import { chaletService } from "@/lib/services/chalets";
 import { CreateChaletDto } from "@/types";
 
@@ -20,9 +28,10 @@ export default function NewChaletPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name.trim()) {
       setError("Le nom du chalet est requis");
+
       return;
     }
 
@@ -31,6 +40,7 @@ export default function NewChaletPage() {
 
     try {
       const newChalet = await chaletService.create(formData);
+
       router.push(`/admin/chalets/${newChalet._id}`);
     } catch (err) {
       console.error("Erreur lors de la création:", err);
@@ -41,7 +51,7 @@ export default function NewChaletPage() {
   };
 
   const handleChange = (field: keyof CreateChaletDto, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (error) setError(null);
   };
 
@@ -49,15 +59,15 @@ export default function NewChaletPage() {
     <div className="space-y-6">
       {/* En-tête avec navigation */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5 }}
       >
         <div className="flex items-center gap-4 mb-6">
           <Link href="/admin/chalets">
             <Button
-              variant="light"
               startContent={<BsArrowLeft className="h-4 w-4" />}
+              variant="light"
             >
               Retour aux chalets
             </Button>
@@ -81,8 +91,8 @@ export default function NewChaletPage() {
 
       {/* Formulaire */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
         <Card className="alpine-card">
@@ -92,32 +102,34 @@ export default function NewChaletPage() {
             </h2>
           </CardHeader>
           <CardBody>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 gap-6">
                 <Input
+                  isRequired
+                  classNames={{
+                    input: "bg-transparent",
+                    inputWrapper:
+                      "border-border/50 hover:border-border focus-within:!border-primary",
+                  }}
                   label="Nom du chalet"
                   placeholder="ex: Chalet des Sapins"
                   value={formData.name}
-                  onChange={(e) => handleChange("name", e.target.value)}
-                  isRequired
                   variant="bordered"
-                  classNames={{
-                    input: "bg-transparent",
-                    inputWrapper: "border-border/50 hover:border-border focus-within:!border-primary",
-                  }}
+                  onChange={(e) => handleChange("name", e.target.value)}
                 />
 
                 <Textarea
-                  label="Description"
-                  placeholder="Décrivez votre chalet, ses équipements, sa situation..."
-                  value={formData.description || ""}
-                  onChange={(e) => handleChange("description", e.target.value)}
-                  variant="bordered"
-                  rows={4}
                   classNames={{
                     input: "bg-transparent",
-                    inputWrapper: "border-border/50 hover:border-border focus-within:!border-primary",
+                    inputWrapper:
+                      "border-border/50 hover:border-border focus-within:!border-primary",
                   }}
+                  label="Description"
+                  placeholder="Décrivez votre chalet, ses équipements, sa situation..."
+                  rows={4}
+                  value={formData.description || ""}
+                  variant="bordered"
+                  onChange={(e) => handleChange("description", e.target.value)}
                 />
               </div>
 
@@ -128,22 +140,22 @@ export default function NewChaletPage() {
               )}
 
               <div className="flex gap-4 pt-4">
-                <Link href="/admin/chalets" className="flex-1">
+                <Link className="flex-1" href="/admin/chalets">
                   <Button
-                    variant="flat"
-                    color="default"
                     className="w-full"
+                    color="default"
                     disabled={loading}
+                    variant="flat"
                   >
                     Annuler
                   </Button>
                 </Link>
                 <Button
-                  type="submit"
-                  color="primary"
                   className="flex-1 btn-alpine text-primary-foreground"
+                  color="primary"
                   isLoading={loading}
                   startContent={!loading && <BsCheck className="h-4 w-4" />}
+                  type="submit"
                 >
                   {loading ? "Création..." : "Créer le chalet"}
                 </Button>

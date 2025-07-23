@@ -32,6 +32,7 @@ import {
   BsArrowLeft,
 } from "react-icons/bs";
 import Link from "next/link";
+
 import { chaletService } from "@/lib/services/chalets";
 import { pageService } from "@/lib/services/pages";
 import { Chalet, Page } from "@/types";
@@ -48,7 +49,7 @@ export default function ChaletDetail() {
       try {
         setLoading(true);
         const chaletId = params.chaletId as string;
-        
+
         const [chaletData, pagesData] = await Promise.all([
           chaletService.getById(chaletId),
           pageService.getByChaletId(chaletId),
@@ -57,7 +58,10 @@ export default function ChaletDetail() {
         setChalet(chaletData);
         setPages(pagesData);
       } catch (error) {
-        console.error("Erreur lors du chargement des données du chalet:", error);
+        console.error(
+          "Erreur lors du chargement des données du chalet:",
+          error,
+        );
         setChalet(null);
         setPages([]);
       } finally {
@@ -87,6 +91,7 @@ export default function ChaletDetail() {
       Technologie: "secondary",
       Divertissement: "default",
     };
+
     return colors[tag as keyof typeof colors] || "default";
   };
 
@@ -94,7 +99,7 @@ export default function ChaletDetail() {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
           <p className="text-muted-foreground">Chargement du chalet...</p>
         </div>
       </div>
@@ -104,7 +109,9 @@ export default function ChaletDetail() {
   if (!chalet) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-2xl font-bold text-foreground mb-4">Chalet introuvable</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-4">
+          Chalet introuvable
+        </h2>
         <p className="text-muted-foreground mb-6">
           Le chalet demandé n&apos;existe pas ou a été supprimé.
         </p>
@@ -119,15 +126,15 @@ export default function ChaletDetail() {
     <div className="space-y-6">
       {/* En-tête avec navigation */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5 }}
       >
         <div className="flex items-center gap-4 mb-6">
           <Link href="/admin/chalets">
             <Button
-              variant="light"
               startContent={<BsArrowLeft className="h-4 w-4" />}
+              variant="light"
             >
               Retour
             </Button>
@@ -152,16 +159,16 @@ export default function ChaletDetail() {
           <div className="flex gap-3">
             <Link href={`/admin/chalets/${chalet._id}/edit`}>
               <Button
-                variant="flat"
                 color="primary"
                 startContent={<BsPencil className="h-4 w-4" />}
+                variant="flat"
               >
                 Modifier
               </Button>
             </Link>
             <Button
-              color="success"
               className="btn-success text-primary-foreground"
+              color="success"
               startContent={<BsDownload className="h-4 w-4" />}
               onClick={() => chaletService.downloadQRCodesPDF(chalet._id)}
             >
@@ -173,10 +180,10 @@ export default function ChaletDetail() {
 
       {/* Statistiques rapides */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
         className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
       >
         <Card className="alpine-card">
           <CardBody className="flex flex-row items-center gap-4 p-6">
@@ -184,7 +191,9 @@ export default function ChaletDetail() {
               <BsEye className="h-6 w-6 text-success" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">{pages.length}</p>
+              <p className="text-2xl font-bold text-foreground">
+                {pages.length}
+              </p>
               <p className="text-sm text-muted-foreground">Pages créées</p>
             </div>
           </CardBody>
@@ -196,7 +205,9 @@ export default function ChaletDetail() {
               <BsQrCode className="h-6 w-6 text-warning" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">{pages.length}</p>
+              <p className="text-2xl font-bold text-foreground">
+                {pages.length}
+              </p>
               <p className="text-sm text-muted-foreground">QR Codes</p>
             </div>
           </CardBody>
@@ -219,8 +230,8 @@ export default function ChaletDetail() {
 
       {/* Pages du chalet */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         <Card className="alpine-card">
@@ -231,8 +242,8 @@ export default function ChaletDetail() {
               </h2>
               <Link href={`/admin/chalets/${chalet._id}/pages/new`}>
                 <Button
-                  color="primary"
                   className="btn-alpine text-primary-foreground"
+                  color="primary"
                   startContent={<BsPlus className="h-4 w-4" />}
                 >
                   Nouvelle Page
@@ -256,8 +267,12 @@ export default function ChaletDetail() {
                     <TableRow key={page._id}>
                       <TableCell>
                         <div>
-                          <p className="font-medium text-foreground">{page.title}</p>
-                          <p className="text-sm text-muted-foreground">/{page.slug}</p>
+                          <p className="font-medium text-foreground">
+                            {page.title}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            /{page.slug}
+                          </p>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -271,8 +286,8 @@ export default function ChaletDetail() {
                             <Chip
                               key={tag}
                               color={getTagColor(tag) as any}
-                              variant="flat"
                               size="sm"
+                              variant="flat"
                             >
                               {tag}
                             </Chip>
@@ -280,7 +295,7 @@ export default function ChaletDetail() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Chip color="secondary" variant="flat" size="sm">
+                        <Chip color="secondary" size="sm" variant="flat">
                           {page.views || 0}
                         </Chip>
                       </TableCell>
@@ -293,27 +308,29 @@ export default function ChaletDetail() {
                         <Dropdown>
                           <DropdownTrigger>
                             <Button
-                              variant="light"
                               isIconOnly
                               size="sm"
-                              startContent={<BsThreeDotsVertical className="h-4 w-4" />}
+                              startContent={
+                                <BsThreeDotsVertical className="h-4 w-4" />
+                              }
+                              variant="light"
                             />
                           </DropdownTrigger>
                           <DropdownMenu>
                             <DropdownItem
                               key="view"
-                              startContent={<BsEye className="h-4 w-4" />}
                               as={Link}
                               href={`/chalets/${chalet._id}/${page.slug}`}
+                              startContent={<BsEye className="h-4 w-4" />}
                               target="_blank"
                             >
                               Aperçu
                             </DropdownItem>
                             <DropdownItem
                               key="edit"
-                              startContent={<BsPencil className="h-4 w-4" />}
                               as={Link}
                               href={`/admin/chalets/${chalet._id}/pages/${page.slug}/edit`}
+                              startContent={<BsPencil className="h-4 w-4" />}
                             >
                               Modifier
                             </DropdownItem>
@@ -325,8 +342,8 @@ export default function ChaletDetail() {
                             </DropdownItem>
                             <DropdownItem
                               key="delete"
-                              startContent={<BsTrash className="h-4 w-4" />}
                               color="danger"
+                              startContent={<BsTrash className="h-4 w-4" />}
                             >
                               Supprimer
                             </DropdownItem>
@@ -344,12 +361,13 @@ export default function ChaletDetail() {
                   Aucune page créée
                 </h3>
                 <p className="text-muted-foreground mb-6">
-                  Commencez par créer votre première page explicative pour ce chalet.
+                  Commencez par créer votre première page explicative pour ce
+                  chalet.
                 </p>
                 <Link href={`/admin/chalets/${chalet._id}/pages/new`}>
                   <Button
-                    color="primary"
                     className="btn-alpine text-primary-foreground"
+                    color="primary"
                     startContent={<BsPlus className="h-4 w-4" />}
                   >
                     Créer une page

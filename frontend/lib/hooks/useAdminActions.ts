@@ -11,7 +11,9 @@ export const useAdminActions = () => {
     createChalet: async (chaletData: Omit<Chalet, "_id">) => {
       try {
         const newChalet = await chaletService.create(chaletData);
+
         store.addChalet(newChalet);
+
         return newChalet;
       } catch (error) {
         console.error("Erreur lors de la création du chalet:", error);
@@ -22,7 +24,9 @@ export const useAdminActions = () => {
     updateChalet: async (id: string, chaletData: Partial<Chalet>) => {
       try {
         const updatedChalet = await chaletService.update(id, chaletData);
+
         store.updateChalet(id, updatedChalet);
+
         return updatedChalet;
       } catch (error) {
         console.error("Erreur lors de la mise à jour du chalet:", error);
@@ -44,7 +48,9 @@ export const useAdminActions = () => {
     createPage: async (pageData: Omit<Page, "_id">) => {
       try {
         const newPage = await pageService.create(pageData);
+
         store.addPage(newPage);
+
         return newPage;
       } catch (error) {
         console.error("Erreur lors de la création de la page:", error);
@@ -55,7 +61,9 @@ export const useAdminActions = () => {
     updatePage: async (id: string, pageData: Partial<Page>) => {
       try {
         const updatedPage = await pageService.update(id, pageData);
+
         store.updatePage(id, updatedPage);
+
         return updatedPage;
       } catch (error) {
         console.error("Erreur lors de la mise à jour de la page:", error);

@@ -7,7 +7,6 @@ import {
   CardBody,
   CardHeader,
   Chip,
-  Image,
   Divider,
   Badge,
   Modal,
@@ -75,6 +74,7 @@ const getIconComponent = (iconName: string) => {
     leaf: GiOakLeaf,
     sparkles: GiSparkles,
   };
+
   return icons[iconName as keyof typeof icons] || GiPineTree;
 };
 
@@ -89,7 +89,7 @@ export default function ChaletDetailClient({
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [slideDirection, setSlideDirection] = useState<"left" | "right">(
-    "right"
+    "right",
   );
   const [previousImageIndex, setPreviousImageIndex] = useState(0);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -110,7 +110,7 @@ export default function ChaletDetailClient({
       setSlideDirection("left");
       setPreviousImageIndex(currentImageIndex);
       setCurrentImageIndex(
-        (prev) => (prev - 1 + chalet.images.length) % chalet.images.length
+        (prev) => (prev - 1 + chalet.images.length) % chalet.images.length,
       );
     }
   }, [chalet.images.length, currentImageIndex]);
@@ -120,6 +120,7 @@ export default function ChaletDetailClient({
     if (!isAutoPlaying || isPaused || chalet.images.length <= 1) return;
 
     const interval = setInterval(nextImage, 4000);
+
     return () => clearInterval(interval);
   }, [isAutoPlaying, isPaused, nextImage, chalet.images.length]);
 
@@ -164,36 +165,36 @@ export default function ChaletDetailClient({
           className="relative h-[60vh] md:h-[70vh] overflow-hidden rounded-lg"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
+          onTouchMove={onTouchMove}
+          onTouchStart={onTouchStart}
         >
           <div className="absolute inset-0 z-0 overflow-hidden">
             {/* Image précédente (sortante) */}
             <motion.img
               key={`prev-${previousImageIndex}`}
-              src={chalet.images[previousImageIndex]}
               alt={`Chalet ${chalet.name} - Previous`}
-              className="absolute inset-0 w-full h-full object-cover object-center"
-              loading="eager"
-              initial={{ x: 0 }}
               animate={{
                 x: slideDirection === "right" ? "-100%" : "100%",
               }}
+              className="absolute inset-0 w-full h-full object-cover object-center"
+              initial={{ x: 0 }}
+              loading="eager"
+              src={chalet.images[previousImageIndex]}
               transition={{ duration: 0.6, ease: "easeInOut" }}
             />
 
             {/* Image actuelle (entrante) */}
             <motion.img
               key={`current-${currentImageIndex}`}
-              src={chalet.images[currentImageIndex]}
               alt={`Chalet ${chalet.name}`}
+              animate={{ x: 0 }}
               className="absolute inset-0 w-full h-full object-cover object-center"
-              loading="eager"
               initial={{
                 x: slideDirection === "right" ? "100%" : "-100%",
               }}
-              animate={{ x: 0 }}
+              loading="eager"
+              src={chalet.images[currentImageIndex]}
               transition={{ duration: 0.6, ease: "easeInOut" }}
             />
           </div>
@@ -203,11 +204,11 @@ export default function ChaletDetailClient({
             <div className="absolute top-4 left-4 md:top-6 md:left-6 z-30">
               <Button
                 as={Link}
-                href="/chalets"
-                variant="flat"
-                size="sm"
                 className="bg-white/20 backdrop-blur-md text-white hover:bg-white/30 border border-white/20"
+                href="/chalets"
+                size="sm"
                 startContent={<BsArrowLeft />}
+                variant="flat"
               >
                 <span className="hidden sm:inline">Retour aux chalets</span>
                 <span className="sm:hidden">Retour</span>
@@ -219,16 +220,16 @@ export default function ChaletDetailClient({
               <>
                 <Button
                   isIconOnly
-                  size="md"
                   className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-black/30 backdrop-blur-md text-white hover:bg-black/50 border border-white/30 z-30 rounded-full transition-all duration-300 hover:scale-110"
+                  size="md"
                   onPress={prevImage}
                 >
                   <BsChevronLeft size={16} />
                 </Button>
                 <Button
                   isIconOnly
-                  size="md"
                   className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-black/30 backdrop-blur-md text-white hover:bg-black/50 border border-white/30 z-30 rounded-full transition-all duration-300 hover:scale-110"
+                  size="md"
                   onPress={nextImage}
                 >
                   <BsChevronRight size={16} />
@@ -237,8 +238,8 @@ export default function ChaletDetailClient({
                 {/* Play/Pause button */}
                 <Button
                   isIconOnly
-                  size="sm"
                   className="absolute top-4 right-4 md:top-6 md:right-6 bg-black/30 backdrop-blur-md text-white hover:bg-black/50 border border-white/30 z-30 rounded-full transition-all duration-300"
+                  size="sm"
                   onPress={() => setIsAutoPlaying(!isAutoPlaying)}
                 >
                   {isAutoPlaying ? <BsPause size={14} /> : <BsPlay size={14} />}
@@ -249,9 +250,9 @@ export default function ChaletDetailClient({
                   <div className="absolute top-0 left-0 right-0 h-1 bg-white/20 z-30">
                     <motion.div
                       key={currentImageIndex}
+                      animate={{ width: "100%" }}
                       className="h-full bg-primary"
                       initial={{ width: "0%" }}
-                      animate={{ width: "100%" }}
                       transition={{ duration: 4, ease: "linear" }}
                     />
                   </div>
@@ -266,9 +267,9 @@ export default function ChaletDetailClient({
                           ? "bg-white scale-110"
                           : "bg-white/60 hover:bg-white/80"
                       }`}
-                      onClick={() => setCurrentImageIndex(index)}
                       whileHover={{ scale: 1.2 }}
                       whileTap={{ scale: 0.9 }}
+                      onClick={() => setCurrentImageIndex(index)}
                     />
                   ))}
                 </div>
@@ -284,8 +285,8 @@ export default function ChaletDetailClient({
           {/* Titre et infos principales */}
           <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 z-20">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 30 }}
               transition={{ duration: 0.6 }}
             >
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4">
@@ -295,8 +296,8 @@ export default function ChaletDetailClient({
                     <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white font-display leading-tight">
                       Chalet {chalet.name}
                     </h1>
-                    <Badge content="3★" color="warning" placement="top-right">
-                      <Chip color="primary" variant="solid" size="md">
+                    <Badge color="warning" content="3★" placement="top-right">
+                      <Chip color="primary" size="md" variant="solid">
                         {chalet.capacity}
                       </Chip>
                     </Badge>
@@ -329,8 +330,8 @@ export default function ChaletDetailClient({
             <div className="lg:col-span-2 space-y-8">
               {/* Points forts */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
                 <Card className="alpine-card">
@@ -345,10 +346,10 @@ export default function ChaletDetailClient({
                       {chalet.highlights.map((highlight, index) => (
                         <Chip
                           key={index}
-                          color="warning"
-                          variant="flat"
-                          size="sm"
                           className="flex-shrink-0"
+                          color="warning"
+                          size="sm"
+                          variant="flat"
                         >
                           {highlight}
                         </Chip>
@@ -360,8 +361,8 @@ export default function ChaletDetailClient({
 
               {/* Configuration des chambres */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
                 <Card className="alpine-card">
@@ -391,8 +392,8 @@ export default function ChaletDetailClient({
 
               {/* Équipements complets */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
                 <Card className="alpine-card">
@@ -402,8 +403,8 @@ export default function ChaletDetailClient({
                       Équipements
                     </h2>
                     <Badge
-                      content={chalet.features.length}
                       color="success"
+                      content={chalet.features.length}
                       shape="circle"
                     >
                       <Button size="sm" variant="flat" onPress={onOpen}>
@@ -425,9 +426,9 @@ export default function ChaletDetailClient({
                       {chalet.features.length > 12 && (
                         <div className="md:col-span-2 lg:col-span-3 text-center mt-4">
                           <Button
-                            onPress={onOpen}
-                            variant="flat"
                             color="primary"
+                            variant="flat"
+                            onPress={onOpen}
                           >
                             +{chalet.features.length - 12} équipements
                             supplémentaires
@@ -441,8 +442,8 @@ export default function ChaletDetailClient({
 
               {/* Galerie de photos */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
                 <Card className="alpine-card">
@@ -452,14 +453,14 @@ export default function ChaletDetailClient({
                       Galerie Photos
                     </h2>
                     <Button
-                      size="sm"
-                      variant="flat"
                       color="primary"
+                      size="sm"
+                      startContent={<BsImages />}
+                      variant="flat"
                       onPress={() => {
                         setLightboxImageIndex(currentImageIndex);
                         setLightboxOpen(true);
                       }}
-                      startContent={<BsImages />}
                     >
                       Vue plein écran
                     </Button>
@@ -481,10 +482,10 @@ export default function ChaletDetailClient({
                           }}
                         >
                           <img
-                            src={image}
                             alt={`${chalet.name} - Photo ${index + 1}`}
                             className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-300"
                             loading="lazy"
+                            src={image}
                           />
                           <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
                             <BsImages
@@ -501,8 +502,8 @@ export default function ChaletDetailClient({
 
               {/* Informations pratiques */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.5, delay: 0.5 }}
               >
                 <Card className="alpine-card">
@@ -573,10 +574,10 @@ export default function ChaletDetailClient({
             <div className="space-y-6">
               {/* Card de réservation */}
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
                 className="md:sticky md:top-20 z-40"
+                initial={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
               >
                 <Card className="alpine-card shadow-lg">
                   <CardHeader>
@@ -618,10 +619,10 @@ export default function ChaletDetailClient({
                     <div className="space-y-3">
                       <Button
                         as={Link}
-                        href="tel:+33611233767"
-                        color="success"
-                        size="lg"
                         className="w-full btn-success text-white"
+                        color="success"
+                        href="tel:+33611233767"
+                        size="lg"
                         startContent={<BsPhone />}
                       >
                         Appeler M. STEPHAN
@@ -629,12 +630,12 @@ export default function ChaletDetailClient({
 
                       <Button
                         as={Link}
-                        href="/contact"
-                        color="primary"
-                        variant="flat"
-                        size="lg"
                         className="w-full backdrop-blur-sm"
+                        color="primary"
+                        href="/contact"
+                        size="lg"
                         startContent={<BsCalendarCheck />}
+                        variant="flat"
                       >
                         Demander un devis
                       </Button>
@@ -708,9 +709,9 @@ export default function ChaletDetailClient({
         {/* Modal équipements complets */}
         <Modal
           isOpen={isOpen}
-          onOpenChange={onOpenChange}
-          size="2xl"
           scrollBehavior="inside"
+          size="2xl"
+          onOpenChange={onOpenChange}
         >
           <ModalContent>
             {(onClose) => (
@@ -740,7 +741,7 @@ export default function ChaletDetailClient({
                   <Button variant="light" onPress={onClose}>
                     Fermer
                   </Button>
-                  <Button color="success" as={Link} href="tel:+33611233767">
+                  <Button as={Link} color="success" href="tel:+33611233767">
                     Réserver ce chalet
                   </Button>
                 </ModalFooter>
@@ -751,33 +752,33 @@ export default function ChaletDetailClient({
 
         {/* Modal Lightbox pour les photos */}
         <Modal
-          isOpen={lightboxOpen}
-          onOpenChange={setLightboxOpen}
-          size="5xl"
           hideCloseButton
           classNames={{
             base: "bg-transparent shadow-none md:m-auto md:max-w-5xl md:max-h-5xl m-0 max-w-full max-h-full",
             backdrop: "bg-black/90",
           }}
+          isOpen={lightboxOpen}
+          size="5xl"
+          onOpenChange={setLightboxOpen}
         >
           <ModalContent>
             <div className="relative md:w-full md:h-full w-screen h-screen flex items-center justify-center md:p-4 p-0">
               {/* Image principale */}
               <div className="relative md:max-w-full md:max-h-full flex items-center justify-center">
                 <img
-                  src={chalet.images[lightboxImageIndex]}
                   alt={`${chalet.name} - Photo ${lightboxImageIndex + 1}`}
                   className="md:max-w-full md:max-h-[90vh] max-w-[95vw] max-h-[95vh] object-contain rounded-lg"
                   loading="eager"
+                  src={chalet.images[lightboxImageIndex]}
                 />
               </div>
 
               {/* Bouton fermer */}
               <Button
                 isIconOnly
-                variant="flat"
-                size="md"
                 className="absolute top-4 right-4 z-50 bg-black/40 backdrop-blur-md text-white hover:bg-black/60 border border-white/20 rounded-full transition-all duration-200 m-2"
+                size="md"
+                variant="flat"
                 onPress={() => setLightboxOpen(false)}
               >
                 <BsX size={20} />
@@ -788,14 +789,14 @@ export default function ChaletDetailClient({
                 <>
                   <Button
                     isIconOnly
-                    variant="flat"
-                    size="md"
                     className="absolute left-4 top-1/2 transform -translate-y-1/2 z-50 bg-black/40 backdrop-blur-md text-white hover:bg-black/60 border border-white/20 rounded-full transition-all duration-200 hover:scale-110 m-2"
+                    size="md"
+                    variant="flat"
                     onPress={() =>
                       setLightboxImageIndex(
                         (prev) =>
                           (prev - 1 + chalet.images.length) %
-                          chalet.images.length
+                          chalet.images.length,
                       )
                     }
                   >
@@ -803,12 +804,12 @@ export default function ChaletDetailClient({
                   </Button>
                   <Button
                     isIconOnly
-                    variant="flat"
-                    size="md"
                     className="absolute right-4 top-1/2 transform -translate-y-1/2 z-50 bg-black/40 backdrop-blur-md text-white hover:bg-black/60 border border-white/20 rounded-full transition-all duration-200 hover:scale-110 m-2"
+                    size="md"
+                    variant="flat"
                     onPress={() =>
                       setLightboxImageIndex(
-                        (prev) => (prev + 1) % chalet.images.length
+                        (prev) => (prev + 1) % chalet.images.length,
                       )
                     }
                   >

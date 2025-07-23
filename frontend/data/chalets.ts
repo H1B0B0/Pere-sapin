@@ -3,7 +3,7 @@ export const chaletData = [
   {
     id: "cedre",
     name: "CÈDRE",
-    slug: "cedre", 
+    slug: "cedre",
     capacity: "8-10 couchages",
     rooms: "3 chambres",
     images: [
@@ -51,7 +51,8 @@ export const chaletData = [
     bedrooms:
       "1 chambre 2 lits doubles + 1 chambre lit double + 1 chambre lit double et simple",
     bathrooms: "2 salles de bain (1 douche, 1 baignoire) + 2 toilettes",
-    description: "Le chalet Cèdre vous accueille dans un cadre authentique et chaleureux. Idéal pour les familles, il dispose d'équipements de loisirs variés et d'un jacuzzi pour des moments de détente absolue.",
+    description:
+      "Le chalet Cèdre vous accueille dans un cadre authentique et chaleureux. Idéal pour les familles, il dispose d'équipements de loisirs variés et d'un jacuzzi pour des moments de détente absolue.",
   },
   {
     id: "epicea",
@@ -106,7 +107,8 @@ export const chaletData = [
     bedrooms:
       "2 chambres lit double + 1 chambre lit double et simple + 2 chambres 2 lits doubles",
     bathrooms: "4 douches + 1 baignoire + 4 toilettes",
-    description: "L'Épicéa est notre chalet le plus équipé avec un espace détente exceptionnel incluant sauna, jacuzzi et salle de sport. Parfait pour les grands groupes souhaitant se détendre après une journée en montagne.",
+    description:
+      "L'Épicéa est notre chalet le plus équipé avec un espace détente exceptionnel incluant sauna, jacuzzi et salle de sport. Parfait pour les grands groupes souhaitant se détendre après une journée en montagne.",
   },
   {
     id: "meleze",
@@ -161,7 +163,8 @@ export const chaletData = [
     bedrooms:
       "2 chambres lit double + 1 chambre lit double et simple + 2 chambres 2 lits doubles",
     bathrooms: "5 douches + 1 baignoire + 3 toilettes",
-    description: "Le chalet Mélèze offre une expérience de jeu unique avec ses simulateurs et bornes d'arcade. Idéal pour les groupes d'amis et les familles avec adolescents qui recherchent divertissement et convivialité.",
+    description:
+      "Le chalet Mélèze offre une expérience de jeu unique avec ses simulateurs et bornes d'arcade. Idéal pour les groupes d'amis et les familles avec adolescents qui recherchent divertissement et convivialité.",
   },
   {
     id: "douglas",
@@ -216,7 +219,8 @@ export const chaletData = [
     bedrooms:
       "2 chambres lit double + 1 chambre lit double et simple + 1 chambre lit double et 2 lits simples + chambre PMR",
     bathrooms: "5 salles de bain avec douche + 4 toilettes",
-    description: "Notre tout nouveau chalet Douglas (2024) propose une salle de jeux exceptionnelle de 100m² et une accessibilité PMR. Le summum du confort et du divertissement avec les équipements les plus modernes.",
+    description:
+      "Notre tout nouveau chalet Douglas (2024) propose une salle de jeux exceptionnelle de 100m² et une accessibilité PMR. Le summum du confort et du divertissement avec les équipements les plus modernes.",
   },
 ];
 

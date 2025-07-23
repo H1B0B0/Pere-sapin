@@ -3,7 +3,15 @@
 import { Card, CardBody, CardHeader, Button, Chip } from "@heroui/react";
 import { motion } from "framer-motion";
 import { BsTree } from "react-icons/bs";
-import { FaStar, FaHandshake, FaPhoneAlt, FaMobileAlt, FaTrophy, FaLeaf, FaMountain } from "react-icons/fa";
+import {
+  FaStar,
+  FaHandshake,
+  FaPhoneAlt,
+  FaMobileAlt,
+  FaTrophy,
+  FaLeaf,
+  FaMountain,
+} from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { GiMountains, GiPineTree } from "react-icons/gi";
 
@@ -12,14 +20,13 @@ export default function AboutPage() {
     <div className="space-y-8">
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
         className="text-center"
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5 }}
       >
         <h1 className="text-4xl font-bold mb-4 font-display gradient-festive bg-clip-text text-transparent flex items-center justify-center gap-3">
-          <BsTree className="h-10 w-10 text-primary" />À
-          propos du Père Sapin
+          <BsTree className="h-10 w-10 text-primary" />À propos du Père Sapin
         </h1>
         <p className="text-xl text-default-600 max-w-3xl mx-auto">
           Découvrez l'histoire de nos chalets d'exception dans les Vosges et
@@ -29,32 +36,39 @@ export default function AboutPage() {
 
       {/* Histoire */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
         <Card className="alpine-card">
           <CardHeader>
-            <h2 className="text-2xl font-bold font-display flex items-center gap-2"><GiMountains className="text-primary" /> Notre Histoire</h2>
+            <h2 className="text-2xl font-bold font-display flex items-center gap-2">
+              <GiMountains className="text-primary" /> Notre Histoire
+            </h2>
           </CardHeader>
           <CardBody className="space-y-4">
             <p className="text-default-600">
-              C'est en 1995 que M. STEPHAN a eu l'idée de créer ces chalets d'exception dans les Vosges, 
-              motivé par sa passion pour la montagne et l'accueil de qualité. Ancien guide de montagne 
-              et amoureux de la nature, il souhaitait offrir aux familles et groupes d'amis un lieu 
-              unique pour se ressourcer et créer des souvenirs inoubliables.
+              C'est en 1995 que M. STEPHAN a eu l'idée de créer ces chalets
+              d'exception dans les Vosges, motivé par sa passion pour la
+              montagne et l'accueil de qualité. Ancien guide de montagne et
+              amoureux de la nature, il souhaitait offrir aux familles et
+              groupes d'amis un lieu unique pour se ressourcer et créer des
+              souvenirs inoubliables.
             </p>
             <p className="text-default-600">
-              Situés à Cornimont, à seulement 12 km de Gérardmer et 8 km de la Bresse, nos chalets 
-              bénéficient d'un emplacement privilégié au cœur du massif vosgien. Chaque construction 
-              a été pensée dans le respect de l'environnement, utilisant des matériaux locaux et 
-              des techniques traditionnelles revisitées.
+              Situés à Cornimont, à seulement 12 km de Gérardmer et 8 km de la
+              Bresse, nos chalets bénéficient d'un emplacement privilégié au
+              cœur du massif vosgien. Chaque construction a été pensée dans le
+              respect de l'environnement, utilisant des matériaux locaux et des
+              techniques traditionnelles revisitées.
             </p>
             <p className="text-default-600">
-              Aujourd'hui, nos quatre chalets - Cèdre, Épicéa, Mélèze et Douglas - portent chacun 
-              le nom d'une essence d'arbre emblématique de nos forêts vosgiennes. Tous classés 3 étoiles, 
-              ils proposent des équipements haut de gamme : jacuzzi, sauna finlandais, espaces de jeux, 
-              cheminée à foyer ouvert, et une décoration soignée alliant authenticité et modernité.
+              Aujourd'hui, nos quatre chalets - Cèdre, Épicéa, Mélèze et Douglas
+              - portent chacun le nom d'une essence d'arbre emblématique de nos
+              forêts vosgiennes. Tous classés 3 étoiles, ils proposent des
+              équipements haut de gamme : jacuzzi, sauna finlandais, espaces de
+              jeux, cheminée à foyer ouvert, et une décoration soignée alliant
+              authenticité et modernité.
             </p>
           </CardBody>
         </Card>
@@ -62,14 +76,16 @@ export default function AboutPage() {
 
       {/* Nos valeurs */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
         className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
       >
         <Card className="alpine-card">
           <CardHeader className="text-center">
-            <h3 className="text-xl font-bold font-display flex items-center justify-center gap-2"><FaStar className="text-warning" /> Qualité</h3>
+            <h3 className="text-xl font-bold font-display flex items-center justify-center gap-2">
+              <FaStar className="text-warning" /> Qualité
+            </h3>
           </CardHeader>
           <CardBody className="text-center">
             <p className="text-default-600">
@@ -81,7 +97,9 @@ export default function AboutPage() {
 
         <Card className="alpine-card">
           <CardHeader className="text-center">
-            <h3 className="text-xl font-bold font-display flex items-center justify-center gap-2"><FaHandshake className="text-success" /> Service</h3>
+            <h3 className="text-xl font-bold font-display flex items-center justify-center gap-2">
+              <FaHandshake className="text-success" /> Service
+            </h3>
           </CardHeader>
           <CardBody className="text-center">
             <p className="text-default-600">
@@ -93,7 +111,9 @@ export default function AboutPage() {
 
         <Card className="alpine-card">
           <CardHeader className="text-center">
-            <h3 className="text-xl font-bold font-display flex items-center justify-center gap-2"><GiPineTree className="text-success" /> Nature</h3>
+            <h3 className="text-xl font-bold font-display flex items-center justify-center gap-2">
+              <GiPineTree className="text-success" /> Nature
+            </h3>
           </CardHeader>
           <CardBody className="text-center">
             <p className="text-default-600">
@@ -105,13 +125,15 @@ export default function AboutPage() {
 
       {/* Environnement et Activités */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5, delay: 0.25 }}
       >
         <Card className="alpine-card">
           <CardHeader>
-            <h2 className="text-2xl font-bold font-display flex items-center gap-2"><GiPineTree className="text-success" /> Un Environnement Préservé</h2>
+            <h2 className="text-2xl font-bold font-display flex items-center gap-2">
+              <GiPineTree className="text-success" /> Un Environnement Préservé
+            </h2>
           </CardHeader>
           <CardBody className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -121,12 +143,14 @@ export default function AboutPage() {
                   En toutes saisons
                 </h3>
                 <p className="text-sm text-default-600">
-                  <strong>Été :</strong> Randonnées sur les crêtes vosgiennes, VTT, pêche dans les lacs, 
-                  découverte de la Route des Crêtes et des fermes-auberges traditionnelles.
+                  <strong>Été :</strong> Randonnées sur les crêtes vosgiennes,
+                  VTT, pêche dans les lacs, découverte de la Route des Crêtes et
+                  des fermes-auberges traditionnelles.
                 </p>
                 <p className="text-sm text-default-600">
-                  <strong>Hiver :</strong> Ski alpin et de fond, raquettes, luge, marchés de Noël authentiques 
-                  de Gérardmer et Kaysersberg, ambiance féerique des Vosges enneigées.
+                  <strong>Hiver :</strong> Ski alpin et de fond, raquettes,
+                  luge, marchés de Noël authentiques de Gérardmer et
+                  Kaysersberg, ambiance féerique des Vosges enneigées.
                 </p>
               </div>
               <div className="space-y-3">
@@ -135,12 +159,15 @@ export default function AboutPage() {
                   Sites incontournables
                 </h3>
                 <p className="text-sm text-default-600">
-                  <strong>À proximité :</strong> Lac de Gérardmer (15 min), Parc naturel régional des Ballons des Vosges, 
-                  Cascade du Saut des Cuves, Col de la Schlucht, et les célèbres marcaires (fermes d'altitude).
+                  <strong>À proximité :</strong> Lac de Gérardmer (15 min), Parc
+                  naturel régional des Ballons des Vosges, Cascade du Saut des
+                  Cuves, Col de la Schlucht, et les célèbres marcaires (fermes
+                  d'altitude).
                 </p>
                 <p className="text-sm text-default-600">
-                  <strong>Gastronomie :</strong> Dégustez les spécialités locales : munster fermier, myrtilles des Vosges, 
-                  kirsch, et plats traditionnels dans nos auberges de montagne.
+                  <strong>Gastronomie :</strong> Dégustez les spécialités
+                  locales : munster fermier, myrtilles des Vosges, kirsch, et
+                  plats traditionnels dans nos auberges de montagne.
                 </p>
               </div>
             </div>
@@ -150,13 +177,15 @@ export default function AboutPage() {
 
       {/* Classifications */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
         <Card className="alpine-card">
           <CardHeader>
-            <h2 className="text-2xl font-bold font-display flex items-center gap-2"><FaTrophy className="text-warning" /> Nos Classifications</h2>
+            <h2 className="text-2xl font-bold font-display flex items-center gap-2">
+              <FaTrophy className="text-warning" /> Nos Classifications
+            </h2>
           </CardHeader>
           <CardBody>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -192,27 +221,33 @@ export default function AboutPage() {
 
       {/* Contact */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
         className="text-center"
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
       >
         <Card className="alpine-card">
           <CardBody className="p-8">
-            <h2 className="text-3xl font-bold mb-4 font-display flex items-center justify-center gap-2"><FaPhoneAlt className="text-primary" /> Contactez-nous</h2>
+            <h2 className="text-3xl font-bold mb-4 font-display flex items-center justify-center gap-2">
+              <FaPhoneAlt className="text-primary" /> Contactez-nous
+            </h2>
             <p className="text-lg text-default-600 mb-6">
               Une question ? Un projet de séjour ? N'hésitez pas à nous
               contacter pour une demande personnalisée.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button color="primary" size="lg" className="font-semibold btn-alpine text-primary-foreground">
+              <Button
+                className="font-semibold btn-alpine text-primary-foreground"
+                color="primary"
+                size="lg"
+              >
                 <MdEmail className="mr-2" /> Nous écrire
               </Button>
               <Button
-                color="success"
-                variant="flat"
-                size="lg"
                 className="font-semibold backdrop-blur-sm"
+                color="success"
+                size="lg"
+                variant="flat"
               >
                 <FaMobileAlt className="mr-2" /> Voir les chalets
               </Button>

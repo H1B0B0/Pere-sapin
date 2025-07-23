@@ -1,7 +1,10 @@
-import { notFound } from "next/navigation";
-import { getChaletBySlug, getAllChaletSlugs } from "@/data/chalets";
 import type { Metadata } from "next";
+
+import { notFound } from "next/navigation";
+
 import ChaletDetailClient from "./ChaletDetailClient";
+
+import { getChaletBySlug, getAllChaletSlugs } from "@/data/chalets";
 
 interface Props {
   params: { slug: string };
@@ -11,12 +14,15 @@ interface Props {
 export async function generateStaticParams() {
   try {
     const slugs = getAllChaletSlugs();
-    console.log('Generated slugs:', slugs);
+
+    console.log("Generated slugs:", slugs);
+
     return slugs.map((slug) => ({
       slug,
     }));
   } catch (error) {
-    console.error('Error in generateStaticParams:', error);
+    console.error("Error in generateStaticParams:", error);
+
     return [];
   }
 }
@@ -51,12 +57,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default function ChaletDetailPage({ params }: Props) {
-  console.log('Chalet page params:', params);
+  console.log("Chalet page params:", params);
   const chalet = getChaletBySlug(params.slug);
-  console.log('Found chalet:', chalet);
+
+  console.log("Found chalet:", chalet);
 
   if (!chalet) {
-    console.log('Chalet not found for slug:', params.slug);
+    console.log("Chalet not found for slug:", params.slug);
     notFound();
   }
 

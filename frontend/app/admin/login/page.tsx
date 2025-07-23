@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardBody, CardHeader, Button, Input } from "@heroui/react";
 import { motion } from "framer-motion";
 import { BsLock, BsEnvelope } from "react-icons/bs";
+
 import { authService } from "@/lib/services/auth";
 
 export default function LoginPage() {
@@ -20,14 +21,25 @@ export default function LoginPage() {
     setError(null);
     try {
       const res = await authService.login({ email, password });
+
       if (res && "token" in res && res.token) {
         document.cookie = `auth-token=${res.token}; path=/; max-age=${60 * 60 * 12}; SameSite=Lax`;
         router.push("/admin");
       } else {
         setError("Erreur de connexion");
       }
-    } catch (err) {
-      setError("Erreur réseau");
+    } catch (err: any) {
+      if (err.response?.status === 401) {
+        setError("Email ou mot de passe incorrect");
+      } else if (err.response?.status === 400) {
+        setError("Veuillez vérifier vos informations de connexion");
+      } else if (err.response?.status >= 500) {
+        setError("Erreur du serveur. Veuillez réessayer plus tard");
+      } else if (err.code === "NETWORK_ERROR" || !err.response) {
+        setError("Problème de connexion. Vérifiez votre connexion internet");
+      } else {
+        setError("Une erreur inattendue s'est produite");
+      }
     } finally {
       setLoading(false);
     }
@@ -36,10 +48,10 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
         className="w-full max-w-md"
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5 }}
       >
         <Card className="alpine-card">
           <CardHeader className="flex flex-col items-center pb-0">
@@ -52,36 +64,42 @@ export default function LoginPage() {
             </p>
           </CardHeader>
           <CardBody>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <Input
-                type="email"
+                required
+                disabled={loading}
                 label="Email"
                 placeholder="Votre adresse email"
+                startContent={<BsEnvelope className="text-primary" />}
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                startContent={<BsEnvelope className="text-primary" />}
-                required
-                disabled={loading}
               />
               <Input
-                type="password"
-                label="Mot de passe"
-                placeholder="Votre mot de passe"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                startContent={<BsLock className="text-primary" />}
                 required
                 disabled={loading}
+                label="Mot de passe"
+                placeholder="Votre mot de passe"
+                startContent={<BsLock className="text-primary" />}
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               {error && (
-                <div className="text-red-600 text-sm text-center">{error}</div>
+                <motion.div
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm text-center"
+                  initial={{ opacity: 0, y: -10 }}
+                >
+                  {error}
+                </motion.div>
               )}
               <Button
-                type="submit"
-                color="primary"
                 className="font-semibold btn-alpine text-primary-foreground mt-2"
-                isLoading={loading}
+                color="primary"
                 disabled={loading}
+                isLoading={loading}
+                type="submit"
               >
                 Se connecter
               </Button>

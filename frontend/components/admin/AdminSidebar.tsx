@@ -8,13 +8,13 @@ import {
   BsTree,
   BsFileText,
   BsPlus,
-  BsChevronDown,
   BsList,
   BsX,
 } from "react-icons/bs";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import clsx from "clsx";
+
 import { useAdminStore } from "@/lib/stores/admin-store";
 
 export function AdminSidebar() {
@@ -22,8 +22,14 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   // Utilisation du store global
-  const { chalets, loading, initialized, initialize, refreshData, getPagesForChalet } =
-    useAdminStore();
+  const {
+    chalets,
+    loading,
+    initialized,
+    initialize,
+    refreshData,
+    getPagesForChalet,
+  } = useAdminStore();
 
   // Initialiser le store au montage
   useEffect(() => {
@@ -50,14 +56,14 @@ export function AdminSidebar() {
       className={clsx(
         "overflow-y-auto border-r border-border/20 transition-all duration-300 ease-in-out m-2 rounded-lg",
         isCollapsed ? "w-30" : "w-80",
-        "h-[calc(100%-1rem)]"
+        "h-[calc(100%-1rem)]",
       )}
     >
       <Card className="alpine-card h-full rounded-none border-0 border-r border-border/20">
         <div
           className={clsx(
             "transition-all duration-300",
-            isCollapsed ? "p-3" : "p-6"
+            isCollapsed ? "p-3" : "p-6",
           )}
         >
           {/* Logo/Titre Admin avec bouton collapse */}
@@ -75,10 +81,10 @@ export function AdminSidebar() {
             </div>
             <Button
               isIconOnly
-              variant="light"
-              size="sm"
-              onClick={() => setIsCollapsed(!isCollapsed)}
               className="min-w-unit-8 w-8 h-8"
+              size="sm"
+              variant="light"
+              onClick={() => setIsCollapsed(!isCollapsed)}
             >
               {isCollapsed ? (
                 <BsList className="h-4 w-4" />
@@ -90,33 +96,33 @@ export function AdminSidebar() {
 
           {/* Navigation principale */}
           <nav className="space-y-2 mb-8">
-            <Link href="/admin" className="block">
+            <Link className="block" href="/admin">
               <Button
-                variant={isActiveLink("/admin") ? "solid" : "ghost"}
-                color={isActiveLink("/admin") ? "primary" : "default"}
                 className={clsx(
                   "w-full gap-3 h-12 transition-all duration-300",
                   isActiveLink("/admin") &&
                     "btn-alpine text-primary-foreground",
-                  isCollapsed ? "justify-center px-0" : "justify-start"
+                  isCollapsed ? "justify-center px-0" : "justify-start",
                 )}
+                color={isActiveLink("/admin") ? "primary" : "default"}
                 startContent={<BsHouse className="h-5 w-5" />}
+                variant={isActiveLink("/admin") ? "solid" : "ghost"}
               >
                 {!isCollapsed && "Dashboard"}
               </Button>
             </Link>
 
-            <Link href="/admin/chalets" className="block">
+            <Link className="block" href="/admin/chalets">
               <Button
-                variant={isActiveLink("/admin/chalets") ? "solid" : "ghost"}
-                color={isActiveLink("/admin/chalets") ? "primary" : "default"}
                 className={clsx(
                   "w-full gap-3 h-12 transition-all duration-300",
                   isActiveLink("/admin/chalets") &&
                     "btn-alpine text-primary-foreground",
-                  isCollapsed ? "justify-center px-0" : "justify-start"
+                  isCollapsed ? "justify-center px-0" : "justify-start",
                 )}
+                color={isActiveLink("/admin/chalets") ? "primary" : "default"}
                 startContent={<BsGear className="h-5 w-5" />}
+                variant={isActiveLink("/admin/chalets") ? "solid" : "ghost"}
               >
                 {!isCollapsed && "Gestion Chalets"}
               </Button>
@@ -138,9 +144,9 @@ export function AdminSidebar() {
                 </div>
                 <Link href="/admin/chalets/new">
                   <Button
-                    size="sm"
-                    color="primary"
                     className="btn-alpine text-primary-foreground"
+                    color="primary"
+                    size="sm"
                     startContent={<BsPlus className="h-4 w-4" />}
                   >
                     Nouveau
@@ -150,7 +156,7 @@ export function AdminSidebar() {
 
               {loading ? (
                 <div className="flex flex-col items-center justify-center py-8 space-y-2">
-                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent"></div>
+                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" />
                   <p className="text-sm text-muted-foreground">Chargement...</p>
                 </div>
               ) : chalets.length === 0 ? (
@@ -168,10 +174,10 @@ export function AdminSidebar() {
                   </div>
                   <Link href="/admin/chalets/new">
                     <Button
-                      size="sm"
                       color="primary"
-                      variant="flat"
+                      size="sm"
                       startContent={<BsPlus className="h-4 w-4" />}
+                      variant="flat"
                     >
                       Créer un chalet
                     </Button>
@@ -179,9 +185,7 @@ export function AdminSidebar() {
                 </div>
               ) : (
                 <Accordion
-                  variant="shadow"
                   className="px-0"
-                  selectionMode="multiple"
                   itemClasses={{
                     base: "alpine-card mb-2 border border-border/20 hover:border-primary/30 transition-colors",
                     title: "font-medium text-foreground",
@@ -190,12 +194,14 @@ export function AdminSidebar() {
                     content: "px-4 pb-4",
                     indicator: "text-muted-foreground",
                   }}
+                  selectionMode="multiple"
+                  variant="shadow"
                 >
                   {chalets.map((chalet) => {
                     const chaletPages = getPagesForChalet(chalet._id);
                     const totalViews = chaletPages.reduce(
                       (sum, page) => sum + (page.views || 0),
-                      0
+                      0,
                     );
 
                     return (
@@ -242,15 +248,15 @@ export function AdminSidebar() {
                           {/* Boutons de gestion du chalet */}
                           <div className="flex gap-2">
                             <Link
-                              href={`/admin/chalets/${chalet._id}`}
                               className="flex-1"
+                              href={`/admin/chalets/${chalet._id}`}
                             >
                               <Button
-                                size="sm"
-                                variant="flat"
-                                color="primary"
                                 className="w-full h-8 text-xs"
+                                color="primary"
+                                size="sm"
                                 startContent={<BsGear className="h-3 w-3" />}
+                                variant="flat"
                               >
                                 Gérer
                               </Button>
@@ -259,11 +265,11 @@ export function AdminSidebar() {
                               href={`/admin/chalets/${chalet._id}/pages/new`}
                             >
                               <Button
-                                size="sm"
-                                variant="flat"
-                                color="success"
                                 className="h-8 text-xs"
+                                color="success"
+                                size="sm"
                                 startContent={<BsPlus className="h-3 w-3" />}
+                                variant="flat"
                               >
                                 + Page
                               </Button>
@@ -276,8 +282,8 @@ export function AdminSidebar() {
                               {chaletPages.map((page) => (
                                 <Link
                                   key={page._id}
-                                  href={`/admin/chalets/${chalet._id}/pages/${page.slug}/edit`}
                                   className="block group"
+                                  href={`/admin/chalets/${chalet._id}/pages/${page.slug}/edit`}
                                 >
                                   <div className="flex items-center justify-between p-2 rounded-md hover:bg-muted/30 transition-colors">
                                     <div className="flex items-center gap-2 min-w-0">
@@ -306,13 +312,13 @@ export function AdminSidebar() {
                                   href={`/admin/chalets/${chalet._id}/pages/new`}
                                 >
                                   <Button
-                                    size="sm"
-                                    variant="light"
-                                    color="primary"
                                     className="text-xs h-7"
+                                    color="primary"
+                                    size="sm"
                                     startContent={
                                       <BsPlus className="h-3 w-3" />
                                     }
+                                    variant="light"
                                   >
                                     Créer une page
                                   </Button>
@@ -333,12 +339,12 @@ export function AdminSidebar() {
           <div className="mt-8 pt-4 border-t border-border/20">
             <Link href="/admin/settings">
               <Button
-                variant="ghost"
                 className={clsx(
                   "w-full gap-3 transition-all duration-300",
-                  isCollapsed ? "justify-center px-0" : "justify-start"
+                  isCollapsed ? "justify-center px-0" : "justify-start",
                 )}
                 startContent={<BsGear className="h-4 w-4" />}
+                variant="ghost"
               >
                 {!isCollapsed && "Paramètres"}
               </Button>

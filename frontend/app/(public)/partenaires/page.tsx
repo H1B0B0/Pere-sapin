@@ -94,10 +94,10 @@ export default function PartenairesPage() {
     <div className="space-y-8">
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
         className="text-center"
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5 }}
       >
         <h1 className="text-4xl font-bold mb-4 font-display gradient-festive bg-clip-text text-transparent flex items-center justify-center gap-3">
           <FaHandshakeSimple className="h-10 w-10 text-primary" />
@@ -112,8 +112,8 @@ export default function PartenairesPage() {
 
       {/* Introduction */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
         <Card className="alpine-card">
@@ -144,8 +144,8 @@ export default function PartenairesPage() {
         {partenaires.map((partenaire, index) => (
           <motion.div
             key={partenaire.nom}
-            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.5, delay: 0.1 * (index + 2) }}
           >
             <Card className="alpine-card h-full">
@@ -157,8 +157,8 @@ export default function PartenairesPage() {
                     />
                     <Chip
                       color={partenaire.couleur as any}
-                      variant="flat"
                       size="sm"
+                      variant="flat"
                     >
                       {partenaire.categorie}
                     </Chip>
@@ -185,9 +185,9 @@ export default function PartenairesPage() {
                     {partenaire.services.map((service, idx) => (
                       <Chip
                         key={idx}
+                        className="text-xs"
                         size="sm"
                         variant="bordered"
-                        className="text-xs"
                       >
                         {service}
                       </Chip>
@@ -202,8 +202,8 @@ export default function PartenairesPage() {
 
       {/* Informations pratiques */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5, delay: 0.8 }}
       >
         <Card className="alpine-card">
@@ -245,9 +245,9 @@ export default function PartenairesPage() {
                 </p>
                 <Button
                   as={Link}
-                  href="tel:+33611233767"
-                  color="success"
                   className="btn-success text-white"
+                  color="success"
+                  href="tel:+33611233767"
                   startContent={<BsPhone />}
                 >
                   Appeler M. STEPHAN

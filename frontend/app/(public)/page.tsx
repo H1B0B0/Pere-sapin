@@ -16,10 +16,10 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
       {/* Hero Section */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
         className="text-center mb-12"
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5 }}
       >
         <h1 className="text-6xl font-bold mb-4 font-display">
           <span className="gradient-festive bg-clip-text text-transparent flex items-center justify-center gap-3">
@@ -35,19 +35,19 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
             as={Link}
-            href="/chalets"
-            color="primary"
-            size="lg"
             className="font-semibold btn-alpine text-primary-foreground"
+            color="primary"
+            href="/chalets"
+            size="lg"
           >
             Découvrir nos chalets
           </Button>
           <Button
             as={Link}
-            href="/about"
-            variant="bordered"
-            size="lg"
             className="font-semibold backdrop-blur-sm"
+            href="/about"
+            size="lg"
+            variant="bordered"
           >
             En savoir plus
           </Button>
@@ -56,10 +56,10 @@ export default function Home() {
 
       {/* Features Section */}
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
         className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl"
+        initial={{ opacity: 0, y: 40 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
       >
         <Card className="alpine-card">
           <CardHeader className="pb-0 flex flex-col items-center">
@@ -109,10 +109,10 @@ export default function Home() {
 
       {/* CTA Section */}
       <motion.div
-        initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
         className="mt-16 text-center"
+        initial={{ opacity: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
       >
         <Card className="alpine-card">
           <CardBody className="p-8">
@@ -126,21 +126,21 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 as={Link}
-                href="tel:+33611233767"
-                color="success"
-                size="lg"
                 className="font-semibold btn-success text-white flex items-center gap-2"
+                color="success"
+                href="tel:+33611233767"
+                size="lg"
               >
                 <BsTelephone className="h-5 w-5" />
                 Appeler M. STEPHAN
               </Button>
               <Button
                 as={Link}
-                href="/contact"
-                color="primary"
-                variant="flat"
-                size="lg"
                 className="font-semibold backdrop-blur-sm flex items-center gap-2"
+                color="primary"
+                href="/contact"
+                size="lg"
+                variant="flat"
               >
                 <BsEnvelope className="h-5 w-5" />
                 Nous contacter

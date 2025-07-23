@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import Background from "@/components/Background";
 

@@ -45,7 +45,7 @@ const Background: React.FC = () => {
       delay: stagger(60, { start: 800 }),
       ease: "outBack",
     });
-    
+
     // Animate clouds (gentle float)
     animate(".clouds", {
       opacity: [0, 0.6],
@@ -54,7 +54,7 @@ const Background: React.FC = () => {
       delay: 600,
       ease: "outQuart",
     });
-    
+
     return () => scope.revert();
   }, []);
 
@@ -117,7 +117,7 @@ const Background: React.FC = () => {
         </defs>
         {/* Sky */}
         <rect width="1920" height="1080" fill="url(#sky)" />
-        
+
         {/* Nuages organiques */}
         <g className="clouds" opacity="0.6">
           {/* Nuage 1 */}
@@ -127,7 +127,7 @@ const Background: React.FC = () => {
             <ellipse cx="280" cy="185" rx="35" ry="18" fill={colors.clouds} />
             <ellipse cx="350" cy="210" rx="40" ry="22" fill={colors.clouds} />
           </g>
-          
+
           {/* Nuage 2 */}
           <g>
             <ellipse cx="800" cy="150" rx="70" ry="30" fill={colors.clouds} />
@@ -135,7 +135,7 @@ const Background: React.FC = () => {
             <ellipse cx="770" cy="135" rx="40" ry="20" fill={colors.clouds} />
             <ellipse cx="830" cy="165" rx="45" ry="25" fill={colors.clouds} />
           </g>
-          
+
           {/* Nuage 3 */}
           <g>
             <ellipse cx="1400" cy="180" rx="65" ry="28" fill={colors.clouds} />
@@ -143,14 +143,14 @@ const Background: React.FC = () => {
             <ellipse cx="1380" cy="165" rx="38" ry="19" fill={colors.clouds} />
             <ellipse cx="1430" cy="195" rx="42" ry="24" fill={colors.clouds} />
           </g>
-          
+
           {/* Nuage 4 - plus petit */}
           <g>
             <ellipse cx="600" cy="120" rx="35" ry="15" fill={colors.clouds} />
             <ellipse cx="620" cy="115" rx="25" ry="12" fill={colors.clouds} />
             <ellipse cx="585" cy="110" rx="20" ry="10" fill={colors.clouds} />
           </g>
-          
+
           {/* Nuage 5 - plus petit */}
           <g>
             <ellipse cx="1200" cy="100" rx="40" ry="18" fill={colors.clouds} />
@@ -158,7 +158,7 @@ const Background: React.FC = () => {
             <ellipse cx="1180" cy="90" rx="25" ry="12" fill={colors.clouds} />
           </g>
         </g>
-        
+
         {/* Farthest mountains - Crêtes plus angulaires */}
         <path
           className="mountain-bg"
@@ -185,39 +185,60 @@ const Background: React.FC = () => {
             fill={colors.snow}
             opacity="0.85"
           />
-          
+
           {/* Neige sur le pic (800, 620) */}
           <path
             d="M785 635 Q 792 625 800 620 Q 808 625 815 635 Q 810 630 805 628 Q 800 625 795 628 Q 790 630 785 635 Z"
             fill={colors.snow}
             opacity="0.8"
           />
-          
+
           {/* Neige sur le pic (1200, 650) */}
           <path
             d="M1185 665 Q 1192 655 1200 650 Q 1208 655 1215 665 Q 1210 660 1205 658 Q 1200 655 1195 658 Q 1190 660 1185 665 Z"
             fill={colors.snow}
             opacity="0.8"
           />
-          
+
           {/* Neige sur pic moyen (350, 850) */}
           <path
             d="M335 865 Q 342 855 350 850 Q 358 855 365 865 Q 360 860 355 858 Q 350 855 345 858 Q 340 860 335 865 Z"
             fill={colors.snow}
             opacity="0.75"
           />
-          
+
           {/* Neige sur pic (1100, 750) */}
           <path
             d="M1085 765 Q 1092 755 1100 750 Q 1108 755 1115 765 Q 1110 760 1105 758 Q 1100 755 1095 758 Q 1090 760 1085 765 Z"
             fill={colors.snow}
             opacity="0.75"
           />
-          
+
           {/* Ajout de quelques traces de neige sur les pentes - repositionnées */}
-          <ellipse cx="470" cy="610" rx="12" ry="6" fill={colors.snow} opacity="0.4" />
-          <ellipse cx="1320" cy="780" rx="10" ry="5" fill={colors.snow} opacity="0.4" />
-          <ellipse cx="820" cy="650" rx="14" ry="7" fill={colors.snow} opacity="0.3" />
+          <ellipse
+            cx="470"
+            cy="610"
+            rx="12"
+            ry="6"
+            fill={colors.snow}
+            opacity="0.4"
+          />
+          <ellipse
+            cx="1320"
+            cy="780"
+            rx="10"
+            ry="5"
+            fill={colors.snow}
+            opacity="0.4"
+          />
+          <ellipse
+            cx="820"
+            cy="650"
+            rx="14"
+            ry="7"
+            fill={colors.snow}
+            opacity="0.3"
+          />
         </g>
         {/* Sapins des Vosges - plus réalistes et visibles */}
         <g>
@@ -230,18 +251,18 @@ const Background: React.FC = () => {
               <g className="motif-tree" key={i} style={{ opacity: 0 }}>
                 {/* Étages du sapin (3 niveaux) */}
                 <polygon
-                  points={`${x},${y} ${x - width/2},${y + height/2} ${x + width/2},${y + height/2}`}
+                  points={`${x},${y} ${x - width / 2},${y + height / 2} ${x + width / 2},${y + height / 2}`}
                   fill={colors.motif}
                 />
                 <polygon
-                  points={`${x},${y + height/3} ${x - width/1.5},${y + height*0.75} ${x + width/1.5},${y + height*0.75}`}
+                  points={`${x},${y + height / 3} ${x - width / 1.5},${y + height * 0.75} ${x + width / 1.5},${y + height * 0.75}`}
                   fill={colors.motif}
                 />
                 <polygon
-                  points={`${x},${y + height/1.8} ${x - width/2.5},${y + height} ${x + width/2.5},${y + height}`}
+                  points={`${x},${y + height / 1.8} ${x - width / 2.5},${y + height} ${x + width / 2.5},${y + height}`}
                   fill={colors.motif}
                 />
-                
+
                 {/* Tronc plus visible */}
                 <rect
                   x={x - 4}

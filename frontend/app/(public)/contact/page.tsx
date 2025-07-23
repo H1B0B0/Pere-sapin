@@ -10,39 +10,31 @@ import {
   Chip,
 } from "@heroui/react";
 import { motion } from "framer-motion";
-import { 
-  FaPhoneAlt, 
-  FaUser, 
-  FaCar, 
+import {
+  FaPhoneAlt,
+  FaUser,
+  FaCar,
   FaSmokingBan,
   FaExclamationTriangle,
   FaMapMarkerAlt,
   FaClock,
   FaQuestionCircle,
   FaReceipt,
-  FaBroom
+  FaBroom,
 } from "react-icons/fa";
-import { 
-  MdEmail, 
-  MdMap, 
-  MdChat 
-} from "react-icons/md";
-import { 
-  GiMountains 
-} from "react-icons/gi";
-import { 
-  HiMail 
-} from "react-icons/hi";
+import { MdEmail, MdMap, MdChat } from "react-icons/md";
+import { GiMountains } from "react-icons/gi";
+import { HiMail } from "react-icons/hi";
 
 export default function ContactPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
         className="text-center"
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5 }}
       >
         <h1 className="text-4xl font-bold mb-4 font-display gradient-festive bg-clip-text text-transparent flex items-center justify-center gap-3">
           <FaPhoneAlt className="h-8 w-8" /> Contactez-nous
@@ -56,8 +48,8 @@ export default function ContactPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Formulaire de contact */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <Card className="alpine-card">
@@ -106,15 +98,15 @@ export default function ContactPage() {
 
               <Textarea
                 label="Votre message"
+                minRows={4}
                 placeholder="Décrivez votre projet de séjour, vos questions..."
                 variant="bordered"
-                minRows={4}
               />
 
               <Button
+                className="w-full font-semibold btn-alpine text-primary-foreground"
                 color="primary"
                 size="lg"
-                className="w-full font-semibold btn-alpine text-primary-foreground"
               >
                 <MdEmail className="mr-2" /> Envoyer ma demande
               </Button>
@@ -128,15 +120,17 @@ export default function ContactPage() {
 
         {/* Informations de contact */}
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
           className="space-y-6"
+          initial={{ opacity: 0, x: 20 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
           {/* Contact direct */}
           <Card className="alpine-card">
             <CardHeader>
-              <h3 className="text-xl font-bold font-display flex items-center gap-2"><FaPhoneAlt className="text-success" /> Contact direct</h3>
+              <h3 className="text-xl font-bold font-display flex items-center gap-2">
+                <FaPhoneAlt className="text-success" /> Contact direct
+              </h3>
             </CardHeader>
             <CardBody className="space-y-4">
               <div className="space-y-3">
@@ -168,8 +162,9 @@ export default function ContactPage() {
               </div>
 
               <div className="pt-4 border-t">
-                <Chip color="warning" variant="flat" size="sm">
-                  <FaExclamationTriangle className="mr-1" /> Attention : Évitez les commissions LeBonCoin
+                <Chip color="warning" size="sm" variant="flat">
+                  <FaExclamationTriangle className="mr-1" /> Attention : Évitez
+                  les commissions LeBonCoin
                 </Chip>
                 <p className="text-xs text-default-500 mt-2">
                   Contactez-nous directement pour éviter les frais
@@ -182,7 +177,9 @@ export default function ContactPage() {
           {/* Localisation */}
           <Card className="alpine-card">
             <CardHeader>
-              <h3 className="text-xl font-bold font-display flex items-center gap-2"><FaMapMarkerAlt className="text-danger" /> Localisation</h3>
+              <h3 className="text-xl font-bold font-display flex items-center gap-2">
+                <FaMapMarkerAlt className="text-danger" /> Localisation
+              </h3>
             </CardHeader>
             <CardBody>
               <div className="space-y-3">
@@ -203,10 +200,10 @@ export default function ContactPage() {
                 </div>
 
                 <Button
-                  color="primary"
-                  variant="flat"
-                  size="sm"
                   className="w-full backdrop-blur-sm"
+                  color="primary"
+                  size="sm"
+                  variant="flat"
                 >
                   <MdMap className="mr-2" /> Voir sur la carte
                 </Button>
@@ -217,7 +214,9 @@ export default function ContactPage() {
           {/* Horaires */}
           <Card className="alpine-card">
             <CardHeader>
-              <h3 className="text-xl font-bold font-display flex items-center gap-2"><FaClock className="text-warning" /> Disponibilité</h3>
+              <h3 className="text-xl font-bold font-display flex items-center gap-2">
+                <FaClock className="text-warning" /> Disponibilité
+              </h3>
             </CardHeader>
             <CardBody>
               <div className="space-y-2 text-sm">
@@ -237,7 +236,8 @@ export default function ContactPage() {
 
               <div className="mt-4 p-3 rounded-lg">
                 <p className="text-xs text-center flex items-center justify-center gap-1">
-                  <MdChat /> Réponse garantie sous 24h pour toute demande par email
+                  <MdChat /> Réponse garantie sous 24h pour toute demande par
+                  email
                 </p>
               </div>
             </CardBody>
@@ -247,20 +247,23 @@ export default function ContactPage() {
 
       {/* FAQ rapide */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
         <Card className="alpine-card">
           <CardHeader>
-            <h2 className="text-2xl font-bold font-display flex items-center gap-2"><FaQuestionCircle className="text-info" /> Questions fréquentes</h2>
+            <h2 className="text-2xl font-bold font-display flex items-center gap-2">
+              <FaQuestionCircle className="text-info" /> Questions fréquentes
+            </h2>
           </CardHeader>
           <CardBody>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <div>
                   <h4 className="font-semibold text-sm flex items-center gap-2">
-                    <FaReceipt className="text-success" /> Que comprend la location ?
+                    <FaReceipt className="text-success" /> Que comprend la
+                    location ?
                   </h4>
                   <p className="text-xs text-default-600">
                     Linge de lit, serviettes, peignoirs jacuzzi, WiFi,
@@ -270,7 +273,8 @@ export default function ContactPage() {
 
                 <div>
                   <h4 className="font-semibold text-sm flex items-center gap-2">
-                    <FaBroom className="text-warning" /> Le ménage est-il inclus ?
+                    <FaBroom className="text-warning" /> Le ménage est-il inclus
+                    ?
                   </h4>
                   <p className="text-xs text-default-600">
                     Forfait ménage obligatoire (100-150€ selon le chalet)
@@ -289,7 +293,9 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-sm flex items-center gap-2"><FaSmokingBan className="text-danger" /> Peut-on fumer ?</h4>
+                  <h4 className="font-semibold text-sm flex items-center gap-2">
+                    <FaSmokingBan className="text-danger" /> Peut-on fumer ?
+                  </h4>
                   <p className="text-xs text-default-600">
                     Tous nos chalets sont non-fumeur (extérieur autorisé)
                   </p>

@@ -18,37 +18,37 @@ export function ThemeSwitcher() {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      initial={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
       <Button
         isIconOnly
-        variant="light"
-        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
         aria-label="Changer le thème"
         className="text-lg"
+        variant="light"
+        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
       >
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence initial={false} mode="wait">
           {theme === "light" ? (
             <motion.span
               key="moon"
-              initial={{ rotate: -90, opacity: 0, scale: 0.7 }}
               animate={{ rotate: 0, opacity: 1, scale: 1 }}
               exit={{ rotate: 90, opacity: 0, scale: 0.7 }}
-              transition={{ duration: 0.3 }}
+              initial={{ rotate: -90, opacity: 0, scale: 0.7 }}
               style={{ display: "inline-block" }}
+              transition={{ duration: 0.3 }}
             >
               <FaMoon />
             </motion.span>
           ) : (
             <motion.span
               key="sun"
-              initial={{ rotate: 90, opacity: 0, scale: 0.7 }}
               animate={{ rotate: 0, opacity: 1, scale: 1 }}
               exit={{ rotate: -90, opacity: 0, scale: 0.7 }}
-              transition={{ duration: 0.3 }}
+              initial={{ rotate: 90, opacity: 0, scale: 0.7 }}
               style={{ display: "inline-block" }}
+              transition={{ duration: 0.3 }}
             >
               <FaSun />
             </motion.span>

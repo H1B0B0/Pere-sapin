@@ -11,7 +11,6 @@ import {
   Link,
 } from "@heroui/react";
 import { motion } from "framer-motion";
-import { chaletData } from "@/data/chalets";
 import {
   BsTree,
   BsArrowRight,
@@ -25,6 +24,8 @@ import { FaCheck, FaExclamationTriangle, FaBullseye } from "react-icons/fa";
 import { GiSparkles, GiMountains, GiPineTree, GiOakLeaf } from "react-icons/gi";
 import { MdChat } from "react-icons/md";
 
+import { chaletData } from "@/data/chalets";
+
 // Icon mapping function
 const getIconComponent = (iconName: string) => {
   const icons = {
@@ -33,6 +34,7 @@ const getIconComponent = (iconName: string) => {
     leaf: GiOakLeaf,
     sparkles: GiSparkles,
   };
+
   return icons[iconName as keyof typeof icons] || GiPineTree;
 };
 
@@ -47,8 +49,8 @@ const ChaletPreviewCard = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 40 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
       whileHover={{ y: -8 }}
     >
@@ -56,22 +58,22 @@ const ChaletPreviewCard = ({
         {/* Image principale avec overlay */}
         <div className="relative h-64 overflow-hidden bg-default-100">
           <Image
-            src={chalet.images[0]}
+            fill
             alt={`Chalet ${chalet.name}`}
             className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700"
-            radius="none"
             loading="lazy"
-            fill
+            radius="none"
+            src={chalet.images[0]}
           />
 
           {/* Overlay avec informations */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent">
             <div className="absolute top-4 right-4">
-              <Badge content="3★" color="warning" placement="top-right">
+              <Badge color="warning" content="3★" placement="top-right">
                 <Chip
+                  className="text-white"
                   color={chalet.color as any}
                   variant="solid"
-                  className="text-white"
                 >
                   {chalet.capacity}
                 </Chip>
@@ -89,7 +91,7 @@ const ChaletPreviewCard = ({
             {/* Nouveau badge si Douglas */}
             {chalet.name === "DOUGLAS" && (
               <div className="absolute top-4 left-4">
-                <Chip color="secondary" variant="solid" size="sm">
+                <Chip color="secondary" size="sm" variant="solid">
                   <GiSparkles className="inline mr-1" /> NOUVEAU 2024
                 </Chip>
               </div>
@@ -135,12 +137,12 @@ const ChaletPreviewCard = ({
             </h4>
             <div className="flex flex-wrap gap-1">
               {chalet.highlights.slice(0, 3).map((highlight, idx) => (
-                <Chip key={idx} size="sm" variant="flat" color="primary">
+                <Chip key={idx} color="primary" size="sm" variant="flat">
                   {highlight}
                 </Chip>
               ))}
               {chalet.highlights.length > 3 && (
-                <Chip size="sm" variant="flat" color="default">
+                <Chip color="default" size="sm" variant="flat">
                   +{chalet.highlights.length - 3}
                 </Chip>
               )}
@@ -165,21 +167,21 @@ const ChaletPreviewCard = ({
           <div className="flex gap-2 pt-2">
             <Button
               as={Link}
-              href={`/chalet/${chalet.slug}`}
-              color="primary"
-              variant="solid"
               className="flex-1 btn-alpine text-primary-foreground"
+              color="primary"
               endContent={<BsArrowRight />}
+              href={`/chalet/${chalet.slug}`}
+              variant="solid"
             >
               Découvrir
             </Button>
             <Button
-              as={Link}
-              href="tel:+33611233767"
-              color="success"
-              variant="flat"
-              className="backdrop-blur-sm"
               isIconOnly
+              as={Link}
+              className="backdrop-blur-sm"
+              color="success"
+              href="tel:+33611233767"
+              variant="flat"
             >
               <BsPhone />
             </Button>
@@ -195,10 +197,10 @@ export default function ChaletsPage() {
     <div className="space-y-12">
       {/* Hero Section */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
         className="text-center"
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.6 }}
       >
         <h1 className="text-5xl font-bold mb-6 font-display gradient-festive bg-clip-text text-transparent">
           Nos Chalets d'Exception
@@ -232,8 +234,8 @@ export default function ChaletsPage() {
 
       {/* Informations importantes */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         <Card className="alpine-card">
@@ -272,9 +274,9 @@ export default function ChaletsPage() {
                 </div>
                 <Button
                   as={Link}
-                  href="tel:+33611233767"
-                  color="primary"
                   className="btn-alpine text-primary-foreground"
+                  color="primary"
+                  href="tel:+33611233767"
                   startContent={<BsPhone />}
                 >
                   06 11 23 37 67
@@ -298,10 +300,10 @@ export default function ChaletsPage() {
 
       {/* Section CTA finale */}
       <motion.div
-        initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.8 }}
         className="text-center"
+        initial={{ opacity: 0 }}
+        transition={{ duration: 0.5, delay: 0.8 }}
       >
         <Card className="alpine-card">
           <CardBody className="p-8">
@@ -317,21 +319,21 @@ export default function ChaletsPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 as={Link}
-                href="tel:+33611233767"
-                color="success"
-                size="lg"
                 className="font-semibold btn-success text-white"
+                color="success"
+                href="tel:+33611233767"
+                size="lg"
                 startContent={<BsPhone />}
               >
                 Appel direct - Réservation immédiate
               </Button>
               <Button
                 as={Link}
-                href="/contact"
-                color="primary"
-                variant="flat"
-                size="lg"
                 className="font-semibold backdrop-blur-sm"
+                color="primary"
+                href="/contact"
+                size="lg"
+                variant="flat"
               >
                 Demande personnalisée
               </Button>
