@@ -166,3 +166,215 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 }
+
+/* Yoopta Editor Custom Styles */
+.yoopta-editor {
+  background: transparent !important;
+}
+
+/* Fix Yoopta action menu styles */
+[data-yoopta-action-menu] {
+  background: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+[data-yoopta-action-menu] [data-yoopta-action-menu-item] {
+  background: transparent !important;
+  color: hsl(var(--foreground)) !important;
+  border-radius: 4px !important;
+  padding: 8px 12px !important;
+}
+
+[data-yoopta-action-menu] [data-yoopta-action-menu-item]:hover {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+/* Fix Yoopta toolbar styles */
+[data-yoopta-toolbar] {
+  background: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+}
+
+[data-yoopta-toolbar] button {
+  background: transparent !important;
+  color: hsl(var(--foreground)) !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 6px !important;
+}
+
+[data-yoopta-toolbar] button:hover {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+[data-yoopta-toolbar] button[data-state="active"] {
+  background: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+/* Fix Yoopta block actions (+ button) */
+[data-yoopta-block-actions] {
+  background: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1) !important;
+  z-index: 10 !important;
+}
+
+[data-yoopta-block-actions] button {
+  background: transparent !important;
+  color: hsl(var(--foreground)) !important;
+  border: none !important;
+  border-radius: 4px !important;
+  width: 24px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+[data-yoopta-block-actions] button:hover {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+/* Fix Yoopta drag handle */
+[data-yoopta-drag-handle] {
+  background: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 4px !important;
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+[data-yoopta-drag-handle]:hover {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+/* Fix selection box styles */
+[data-yoopta-selection-box] {
+  border: 2px solid hsl(var(--primary)) !important;
+  background: hsla(var(--primary) / 0.1) !important;
+}
+
+/* Fix link tool styles */
+[data-yoopta-link-tool] {
+  background: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+  padding: 12px !important;
+}
+
+[data-yoopta-link-tool] input {
+  background: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 4px !important;
+  color: hsl(var(--foreground)) !important;
+  padding: 8px 12px !important;
+}
+
+[data-yoopta-link-tool] button {
+  background: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 8px 12px !important;
+}
+
+[data-yoopta-link-tool] button:hover {
+  background: hsl(var(--primary) / 0.9) !important;
+}
+
+/* Fix callout styles */
+[data-yoopta-callout] {
+  border-radius: 8px !important;
+  border-left: 4px solid !important;
+  margin: 16px 0 !important;
+}
+
+[data-yoopta-callout][data-theme="info"] {
+  background: hsl(var(--primary) / 0.1) !important;
+  border-left-color: hsl(var(--primary)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Fix blockquote styles */
+[data-yoopta-blockquote] {
+  border-left: 4px solid hsl(var(--border)) !important;
+  background: hsl(var(--muted) / 0.3) !important;
+  color: hsl(var(--foreground)) !important;
+  margin: 16px 0 !important;
+  padding: 16px !important;
+  border-radius: 0 8px 8px 0 !important;
+}
+
+/* Fix general text styles */
+.yoopta-editor [contenteditable] {
+  color: hsl(var(--foreground)) !important;
+}
+
+.yoopta-editor h1 {
+  color: hsl(var(--foreground)) !important;
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  margin: 1rem 0 !important;
+}
+
+.yoopta-editor h2 {
+  color: hsl(var(--foreground)) !important;
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  margin: 1rem 0 !important;
+}
+
+.yoopta-editor h3 {
+  color: hsl(var(--foreground)) !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  margin: 1rem 0 !important;
+}
+
+.yoopta-editor p {
+  color: hsl(var(--foreground)) !important;
+  margin: 0.5rem 0 !important;
+  line-height: 1.6 !important;
+}
+
+.yoopta-editor ul, .yoopta-editor ol {
+  color: hsl(var(--foreground)) !important;
+  margin: 0.5rem 0 !important;
+  padding-left: 1.5rem !important;
+}
+
+.yoopta-editor li {
+  color: hsl(var(--foreground)) !important;
+  margin: 0.25rem 0 !important;
+}
+
+/* Ensure menus stay within container */
+[data-yoopta-action-menu],
+[data-yoopta-toolbar],
+[data-yoopta-link-tool] {
+  z-index: 50 !important;
+  position: fixed !important;
+}
+
+/* Fix any overflowing elements */
+.yoopta-editor * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Fix editor container to prevent overflow */
+.yoopta-editor-container {
+  position: relative !important;
+  overflow: hidden !important;
+}

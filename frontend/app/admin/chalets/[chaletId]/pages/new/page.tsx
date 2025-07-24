@@ -1,15 +1,135 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Button, Input, Chip } from "@heroui/react";
+import { Button, Input, Chip, Link } from "@heroui/react";
 import { BsArrowLeft, BsCheck, BsPlus } from "react-icons/bs";
-import Link from "next/link";
+import YooptaEditor, {
+  createYooptaEditor,
+  YooptaContentValue,
+  YooptaOnChangeOptions,
+} from "@yoopta/editor";
+import Paragraph from "@yoopta/paragraph";
+import Blockquote from "@yoopta/blockquote";
+import Embed from "@yoopta/embed";
+import Image from "@yoopta/image";
+import YooptaLink from "@yoopta/link";
+import Callout from "@yoopta/callout";
+import Video from "@yoopta/video";
+import File from "@yoopta/file";
+import Accordion from "@yoopta/accordion";
+import { NumberedList, BulletedList, TodoList } from "@yoopta/lists";
+import {
+  Bold,
+  Italic,
+  CodeMark,
+  Underline,
+  Strike,
+  Highlight,
+} from "@yoopta/marks";
+import { HeadingOne, HeadingThree, HeadingTwo } from "@yoopta/headings";
+import Code from "@yoopta/code";
+import Table from "@yoopta/table";
+import Divider from "@yoopta/divider";
+import ActionMenuList, {
+  DefaultActionMenuRender,
+} from "@yoopta/action-menu-list";
+import Toolbar, { DefaultToolbarRender } from "@yoopta/toolbar";
+import LinkTool, { DefaultLinkToolRender } from "@yoopta/link-tool";
+import { WITH_BASIC_INIT_VALUE } from "./initValue";
 
 import { chaletService } from "@/lib/services/chalets";
 import { pageService } from "@/lib/services/pages";
 import { Chalet, CreatePageDto } from "@/types";
-import YooptaEditorWrapper from "@/components/admin/YooptaEditor";
+
+const plugins = [
+  Paragraph,
+  Table,
+  Divider.extend({
+    elementProps: {
+      divider: (props) => ({
+        ...props,
+        color: "#007aff",
+      }),
+    },
+  }),
+  Accordion,
+  HeadingOne,
+  HeadingTwo,
+  HeadingThree,
+  Blockquote,
+  Callout,
+  NumberedList,
+  BulletedList,
+  TodoList,
+  Code,
+  YooptaLink,
+  Embed,
+  Image.extend({
+    options: {
+      // async onUpload(file) {
+      //   const data = await uploadToCloudinary(file, "image");
+      //   return {
+      //     src: data.secure_url,
+      //     alt: "cloudinary",
+      //     sizes: {
+      //       width: data.width,
+      //       height: data.height,
+      //     },
+      //   };
+      // },
+    },
+  }),
+  Video.extend({
+    options: {
+      // onUpload: async (file) => {
+      //   const data = await uploadToCloudinary(file, "video");
+      //   return {
+      //     src: data.secure_url,
+      //     alt: "cloudinary",
+      //     sizes: {
+      //       width: data.width,
+      //       height: data.height,
+      //     },
+      //   };
+      // },
+      // onUploadPoster: async (file) => {
+      //   const image = await uploadToCloudinary(file, "image");
+      //   return image.secure_url;
+      // },
+    },
+  }),
+  File.extend({
+    options: {
+      // onUpload: async (file) => {
+      //   const response = await uploadToCloudinary(file, "auto");
+      //   return {
+      //     src: response.secure_url,
+      //     format: response.format,
+      //     name: response.name,
+      //     size: response.bytes,
+      //   };
+      // },
+    },
+  }),
+];
+
+const TOOLS = {
+  ActionMenu: {
+    render: DefaultActionMenuRender,
+    tool: ActionMenuList,
+  },
+  Toolbar: {
+    render: DefaultToolbarRender,
+    tool: Toolbar,
+  },
+  LinkTool: {
+    render: DefaultLinkToolRender,
+    tool: LinkTool,
+  },
+};
+
+const MARKS = [Bold, Italic, CodeMark, Underline, Strike, Highlight];
 
 export default function NewPagePage() {
   const [chalet, setChalet] = useState<Chalet | null>(null);
@@ -26,6 +146,27 @@ export default function NewPagePage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const params = useParams();
+
+  const [value, setValue] = useState(WITH_BASIC_INIT_VALUE);
+  const editor = useMemo(() => createYooptaEditor(), []);
+  const selectionRef = useRef(null);
+
+
+  const onChange = (
+    newValue: YooptaContentValue,
+    options: YooptaOnChangeOptions
+  ) => {
+    setValue(newValue);
+  };
+
+  // Force editor reset with our chalet content
+  useEffect(() => {
+    if (editor) {
+      // Reset the editor value to ensure our chalet content is loaded
+      setValue(WITH_BASIC_INIT_VALUE);
+    }
+  }, [editor]);
+
 
   useEffect(() => {
     const fetchChalet = async () => {
@@ -144,116 +285,135 @@ export default function NewPagePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-6 max-w-4xl">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-4">
-          <Link href={`/admin/chalets/${params.chaletId}`}>
-            <Button isIconOnly size="sm" variant="ghost">
-              <BsArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <div>
-            <h1 className="text-2xl font-bold">Nouvelle page</h1>
-            <p className="text-muted-foreground">Chalet: {chalet.name}</p>
+      <div className="container mx-auto py-6 px-4 max-w-5xl">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center space-x-4">
+            <Link href={`/admin/chalets/${params.chaletId}`}>
+              <Button isIconOnly size="sm" variant="ghost">
+                <BsArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-2xl font-bold">Nouvelle page</h1>
+              <p className="text-muted-foreground">Chalet: {chalet.name}</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <form className="space-y-6" onSubmit={handleSubmit}>
-        {/* Title and Slug */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
-            isRequired
-            label="Titre"
-            placeholder="Entrez le titre de la page"
-            value={formData.title}
-            onChange={(e) => handleTitleChange(e.target.value)}
-          />
-          <Input
-            isRequired
-            label="Slug"
-            placeholder="url-de-la-page"
-            value={formData.slug}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, slug: e.target.value }))
-            }
-          />
-        </div>
-
-        {/* Tags */}
-        <div className="space-y-2">
-          <div className="flex items-center space-x-2">
+        <form className="space-y-8" onSubmit={handleSubmit}>
+          {/* Title and Slug */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input
-              label="Tags"
-              placeholder="Ajouter un tag"
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addTag();
-                }
-              }}
+              isRequired
+              label="Titre"
+              placeholder="Entrez le titre de la page"
+              value={formData.title}
+              onChange={(e) => handleTitleChange(e.target.value)}
             />
-            <Button
-              isIconOnly
-              disabled={!tagInput.trim()}
-              type="button"
-              variant="flat"
-              onClick={addTag}
+            <Input
+              isRequired
+              label="Slug"
+              placeholder="url-de-la-page"
+              value={formData.slug}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, slug: e.target.value }))
+              }
+            />
+          </div>
+
+          {/* Tags */}
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Input
+                label="Tags"
+                placeholder="Ajouter un tag"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addTag();
+                  }
+                }}
+              />
+              <Button
+                isIconOnly
+                disabled={!tagInput.trim()}
+                type="button"
+                variant="flat"
+                onClick={addTag}
+              >
+                <BsPlus className="h-4 w-4" />
+              </Button>
+            </div>
+            {formData.tags && formData.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {formData.tags.map((tag) => (
+                  <Chip
+                    key={tag}
+                    color="primary"
+                    size="sm"
+                    variant="flat"
+                    onClose={() => removeTag(tag)}
+                  >
+                    {tag}
+                  </Chip>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Content Editor */}
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-semibold mb-2">Contenu de la page</h3>
+              <p className="text-sm text-muted-foreground">
+                Utilisez l'éditeur ci-dessous pour créer le contenu de votre
+                page.
+              </p>
+            </div>
+            <div
+              className="bg-background border border-border rounded-lg p-6 min-h-[400px] w-full yoopta-editor-container shadow-sm"
+              ref={selectionRef}
             >
-              <BsPlus className="h-4 w-4" />
+              <div className="prose prose-lg max-w-none dark:prose-invert">
+                <YooptaEditor
+                  editor={editor}
+                  plugins={plugins}
+                  tools={TOOLS}
+                  marks={MARKS}
+                  selectionBoxRoot={selectionRef}
+                  value={value}
+                  onChange={onChange}
+                  autoFocus
+                  className="yoopta-editor"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex items-center justify-end space-x-4 pt-6 border-t border-border/20">
+            <Link href={`/admin/chalets/${params.chaletId}`}>
+              <Button variant="ghost">Annuler</Button>
+            </Link>
+            <Button
+              color="primary"
+              isLoading={loading}
+              startContent={!loading && <BsCheck className="h-4 w-4" />}
+              type="submit"
+            >
+              {loading ? "Création..." : "Créer la page"}
             </Button>
           </div>
-          {formData.tags && formData.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {formData.tags.map((tag) => (
-                <Chip
-                  key={tag}
-                  color="primary"
-                  size="sm"
-                  variant="flat"
-                  onClose={() => removeTag(tag)}
-                >
-                  {tag}
-                </Chip>
-              ))}
+
+          {error && (
+            <div className="p-4 rounded-lg bg-danger/20 border border-danger/30">
+              <p className="text-danger text-sm">{error}</p>
             </div>
           )}
-        </div>
-
-        {/* Content Editor */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Contenu</label>
-          <YooptaEditorWrapper
-            placeholder="Commencez à écrire votre contenu..."
-            value={formData.content}
-            onChange={handleContentChange}
-          />
-        </div>
-
-        {/* Submit Button */}
-        <div className="flex items-center justify-end space-x-4">
-          <Link href={`/admin/chalets/${params.chaletId}`}>
-            <Button variant="ghost">Annuler</Button>
-          </Link>
-          <Button
-            color="primary"
-            isLoading={loading}
-            startContent={!loading && <BsCheck className="h-4 w-4" />}
-            type="submit"
-          >
-            {loading ? "Création..." : "Créer la page"}
-          </Button>
-        </div>
-
-        {error && (
-          <div className="p-4 rounded-lg bg-danger/20 border border-danger/30">
-            <p className="text-danger text-sm">{error}</p>
-          </div>
-        )}
-      </form>
+        </form>
       </div>
     </div>
   );

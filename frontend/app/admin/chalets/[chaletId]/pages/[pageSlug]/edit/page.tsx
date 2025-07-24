@@ -10,7 +10,7 @@ import Link from "next/link";
 import { chaletService } from "@/lib/services/chalets";
 import { pageService } from "@/lib/services/pages";
 import { Chalet, Page, UpdatePageDto } from "@/types";
-import YooptaEditorWrapper from "@/components/admin/YooptaEditor";
+import YooptaEditorSimple from "@/components/admin/YooptaEditorSimple";
 
 export default function EditPagePage() {
   const [chalet, setChalet] = useState<Chalet | null>(null);
@@ -262,14 +262,18 @@ export default function EditPagePage() {
               </div>
 
               {/* Content Editor */}
+              <h3 className="text-lg font-semibold">Éditeur de contenu</h3>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Contenu</label>
-                <YooptaEditorWrapper
-                  className="min-h-[500px]"
-                  placeholder="Modifiez le contenu de votre page..."
-                  value={formData.content}
-                  onChange={handleContentChange}
-                />
+                <Card className="p-10">
+                  <CardBody>
+                    <YooptaEditorSimple
+                      placeholder="Commencez à écrire votre contenu..."
+                      value={formData.content}
+                      onChange={handleContentChange}
+                    />
+                  </CardBody>
+                </Card>
               </div>
 
               {/* Actions */}
