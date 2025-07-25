@@ -42,6 +42,8 @@ import { WITH_BASIC_INIT_VALUE } from "./initValue";
 import { getChaletById } from "@/lib/services/chalets";
 import { createPage } from "@/lib/services/pages";
 import { Chalet, CreatePageDto } from "@/types";
+import { Card, CardBody, CardHeader } from "@heroui/react";
+import { Divider as HeroDivider } from "@heroui/react";
 
 const plugins = [
   Paragraph,
@@ -154,7 +156,7 @@ export default function NewPagePage() {
 
   const onChange = (
     newValue: YooptaContentValue,
-    options: YooptaOnChangeOptions,
+    options: YooptaOnChangeOptions
   ) => {
     setValue(newValue);
   };
@@ -284,136 +286,141 @@ export default function NewPagePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-6 px-4 max-w-5xl">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-4">
-            <Link href={`/admin/chalets/${params.chaletId}`}>
-              <Button isIconOnly size="sm" variant="ghost">
-                <BsArrowLeft className="h-4 w-4" />
-              </Button>
-            </Link>
-            <div>
-              <h1 className="text-2xl font-bold">Nouvelle page</h1>
-              <p className="text-muted-foreground">Chalet: {chalet.name}</p>
-            </div>
-          </div>
-        </div>
-
-        <form className="space-y-8" onSubmit={handleSubmit}>
-          {/* Title and Slug */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input
-              isRequired
-              label="Titre"
-              placeholder="Entrez le titre de la page"
-              value={formData.title}
-              onChange={(e) => handleTitleChange(e.target.value)}
-            />
-            <Input
-              isRequired
-              label="Slug"
-              placeholder="url-de-la-page"
-              value={formData.slug}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, slug: e.target.value }))
-              }
-            />
-          </div>
-
-          {/* Tags */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Input
-                label="Tags"
-                placeholder="Ajouter un tag"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addTag();
-                  }
-                }}
-              />
-              <Button
-                isIconOnly
-                disabled={!tagInput.trim()}
-                type="button"
-                variant="flat"
-                onClick={addTag}
-              >
-                <BsPlus className="h-4 w-4" />
-              </Button>
-            </div>
-            {formData.tags && formData.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {formData.tags.map((tag) => (
-                  <Chip
-                    key={tag}
-                    color="primary"
-                    size="sm"
-                    variant="flat"
-                    onClose={() => removeTag(tag)}
-                  >
-                    {tag}
-                  </Chip>
-                ))}
+      <Card>
+        <div className="container mx-auto py-6 px-4 max-w-5xl">
+          <CardHeader>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-4">
+                <Link href={`/admin/chalets/${params.chaletId}`}>
+                  <Button isIconOnly size="sm" variant="ghost">
+                    <BsArrowLeft className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <div>
+                  <h1 className="text-2xl font-bold">Nouvelle page</h1>
+                  <p className="text-muted-foreground">Chalet: {chalet.name}</p>
+                </div>
               </div>
-            )}
-          </div>
-
-          {/* Content Editor */}
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Contenu de la page</h3>
-              <p className="text-sm text-muted-foreground">
-                Utilisez l'éditeur ci-dessous pour créer le contenu de votre
-                page.
-              </p>
             </div>
-            <div
-              ref={selectionRef}
-              className="bg-background border border-border rounded-lg p-6 min-h-[400px] w-full yoopta-editor-container shadow-sm"
-            >
-              <div className="prose prose-lg max-w-none dark:prose-invert">
-                <YooptaEditor
-                  autoFocus
-                  className="yoopta-editor"
-                  editor={editor}
-                  marks={MARKS}
-                  plugins={plugins}
-                  selectionBoxRoot={selectionRef}
-                  tools={TOOLS}
-                  value={value}
-                  onChange={onChange}
+          </CardHeader>
+          <HeroDivider />
+          <CardBody>
+            <form className="space-y-8" onSubmit={handleSubmit}>
+              {/* Title and Slug */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Input
+                  isRequired
+                  label="Titre"
+                  placeholder="Entrez le titre de la page"
+                  value={formData.title}
+                  onChange={(e) => handleTitleChange(e.target.value)}
+                />
+                <Input
+                  isRequired
+                  label="Slug"
+                  placeholder="url-de-la-page"
+                  value={formData.slug}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, slug: e.target.value }))
+                  }
                 />
               </div>
-            </div>
-          </div>
 
-          {/* Submit Button */}
-          <div className="flex items-center justify-end space-x-4 pt-6 border-t border-border/20">
-            <Link href={`/admin/chalets/${params.chaletId}`}>
-              <Button variant="ghost">Annuler</Button>
-            </Link>
-            <Button
-              color="primary"
-              isLoading={loading}
-              startContent={!loading && <BsCheck className="h-4 w-4" />}
-              type="submit"
-            >
-              {loading ? "Création..." : "Créer la page"}
-            </Button>
-          </div>
+              {/* Tags */}
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <Input
+                    label="Tags"
+                    placeholder="Ajouter un tag"
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addTag();
+                      }
+                    }}
+                  />
+                  <Button
+                    isIconOnly
+                    disabled={!tagInput.trim()}
+                    type="button"
+                    variant="flat"
+                    onClick={addTag}
+                  >
+                    <BsPlus className="h-4 w-4" />
+                  </Button>
+                </div>
+                {formData.tags && formData.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {formData.tags.map((tag) => (
+                      <Chip
+                        key={tag}
+                        color="primary"
+                        size="sm"
+                        variant="flat"
+                        onClose={() => removeTag(tag)}
+                      >
+                        {tag}
+                      </Chip>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <HeroDivider />
 
-          {error && (
-            <div className="p-4 rounded-lg bg-danger/20 border border-danger/30">
-              <p className="text-danger text-sm">{error}</p>
-            </div>
-          )}
-        </form>
-      </div>
+              {/* Content Editor */}
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Contenu de la page
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Utilisez l'éditeur ci-dessous pour créer le contenu de votre
+                    page.
+                  </p>
+                </div>
+                <div ref={selectionRef}>
+                  <div className="prose prose-lg max-w-none dark:prose-invert">
+                    <YooptaEditor
+                      autoFocus
+                      className=""
+                      editor={editor}
+                      marks={MARKS}
+                      plugins={plugins}
+                      selectionBoxRoot={selectionRef}
+                      tools={TOOLS}
+                      value={value}
+                      onChange={onChange}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex items-center justify-end space-x-4 pt-6 border-t border-border/20">
+                <Link href={`/admin/chalets/${params.chaletId}`}>
+                  <Button variant="ghost">Annuler</Button>
+                </Link>
+                <Button
+                  color="primary"
+                  isLoading={loading}
+                  startContent={!loading && <BsCheck className="h-4 w-4" />}
+                  type="submit"
+                >
+                  {loading ? "Création..." : "Créer la page"}
+                </Button>
+              </div>
+
+              {error && (
+                <div className="p-4 rounded-lg bg-danger/20 border border-danger/30">
+                  <p className="text-danger text-sm">{error}</p>
+                </div>
+              )}
+            </form>
+          </CardBody>
+        </div>
+      </Card>
     </div>
   );
 }

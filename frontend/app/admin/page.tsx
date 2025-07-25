@@ -210,23 +210,20 @@ export default function AdminDashboard() {
                     key={activity.id}
                     className="flex items-center gap-4 p-3 rounded-lg bg-muted/20"
                   >
-                    <Chip
-                      color={getActivityColor(activity.type) as any}
-                      size="sm"
-                      startContent={getActivityIcon(activity.type)}
-                      variant="flat"
-                    />
-                    <div className="flex-1">
-                      <p className="font-medium text-foreground">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 flex-shrink-0">
+                      {getActivityIcon(activity.type)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-foreground truncate">
                         {activity.title}
                       </p>
                       {activity.chaletName && (
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-muted-foreground truncate">
                           {activity.chaletName}
                         </p>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground whitespace-nowrap">
                       {activity.timestamp}
                     </p>
                   </div>

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 import { getAllChalets } from "@/lib/services/chalets";
 import { getAllPages } from "@/lib/services/pages";
@@ -30,7 +31,9 @@ interface AdminState {
   getPagesForChalet: (chaletId: string) => Page[];
 }
 
-export const useAdminStore = create<AdminState>((set, get) => ({
+export const useAdminStore = create<AdminState>()(
+  persist(
+    (set, get) => ({
   chalets: [],
   pages: [],
   loading: false,
@@ -144,4 +147,14 @@ export const useAdminStore = create<AdminState>((set, get) => ({
         : page.chalet._id === chaletId;
     });
   },
-}));
+}),
+    {
+      name: "admin-storage",
+      partialize: (state) => ({
+        chalets: state.chalets,
+        pages: state.pages,
+        initialized: state.initialized,
+      }),
+    }
+  )
+);

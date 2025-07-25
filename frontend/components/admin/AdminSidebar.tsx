@@ -16,20 +16,15 @@ import Link from "next/link";
 import clsx from "clsx";
 
 import { useAdminStore } from "@/lib/stores/admin-store";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
 export function AdminSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
 
   // Utilisation du store global
-  const {
-    chalets,
-    loading,
-    initialized,
-    initialize,
-    refreshData,
-    getPagesForChalet,
-  } = useAdminStore();
+  const { chalets, loading, initialized, initialize, getPagesForChalet } =
+    useAdminStore();
 
   // Initialiser le store au montage
   useEffect(() => {
@@ -38,16 +33,16 @@ export function AdminSidebar() {
     }
   }, [initialized, initialize]);
 
-  // Rafraîchir les données périodiquement pour mettre à jour les vues
-  useEffect(() => {
-    if (initialized) {
-      const interval = setInterval(() => {
-        refreshData();
-      }, 30000); // Rafraîchir toutes les 30 secondes
-
-      return () => clearInterval(interval);
-    }
-  }, [initialized, refreshData]);
+  // Optionnel: rafraîchir uniquement si nécessaire
+  // useEffect(() => {
+  //   if (initialized) {
+  //     const interval = setInterval(() => {
+  //       refreshData();
+  //     }, 300000); // Rafraîchir toutes les 5 minutes seulement
+  //
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [initialized, refreshData]);
 
   const isActiveLink = (href: string) => pathname === href;
 
@@ -56,14 +51,14 @@ export function AdminSidebar() {
       className={clsx(
         "overflow-y-auto border-r border-border/20 transition-all duration-300 ease-in-out m-2 rounded-lg",
         isCollapsed ? "w-30" : "w-80",
-        "h-[calc(100%-1rem)]",
+        "h-[calc(100%-1rem)]"
       )}
     >
       <Card className="alpine-card h-full rounded-none border-0 border-r border-border/20">
         <div
           className={clsx(
-            "transition-all duration-300",
-            isCollapsed ? "p-3" : "p-6",
+            "transition-all duration-300 flex flex-col h-full",
+            isCollapsed ? "p-3" : "p-6"
           )}
         >
           {/* Logo/Titre Admin avec bouton collapse */}
@@ -102,7 +97,7 @@ export function AdminSidebar() {
                   "w-full gap-3 h-12 transition-all duration-300",
                   isActiveLink("/admin") &&
                     "btn-alpine text-primary-foreground",
-                  isCollapsed ? "justify-center px-0" : "justify-start",
+                  isCollapsed ? "justify-center px-0" : "justify-start"
                 )}
                 color={isActiveLink("/admin") ? "primary" : "default"}
                 startContent={<BsHouse className="h-5 w-5" />}
@@ -118,7 +113,7 @@ export function AdminSidebar() {
                   "w-full gap-3 h-12 transition-all duration-300",
                   isActiveLink("/admin/chalets") &&
                     "btn-alpine text-primary-foreground",
-                  isCollapsed ? "justify-center px-0" : "justify-start",
+                  isCollapsed ? "justify-center px-0" : "justify-start"
                 )}
                 color={isActiveLink("/admin/chalets") ? "primary" : "default"}
                 startContent={<BsGear className="h-5 w-5" />}
@@ -131,7 +126,7 @@ export function AdminSidebar() {
 
           {/* Section Chalets avec pages */}
           {!isCollapsed && (
-            <div className="space-y-4">
+            <div className="space-y-4 flex-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <h2 className="font-semibold text-lg text-foreground">
@@ -201,7 +196,7 @@ export function AdminSidebar() {
                     const chaletPages = getPagesForChalet(chalet._id);
                     const totalViews = chaletPages.reduce(
                       (sum, page) => sum + (page.views || 0),
-                      0,
+                      0
                     );
 
                     return (
@@ -271,7 +266,7 @@ export function AdminSidebar() {
                                 startContent={<BsPlus className="h-3 w-3" />}
                                 variant="flat"
                               >
-                                + Page
+                                Page
                               </Button>
                             </Link>
                           </div>
@@ -336,19 +331,27 @@ export function AdminSidebar() {
           )}
 
           {/* Actions rapides en bas */}
-          <div className="mt-8 pt-4 border-t border-border/20">
-            <Link href="/admin/settings">
-              <Button
-                className={clsx(
-                  "w-full gap-3 transition-all duration-300",
-                  isCollapsed ? "justify-center px-0" : "justify-start",
-                )}
-                startContent={<BsGear className="h-4 w-4" />}
-                variant="ghost"
-              >
-                {!isCollapsed && "Paramètres"}
-              </Button>
-            </Link>
+          <div className="mt-auto pt-4 border-t border-border/20">
+            <div className={clsx(
+              "flex gap-2",
+              isCollapsed ? "justify-center" : "justify-start"
+            )}>
+              <Link href="/admin/settings">
+                <Button
+                  isIconOnly={isCollapsed}
+                  className={clsx(
+                    "gap-3 transition-all duration-300",
+                    isCollapsed ? "justify-center" : "justify-start"
+                  )}
+                  startContent={<BsGear className="h-4 w-4" />}
+                  variant="light"
+                >
+                  {!isCollapsed && "Paramètres"}
+                </Button>
+              </Link>
+
+              <ThemeSwitcher />
+            </div>
           </div>
         </div>
       </Card>

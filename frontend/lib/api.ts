@@ -1,14 +1,10 @@
 "use server";
 import axios from "axios";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://backend:5042";
 
 export async function createApiClient() {
-  const cookieStore = await cookies();
-  const authToken = cookieStore.get("auth-token")?.value;
-
   const headers: Record<string, string> = {};
 
   const api = axios.create({
