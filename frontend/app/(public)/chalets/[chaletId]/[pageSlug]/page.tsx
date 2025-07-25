@@ -29,7 +29,7 @@ export default function NotionStylePageViewer() {
         ]);
 
         const pageData = pagesData.find(
-          (p) => p.slug === pageSlug && p.isActive !== false,
+          (p) => p.slug === pageSlug && p.isActive !== false
         );
 
         if (!pageData) {
@@ -182,11 +182,7 @@ export default function NotionStylePageViewer() {
               lineHeight: "1.5",
             }}
           >
-            <YooptaEditor
-              className="notion-dark-theme"
-              readOnly={true}
-              value={page.content}
-            />
+            <YooptaEditor className="" readOnly={true} value={page.content} />
           </div>
 
           {/* Footer minimaliste */}
@@ -219,113 +215,6 @@ export default function NotionStylePageViewer() {
           </div>
         </div>
       </div>
-
-      {/* Custom styles for the dark theme read-only editor */}
-      <style global jsx>{`
-        .notion-dark-theme .yoopta-editor {
-          background: transparent !important;
-          border: none !important;
-          padding: 0 !important;
-          color: rgba(255, 255, 255, 0.9) !important;
-        }
-
-        .notion-dark-theme .yoopta-editor h1 {
-          font-size: 2em !important;
-          font-weight: 700 !important;
-          margin: 32px 0 8px 0 !important;
-          line-height: 1.2 !important;
-          color: rgba(255, 255, 255, 0.9) !important;
-        }
-
-        .notion-dark-theme .yoopta-editor h2 {
-          font-size: 1.5em !important;
-          font-weight: 600 !important;
-          margin: 28px 0 4px 0 !important;
-          line-height: 1.2 !important;
-          color: rgba(255, 255, 255, 0.9) !important;
-        }
-
-        .notion-dark-theme .yoopta-editor h3 {
-          font-size: 1.25em !important;
-          font-weight: 600 !important;
-          margin: 24px 0 4px 0 !important;
-          line-height: 1.2 !important;
-          color: rgba(255, 255, 255, 0.9) !important;
-        }
-
-        .notion-dark-theme .yoopta-editor p {
-          margin: 3px 0 !important;
-          color: rgba(255, 255, 255, 0.9) !important;
-          min-height: 1em !important;
-          line-height: 1.5 !important;
-        }
-
-        .notion-dark-theme .yoopta-editor strong {
-          font-weight: 600 !important;
-          color: rgba(255, 255, 255, 0.9) !important;
-        }
-
-        .notion-dark-theme .yoopta-editor em {
-          font-style: italic !important;
-          color: rgba(255, 255, 255, 0.9) !important;
-        }
-
-        .notion-dark-theme .yoopta-editor code {
-          background: rgba(135, 131, 120, 0.15) !important;
-          color: rgb(235, 87, 87) !important;
-          padding: 0.2em 0.4em !important;
-          border-radius: 3px !important;
-          font-size: 85% !important;
-          font-family:
-            "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
-            monospace !important;
-        }
-
-        .notion-dark-theme .yoopta-editor pre {
-          background: rgba(135, 131, 120, 0.15) !important;
-          border: 1px solid rgba(255, 255, 255, 0.1) !important;
-          border-radius: 3px !important;
-          padding: 16px !important;
-          margin: 8px 0 !important;
-          font-family:
-            "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
-            monospace !important;
-          font-size: 14px !important;
-          line-height: 1.45 !important;
-          overflow-x: auto !important;
-        }
-
-        .notion-dark-theme .yoopta-editor blockquote {
-          border-left: 3px solid rgba(255, 255, 255, 0.2) !important;
-          padding-left: 14px !important;
-          margin: 4px 0 !important;
-          color: rgba(255, 255, 255, 0.7) !important;
-          font-style: normal !important;
-        }
-
-        .notion-dark-theme .yoopta-editor ul,
-        .notion-dark-theme .yoopta-editor ol {
-          margin: 4px 0 !important;
-          padding-left: 24px !important;
-          color: rgba(255, 255, 255, 0.9) !important;
-        }
-
-        .notion-dark-theme .yoopta-editor li {
-          margin: 2px 0 !important;
-          color: rgba(255, 255, 255, 0.9) !important;
-        }
-
-        .notion-dark-theme .yoopta-editor a {
-          color: rgba(94, 138, 255, 1) !important;
-          text-decoration: underline !important;
-          text-decoration-color: rgba(94, 138, 255, 0.4) !important;
-        }
-
-        /* Hide any editor UI in read-only mode */
-        .notion-dark-theme .yoopta-editor [contenteditable="false"] {
-          outline: none !important;
-        }
-      `}</style>
     </>
   );
 }

@@ -381,19 +381,16 @@ export default function NewPagePage() {
                   </p>
                 </div>
                 <div ref={selectionRef}>
-                  <div className="prose prose-lg max-w-none dark:prose-invert">
-                    <YooptaEditor
-                      autoFocus
-                      className=""
-                      editor={editor}
-                      marks={MARKS}
-                      plugins={plugins}
-                      selectionBoxRoot={selectionRef}
-                      tools={TOOLS}
-                      value={value}
-                      onChange={onChange}
-                    />
-                  </div>
+                  <YooptaEditor
+                    autoFocus
+                    editor={editor}
+                    marks={MARKS}
+                    plugins={plugins}
+                    selectionBoxRoot={selectionRef}
+                    tools={TOOLS}
+                    value={value}
+                    onChange={onChange}
+                  />
                 </div>
               </div>
 
