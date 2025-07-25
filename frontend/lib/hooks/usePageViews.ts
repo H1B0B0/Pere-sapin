@@ -5,7 +5,7 @@ export const usePageViews = (pageId: string) => {
     const incrementView = async () => {
       try {
         const API_BASE_URL =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:5042";
+          process.env.NEXT_PUBLIC_API_URL || "http://backend:5042";
 
         console.log(`Incrémentation de la vue pour la page ${pageId}`);
         const response = await fetch(`${API_BASE_URL}/pages/${pageId}/view`, {
@@ -38,7 +38,7 @@ export const usePageStats = (pageId: string) => {
   const fetchStats = async () => {
     try {
       const API_BASE_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:5042";
+        process.env.NEXT_PUBLIC_API_URL || "http://backend:5042";
       const response = await fetch(`${API_BASE_URL}/pages/${pageId}/stats`, {
         headers: {
           "Content-Type": "application/json",

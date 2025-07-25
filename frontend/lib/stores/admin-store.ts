@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
-import { chaletService } from "@/lib/services/chalets";
-import { pageService } from "@/lib/services/pages";
+import { getAllChalets } from "@/lib/services/chalets";
+import { getAllPages } from "@/lib/services/pages";
 import { Chalet, Page } from "@/types";
 
 interface AdminState {
@@ -44,8 +44,8 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     try {
       set({ loading: true });
       const [chaletsData, pagesData] = await Promise.all([
-        chaletService.getAll(),
-        pageService.getAll(),
+        getAllChalets(),
+        getAllPages(),
       ]);
 
       set({

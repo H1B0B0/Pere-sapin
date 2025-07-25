@@ -26,7 +26,7 @@ docker-compose up
 
 L'application sera disponible sur :
 
-- **Frontend (public)** : http://localhost:3000
+- **Frontend (public)** : http://frontend:3000
 - **Backend API** : http://localhost:5042
 - **MongoDB** : localhost:27017
 
@@ -44,12 +44,12 @@ Un compte administrateur par défaut est créé automatiquement :
 ### Interface publique
 
 - Accès direct aux pages via QR codes
-- URL format : `http://localhost:3000/page/[slug]`
+- URL format : `http://frontend:3000/page/[slug]`
 - Interface optimisée mobile
 
 ### Interface d'administration
 
-1. Accédez à http://localhost:3000/admin/login
+1. Accédez à http://frontend:3000/admin/login
 2. Connectez-vous avec les identifiants par défaut
 3. Créez vos chalets
 4. Ajoutez des pages explicatives
@@ -198,7 +198,7 @@ NODE_ENV=development
 PORT=5042
 MONGODB_URI=mongodb://database:27017/pere-sapin
 JWT_SECRET=your-super-secret-jwt-key
-FRONTEND_URL=http://localhost:3000
+FRONTEND_URL=http://frontend:3000
 ```
 
 ### Frontend (.env.local)

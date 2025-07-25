@@ -15,6 +15,7 @@ const Background: React.FC = () => {
   // Use next-themes to determine if dark mode is active
   const isDark = useMemo(() => {
     if (!mounted) return true; // Default to dark during SSR
+
     return resolvedTheme === "dark";
   }, [resolvedTheme, mounted]);
 
@@ -22,6 +23,7 @@ const Background: React.FC = () => {
   useEffect(() => {
     if (!rootRef.current) return;
     const scope = createScope({ root: rootRef.current });
+
     // Animate mountains (slide up + fade in)
     animate(".mountain-bg", {
       translateY: [60, 0],
@@ -79,6 +81,7 @@ const Background: React.FC = () => {
   return (
     <div
       ref={rootRef}
+      aria-hidden="true"
       style={{
         position: "fixed",
         inset: 0,
@@ -88,74 +91,73 @@ const Background: React.FC = () => {
         width: "100vw",
         height: "100vh",
       }}
-      aria-hidden="true"
     >
       <svg
-        viewBox="0 0 1920 1080"
-        width="100%"
         height="100%"
         preserveAspectRatio="xMidYMid slice"
         style={{ display: "block", width: "100%", height: "100%" }}
+        viewBox="0 0 1920 1080"
+        width="100%"
       >
         <defs>
-          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor={colors.sky[0]} />
             <stop offset="100%" stopColor={colors.sky[1]} />
           </linearGradient>
-          <linearGradient id="mountain1" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="mountain1" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor={colors.mountain1[0]} />
             <stop offset="100%" stopColor={colors.mountain1[1]} />
           </linearGradient>
-          <linearGradient id="mountain2" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="mountain2" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor={colors.mountain2[0]} />
             <stop offset="100%" stopColor={colors.mountain2[1]} />
           </linearGradient>
-          <linearGradient id="mountain3" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="mountain3" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor={colors.mountain3[0]} />
             <stop offset="100%" stopColor={colors.mountain3[1]} />
           </linearGradient>
         </defs>
         {/* Sky */}
-        <rect width="1920" height="1080" fill="url(#sky)" />
+        <rect fill="url(#sky)" height="1080" width="1920" />
 
         {/* Nuages organiques */}
         <g className="clouds" opacity="0.6">
           {/* Nuage 1 */}
           <g>
-            <ellipse cx="300" cy="200" rx="60" ry="25" fill={colors.clouds} />
-            <ellipse cx="340" cy="190" rx="45" ry="20" fill={colors.clouds} />
-            <ellipse cx="280" cy="185" rx="35" ry="18" fill={colors.clouds} />
-            <ellipse cx="350" cy="210" rx="40" ry="22" fill={colors.clouds} />
+            <ellipse cx="300" cy="200" fill={colors.clouds} rx="60" ry="25" />
+            <ellipse cx="340" cy="190" fill={colors.clouds} rx="45" ry="20" />
+            <ellipse cx="280" cy="185" fill={colors.clouds} rx="35" ry="18" />
+            <ellipse cx="350" cy="210" fill={colors.clouds} rx="40" ry="22" />
           </g>
 
           {/* Nuage 2 */}
           <g>
-            <ellipse cx="800" cy="150" rx="70" ry="30" fill={colors.clouds} />
-            <ellipse cx="850" cy="140" rx="55" ry="25" fill={colors.clouds} />
-            <ellipse cx="770" cy="135" rx="40" ry="20" fill={colors.clouds} />
-            <ellipse cx="830" cy="165" rx="45" ry="25" fill={colors.clouds} />
+            <ellipse cx="800" cy="150" fill={colors.clouds} rx="70" ry="30" />
+            <ellipse cx="850" cy="140" fill={colors.clouds} rx="55" ry="25" />
+            <ellipse cx="770" cy="135" fill={colors.clouds} rx="40" ry="20" />
+            <ellipse cx="830" cy="165" fill={colors.clouds} rx="45" ry="25" />
           </g>
 
           {/* Nuage 3 */}
           <g>
-            <ellipse cx="1400" cy="180" rx="65" ry="28" fill={colors.clouds} />
-            <ellipse cx="1450" cy="170" rx="50" ry="23" fill={colors.clouds} />
-            <ellipse cx="1380" cy="165" rx="38" ry="19" fill={colors.clouds} />
-            <ellipse cx="1430" cy="195" rx="42" ry="24" fill={colors.clouds} />
+            <ellipse cx="1400" cy="180" fill={colors.clouds} rx="65" ry="28" />
+            <ellipse cx="1450" cy="170" fill={colors.clouds} rx="50" ry="23" />
+            <ellipse cx="1380" cy="165" fill={colors.clouds} rx="38" ry="19" />
+            <ellipse cx="1430" cy="195" fill={colors.clouds} rx="42" ry="24" />
           </g>
 
           {/* Nuage 4 - plus petit */}
           <g>
-            <ellipse cx="600" cy="120" rx="35" ry="15" fill={colors.clouds} />
-            <ellipse cx="620" cy="115" rx="25" ry="12" fill={colors.clouds} />
-            <ellipse cx="585" cy="110" rx="20" ry="10" fill={colors.clouds} />
+            <ellipse cx="600" cy="120" fill={colors.clouds} rx="35" ry="15" />
+            <ellipse cx="620" cy="115" fill={colors.clouds} rx="25" ry="12" />
+            <ellipse cx="585" cy="110" fill={colors.clouds} rx="20" ry="10" />
           </g>
 
           {/* Nuage 5 - plus petit */}
           <g>
-            <ellipse cx="1200" cy="100" rx="40" ry="18" fill={colors.clouds} />
-            <ellipse cx="1225" cy="95" rx="30" ry="14" fill={colors.clouds} />
-            <ellipse cx="1180" cy="90" rx="25" ry="12" fill={colors.clouds} />
+            <ellipse cx="1200" cy="100" fill={colors.clouds} rx="40" ry="18" />
+            <ellipse cx="1225" cy="95" fill={colors.clouds} rx="30" ry="14" />
+            <ellipse cx="1180" cy="90" fill={colors.clouds} rx="25" ry="12" />
           </g>
         </g>
 
@@ -218,26 +220,26 @@ const Background: React.FC = () => {
           <ellipse
             cx="470"
             cy="610"
-            rx="12"
-            ry="6"
             fill={colors.snow}
             opacity="0.4"
+            rx="12"
+            ry="6"
           />
           <ellipse
             cx="1320"
             cy="780"
-            rx="10"
-            ry="5"
             fill={colors.snow}
             opacity="0.4"
+            rx="10"
+            ry="5"
           />
           <ellipse
             cx="820"
             cy="650"
-            rx="14"
-            ry="7"
             fill={colors.snow}
             opacity="0.3"
+            rx="14"
+            ry="7"
           />
         </g>
         {/* Sapins des Vosges - plus réalistes et visibles */}
@@ -247,30 +249,31 @@ const Background: React.FC = () => {
             const y = 1020 - (i % 4) * 25;
             const height = 45 + (i % 3) * 10;
             const width = 20 + (i % 2) * 8;
+
             return (
-              <g className="motif-tree" key={i} style={{ opacity: 0 }}>
+              <g key={i} className="motif-tree" style={{ opacity: 0 }}>
                 {/* Étages du sapin (3 niveaux) */}
                 <polygon
+                  fill={colors.motif}
                   points={`${x},${y} ${x - width / 2},${y + height / 2} ${x + width / 2},${y + height / 2}`}
-                  fill={colors.motif}
                 />
                 <polygon
+                  fill={colors.motif}
                   points={`${x},${y + height / 3} ${x - width / 1.5},${y + height * 0.75} ${x + width / 1.5},${y + height * 0.75}`}
-                  fill={colors.motif}
                 />
                 <polygon
-                  points={`${x},${y + height / 1.8} ${x - width / 2.5},${y + height} ${x + width / 2.5},${y + height}`}
                   fill={colors.motif}
+                  points={`${x},${y + height / 1.8} ${x - width / 2.5},${y + height} ${x + width / 2.5},${y + height}`}
                 />
 
                 {/* Tronc plus visible */}
                 <rect
+                  fill={isDark ? "#8b4513" : "#654321"}
+                  height={20}
+                  rx={2}
+                  width={8}
                   x={x - 4}
                   y={y + height}
-                  width={8}
-                  height={20}
-                  fill={isDark ? "#8b4513" : "#654321"}
-                  rx={2}
                 />
               </g>
             );

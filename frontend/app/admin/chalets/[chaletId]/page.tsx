@@ -33,8 +33,9 @@ import {
 } from "react-icons/bs";
 import Link from "next/link";
 
-import { chaletService } from "@/lib/services/chalets";
-import { pageService } from "@/lib/services/pages";
+import { getChaletById } from "@/lib/services/chalets";
+import { getPagesByChaletId } from "@/lib/services/pages";
+import { downloadQRCodesPDFAction } from "@/lib/actions/download";
 import { Chalet, Page } from "@/types";
 
 export default function ChaletDetail() {
@@ -51,8 +52,8 @@ export default function ChaletDetail() {
         const chaletId = params.chaletId as string;
 
         const [chaletData, pagesData] = await Promise.all([
-          chaletService.getById(chaletId),
-          pageService.getByChaletId(chaletId),
+          getChaletById(chaletId),
+          getPagesByChaletId(chaletId),
         ]);
 
         setChalet(chaletData);
@@ -170,7 +171,28 @@ export default function ChaletDetail() {
               className="btn-success text-primary-foreground"
               color="success"
               startContent={<BsDownload className="h-4 w-4" />}
-              onClick={() => chaletService.downloadQRCodesPDF(chalet._id)}
+              onClick={async () => {
+                const result = await downloadQRCodesPDFAction(chalet._id);
+
+                if (result.success && result.data && result.filename) {
+                  const binaryString = atob(result.data);
+                  const bytes = new Uint8Array(binaryString.length);
+
+                  for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                  }
+                  const blob = new Blob([bytes], {
+                    type: result.contentType,
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+
+                  a.href = url;
+                  a.download = result.filename;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }
+              }}
             >
               Export PDF
             </Button>

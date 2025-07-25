@@ -1,49 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Card, CardBody, CardHeader, Button, Input } from "@heroui/react";
 import { motion } from "framer-motion";
 import { BsLock, BsEnvelope } from "react-icons/bs";
 
-import { authService } from "@/lib/services/auth";
+import { loginAction } from "@/lib/actions/auth";
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      className="font-semibold btn-alpine text-primary-foreground mt-2"
+      color="primary"
+      disabled={pending}
+      isLoading={pending}
+      type="submit"
+    >
+      Se connecter
+    </Button>
+  );
+}
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [state, formAction] = useActionState(loginAction, {
+    success: false,
+    error: "",
+  });
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await authService.login({ email, password });
-
-      if (res && "token" in res && res.token) {
-        document.cookie = `auth-token=${res.token}; path=/; max-age=${60 * 60 * 12}; SameSite=Lax`;
-        router.push("/admin");
-      } else {
-        setError("Erreur de connexion");
-      }
-    } catch (err: any) {
-      if (err.response?.status === 401) {
-        setError("Email ou mot de passe incorrect");
-      } else if (err.response?.status === 400) {
-        setError("Veuillez vérifier vos informations de connexion");
-      } else if (err.response?.status >= 500) {
-        setError("Erreur du serveur. Veuillez réessayer plus tard");
-      } else if (err.code === "NETWORK_ERROR" || !err.response) {
-        setError("Problème de connexion. Vérifiez votre connexion internet");
-      } else {
-        setError("Une erreur inattendue s'est produite");
-      }
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (state.success) {
+      router.push("/admin");
     }
-  };
+  }, [state.success, router]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
@@ -64,45 +58,33 @@ export default function LoginPage() {
             </p>
           </CardHeader>
           <CardBody>
-            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            <form className="flex flex-col gap-4" action={formAction}>
               <Input
                 required
-                disabled={loading}
                 label="Email"
+                name="email"
                 placeholder="Votre adresse email"
                 startContent={<BsEnvelope className="text-primary" />}
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
               />
               <Input
                 required
-                disabled={loading}
                 label="Mot de passe"
+                name="password"
                 placeholder="Votre mot de passe"
                 startContent={<BsLock className="text-primary" />}
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
               />
-              {error && (
+              {state.error && (
                 <motion.div
                   animate={{ opacity: 1, y: 0 }}
                   className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm text-center"
                   initial={{ opacity: 0, y: -10 }}
                 >
-                  {error}
+                  {state.error}
                 </motion.div>
               )}
-              <Button
-                className="font-semibold btn-alpine text-primary-foreground mt-2"
-                color="primary"
-                disabled={loading}
-                isLoading={loading}
-                type="submit"
-              >
-                Se connecter
-              </Button>
+              <SubmitButton />
             </form>
           </CardBody>
         </Card>

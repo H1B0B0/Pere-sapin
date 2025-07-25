@@ -27,8 +27,9 @@ import {
 } from "react-icons/bs";
 import Link from "next/link";
 
-import { pageService } from "@/lib/services/pages";
-import { chaletService } from "@/lib/services/chalets";
+import { getAllPages, regeneratePageQRCode } from "@/lib/services/pages";
+import { getAllChalets } from "@/lib/services/chalets";
+import { downloadQRCodesPDFAction } from "@/lib/actions/download";
 import { Page, Chalet } from "@/types";
 
 interface PageWithChalet extends Page {
@@ -47,8 +48,8 @@ export default function QRCodesManagement() {
       try {
         setLoading(true);
         const [pagesData, chaletsData] = await Promise.all([
-          pageService.getAll(),
-          chaletService.getAll(),
+          getAllPages(),
+          getAllChalets(),
         ]);
 
         // Add chalet names to pages
@@ -97,9 +98,9 @@ export default function QRCodesManagement() {
 
   const handleRegenerateQR = async (page: Page) => {
     try {
-      await pageService.regenerateQRCode(page._id);
+      await regeneratePageQRCode(page._id);
       // Refresh data
-      const updatedPages = await pageService.getAll();
+      const updatedPages = await getAllPages();
       const pagesWithChalets: PageWithChalet[] = updatedPages.map((p) => {
         const chalet = chalets.find(
           (c) =>
@@ -120,7 +121,26 @@ export default function QRCodesManagement() {
 
   const handleDownloadAllQRs = async (chaletId: string) => {
     try {
-      await chaletService.downloadQRCodesPDF(chaletId);
+      const result = await downloadQRCodesPDFAction(chaletId);
+
+      if (result.success && result.data && result.filename) {
+        const binaryString = atob(result.data);
+        const bytes = new Uint8Array(binaryString.length);
+
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        const blob = new Blob([bytes], {
+          type: result.contentType,
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+
+        a.href = url;
+        a.download = result.filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
     } catch (error) {
       console.error("Erreur lors du téléchargement du PDF:", error);
     }

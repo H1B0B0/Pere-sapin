@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import Cookies from "js-cookie";
+import { getUserProfile } from "./services/auth";
 
 import { User } from "@/types";
 
@@ -9,7 +9,7 @@ interface AuthState {
   isAuthenticated: boolean;
   loading: boolean;
   initialized: boolean;
-  login: (user: User, token: string) => void;
+  login: (user: User) => void;
   logout: () => void;
   updateUser: (user: User) => void;
   checkAuth: () => Promise<void>;
@@ -23,14 +23,12 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       loading: false,
       initialized: false,
-      login: (user: User, token: string) => {
+      login: (user: User) => {
         console.log("[AUTH] Store: Login with user:", user);
-        Cookies.set("auth-token", token, { expires: 1 }); // 1 day
         set({ user, isAuthenticated: true, initialized: true });
       },
       logout: () => {
         console.log("[AUTH] Store: Logout");
-        Cookies.remove("auth-token");
         set({ user: null, isAuthenticated: false, initialized: true });
       },
       updateUser: (user: User) => {
@@ -44,62 +42,19 @@ export const useAuthStore = create<AuthState>()(
         console.log("[AUTH] Store: Checking auth state...");
         set({ loading: true });
 
-        const token = Cookies.get("auth-token");
-        const hasUser = state.user;
+        try {
+          // Check authentication with server using HTTP-only cookies
+          const user = await getUserProfile();
 
-        console.log("[AUTH] Store: Token exists:", !!token);
-        console.log("[AUTH] Store: User exists:", !!hasUser);
-
-        if (token) {
-          if (hasUser) {
-            console.log("[AUTH] Store: User authenticated (from cache)");
-            set({ isAuthenticated: true, initialized: true, loading: false });
-          } else {
-            console.log(
-              "[AUTH] Store: Token found but no user, verifying with server...",
-            );
-            try {
-              // Verify token with server and get user info
-              const response = await fetch("/api/proxy/auth/profile", {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json",
-                },
-              });
-
-              if (response.ok) {
-                const user = await response.json();
-
-                console.log("[AUTH] Store: Token valid, user retrieved:", user);
-                set({
-                  user,
-                  isAuthenticated: true,
-                  initialized: true,
-                  loading: false,
-                });
-              } else {
-                console.log("[AUTH] Store: Token invalid, clearing auth");
-                Cookies.remove("auth-token");
-                set({
-                  user: null,
-                  isAuthenticated: false,
-                  initialized: true,
-                  loading: false,
-                });
-              }
-            } catch (error) {
-              console.error("[AUTH] Store: Error verifying token:", error);
-              Cookies.remove("auth-token");
-              set({
-                user: null,
-                isAuthenticated: false,
-                initialized: true,
-                loading: false,
-              });
-            }
-          }
-        } else {
-          console.log("[AUTH] Store: No token found");
+          console.log("[AUTH] Store: User authenticated:", user);
+          set({
+            user,
+            isAuthenticated: true,
+            initialized: true,
+            loading: false,
+          });
+        } catch (error) {
+          console.error("[AUTH] Store: Error checking auth:", error);
           set({
             user: null,
             isAuthenticated: false,
@@ -123,6 +78,6 @@ export const useAuthStore = create<AuthState>()(
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
-    },
-  ),
+    }
+  )
 );

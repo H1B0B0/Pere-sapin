@@ -1,55 +1,49 @@
-import api from "@/lib/api";
+"use server";
+import { createApiClient } from "@/lib/api";
 import { Chalet, CreateChaletDto } from "@/types";
 
-export const chaletService = {
-  async getAll(): Promise<Chalet[]> {
-    const response = await api.get("/chalets");
+export async function getAllChalets(): Promise<Chalet[]> {
+  const api = await createApiClient();
+  const response = await api.get("/chalets");
 
-    return response.data;
-  },
+  return response.data;
+}
 
-  async getById(id: string): Promise<Chalet> {
-    const response = await api.get(`/chalets/${id}`);
+export async function getChaletById(id: string): Promise<Chalet> {
+  const api = await createApiClient();
+  const response = await api.get(`/chalets/${id}`);
 
-    return response.data;
-  },
+  return response.data;
+}
 
-  async create(data: CreateChaletDto): Promise<Chalet> {
-    const response = await api.post("/chalets", data);
+export async function createChalet(data: CreateChaletDto): Promise<Chalet> {
+  const api = await createApiClient();
+  const response = await api.post("/chalets", data);
 
-    return response.data;
-  },
+  return response.data;
+}
 
-  async update(id: string, data: Partial<CreateChaletDto>): Promise<Chalet> {
-    const response = await api.patch(`/chalets/${id}`, data);
+export async function updateChalet(
+  id: string,
+  data: Partial<CreateChaletDto>,
+): Promise<Chalet> {
+  const api = await createApiClient();
+  const response = await api.patch(`/chalets/${id}`, data);
 
-    return response.data;
-  },
+  return response.data;
+}
 
-  async delete(id: string): Promise<void> {
-    await api.delete(`/chalets/${id}`);
-  },
+export async function deleteChalet(id: string): Promise<void> {
+  const api = await createApiClient();
 
-  async downloadQRCodesPDF(id: string): Promise<void> {
-    try {
-      const response = await api.get(`/pdf/chalet/${id}/qr-codes`, {
-        responseType: "blob",
-      });
+  await api.delete(`/chalets/${id}`);
+}
 
-      // Create download link
-      const blob = new Blob([response.data], { type: "application/pdf" });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
+export async function downloadChaletQRCodesPDF(id: string): Promise<Blob> {
+  const api = await createApiClient();
+  const response = await api.get(`/pdf/chalet/${id}/qr-codes`, {
+    responseType: "blob",
+  });
 
-      link.href = url;
-      link.download = `chalet-${id}-qr-codes.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Erreur lors du téléchargement du PDF:", error);
-      throw error;
-    }
-  },
-};
+  return response.data;
+}

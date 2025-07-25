@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { useParams, notFound } from "next/navigation";
+import YooptaEditor from "@yoopta/editor";
 
-import { chaletService } from "@/lib/services/chalets";
-import { pageService } from "@/lib/services/pages";
+import { getChaletById } from "@/lib/services/chalets";
+import { getPagesByChaletId } from "@/lib/services/pages";
 import { usePageViews } from "@/lib/hooks/usePageViews";
 import { Chalet, Page } from "@/types";
-import YooptaEditorWrapper from "@/components/admin/YooptaEditor";
 
 export default function NotionStylePageViewer() {
   const [chalet, setChalet] = useState<Chalet | null>(null);
@@ -24,8 +24,8 @@ export default function NotionStylePageViewer() {
         const pageSlug = params.pageSlug as string;
 
         const [chaletData, pagesData] = await Promise.all([
-          chaletService.getById(chaletId),
-          pageService.getByChaletId(chaletId),
+          getChaletById(chaletId),
+          getPagesByChaletId(chaletId),
         ]);
 
         const pageData = pagesData.find(
@@ -182,7 +182,7 @@ export default function NotionStylePageViewer() {
               lineHeight: "1.5",
             }}
           >
-            <YooptaEditorWrapper
+            <YooptaEditor
               className="notion-dark-theme"
               readOnly={true}
               value={page.content}

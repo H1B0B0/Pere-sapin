@@ -36,8 +36,8 @@ import {
 } from "react-icons/bs";
 import Link from "next/link";
 
-import { chaletService } from "@/lib/services/chalets";
-import { pageService } from "@/lib/services/pages";
+import { getAllChalets, deleteChalet } from "@/lib/services/chalets";
+import { getAllPages } from "@/lib/services/pages";
 import { Chalet } from "@/types";
 
 interface ChaletWithPages extends Chalet {
@@ -57,8 +57,8 @@ export default function ChaletsManagement() {
       try {
         setLoading(true);
         const [chaletsData, allPages] = await Promise.all([
-          chaletService.getAll(),
-          pageService.getAll(),
+          getAllChalets(),
+          getAllPages(),
         ]);
 
         // Add page count to each chalet
@@ -89,7 +89,7 @@ export default function ChaletsManagement() {
 
   const handleDeleteChalet = async (chalet: ChaletWithPages) => {
     try {
-      await chaletService.delete(chalet._id);
+      await deleteChalet(chalet._id);
       setChalets((prev) => prev.filter((c) => c._id !== chalet._id));
       onClose();
     } catch (error) {

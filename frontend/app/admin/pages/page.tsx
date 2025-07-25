@@ -31,8 +31,8 @@ import {
 } from "react-icons/bs";
 import Link from "next/link";
 
-import { pageService } from "@/lib/services/pages";
-import { chaletService } from "@/lib/services/chalets";
+import { getAllPages, deletePage, regeneratePageQRCode } from "@/lib/services/pages";
+import { getAllChalets } from "@/lib/services/chalets";
 import { Page, Chalet } from "@/types";
 
 interface PageWithChalet extends Page {
@@ -50,8 +50,8 @@ export default function AllPagesManagement() {
       try {
         setLoading(true);
         const [pagesData, chaletsData] = await Promise.all([
-          pageService.getAll(),
-          chaletService.getAll(),
+          getAllPages(),
+          getAllChalets(),
         ]);
 
         // Add chalet names to pages
@@ -114,9 +114,9 @@ export default function AllPagesManagement() {
 
   const handleRegenerateQR = async (page: Page) => {
     try {
-      await pageService.regenerateQRCode(page._id);
+      await regeneratePageQRCode(page._id);
       // Refresh the page data
-      const updatedPages = await pageService.getAll();
+      const updatedPages = await getAllPages();
       const pagesWithChalets: PageWithChalet[] = updatedPages.map((p) => {
         const chalet = chalets.find(
           (c) =>

@@ -1,50 +1,61 @@
-import api from "@/lib/api";
+"use server";
+import { createApiClient } from "@/lib/api";
 import { Page, CreatePageDto } from "@/types";
 
-export const pageService = {
-  async getAll(): Promise<Page[]> {
-    const response = await api.get("/pages");
+export async function getAllPages(): Promise<Page[]> {
+  const api = await createApiClient();
+  const response = await api.get("/pages");
 
-    return response.data;
-  },
+  return response.data;
+}
 
-  async getById(id: string): Promise<Page> {
-    const response = await api.get(`/pages/${id}`);
+export async function getPageById(id: string): Promise<Page> {
+  const api = await createApiClient();
+  const response = await api.get(`/pages/${id}`);
 
-    return response.data;
-  },
+  return response.data;
+}
 
-  async getBySlug(slug: string): Promise<Page> {
-    const response = await api.get(`/pages/slug/${slug}`);
+export async function getPageBySlug(slug: string): Promise<Page> {
+  const api = await createApiClient();
+  const response = await api.get(`/pages/slug/${slug}`);
 
-    return response.data;
-  },
+  return response.data;
+}
 
-  async getByChaletId(chaletId: string): Promise<Page[]> {
-    const response = await api.get(`/pages/chalet/${chaletId}`);
+export async function getPagesByChaletId(chaletId: string): Promise<Page[]> {
+  const api = await createApiClient();
+  const response = await api.get(`/pages/chalet/${chaletId}`);
 
-    return response.data;
-  },
+  return response.data;
+}
 
-  async create(data: CreatePageDto): Promise<Page> {
-    const response = await api.post("/pages", data);
+export async function createPage(data: CreatePageDto): Promise<Page> {
+  const api = await createApiClient();
+  const response = await api.post("/pages", data);
 
-    return response.data;
-  },
+  return response.data;
+}
 
-  async update(id: string, data: Partial<CreatePageDto>): Promise<Page> {
-    const response = await api.patch(`/pages/${id}`, data);
+export async function updatePage(
+  id: string,
+  data: Partial<CreatePageDto>,
+): Promise<Page> {
+  const api = await createApiClient();
+  const response = await api.patch(`/pages/${id}`, data);
 
-    return response.data;
-  },
+  return response.data;
+}
 
-  async delete(id: string): Promise<void> {
-    await api.delete(`/pages/${id}`);
-  },
+export async function deletePage(id: string): Promise<void> {
+  const api = await createApiClient();
 
-  async regenerateQRCode(id: string): Promise<Page> {
-    const response = await api.post(`/pages/${id}/regenerate-qr`);
+  await api.delete(`/pages/${id}`);
+}
 
-    return response.data;
-  },
-};
+export async function regeneratePageQRCode(id: string): Promise<Page> {
+  const api = await createApiClient();
+  const response = await api.post(`/pages/${id}/regenerate-qr`);
+
+  return response.data;
+}

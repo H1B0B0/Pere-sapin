@@ -6,7 +6,9 @@ import {
   Request,
   Get,
   UnauthorizedException,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService } from '../services/auth.service';
 import { CreateUserDto, LoginDto } from '../dto/auth.dto';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
@@ -18,8 +20,23 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req, @Body() loginDto: LoginDto) {
-    return this.authService.login(req.user);
+  async login(@Request() req, @Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
+    const result = await this.authService.login(req.user);
+    
+    // Set HTTP-only cookie
+    res.cookie('auth-token', result.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: '/',
+    });
+
+    // Return user data without token
+    return {
+      user: result.user,
+      message: result.message,
+    };
   }
 
   @Post('register')
@@ -46,7 +63,9 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(JwtAuthGuard)
-  logout() {
+  logout(@Res({ passthrough: true }) res: Response) {
+    // Clear the HTTP-only cookie
+    res.clearCookie('auth-token');
     return { message: 'Logout successful' };
   }
 }

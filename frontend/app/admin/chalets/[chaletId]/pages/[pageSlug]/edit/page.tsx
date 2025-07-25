@@ -6,11 +6,11 @@ import { Card, CardBody, CardHeader, Button, Input, Chip } from "@heroui/react";
 import { motion } from "framer-motion";
 import { BsArrowLeft, BsFileText, BsCheck, BsPlus, BsX } from "react-icons/bs";
 import Link from "next/link";
+import YooptaEditor from "@yoopta/editor";
 
-import { chaletService } from "@/lib/services/chalets";
-import { pageService } from "@/lib/services/pages";
+import { getChaletById } from "@/lib/services/chalets";
+import { getPageById, updatePage } from "@/lib/services/pages";
 import { Chalet, Page, UpdatePageDto } from "@/types";
-import YooptaEditorSimple from "@/components/admin/YooptaEditorSimple";
 
 export default function EditPagePage() {
   const [chalet, setChalet] = useState<Chalet | null>(null);
@@ -35,8 +35,8 @@ export default function EditPagePage() {
         const pageSlug = params.pageSlug as string;
 
         const [chaletData, pagesData] = await Promise.all([
-          chaletService.getById(chaletId),
-          pageService.getByChaletId(chaletId),
+          getChaletById(chaletId),
+          getPageById(chaletId),
         ]);
 
         const pageData = pagesData.find((p) => p.slug === pageSlug);
@@ -120,7 +120,7 @@ export default function EditPagePage() {
     setError(null);
 
     try {
-      await pageService.update(page._id, formData);
+      await updatePage(page._id, formData);
       router.push(`/admin/chalets/${params.chaletId}`);
     } catch (err: any) {
       console.error("Erreur lors de la mise à jour:", err);
@@ -267,7 +267,7 @@ export default function EditPagePage() {
                 <label className="text-sm font-medium">Contenu</label>
                 <Card className="p-10">
                   <CardBody>
-                    <YooptaEditorSimple
+                    <YooptaEditor
                       placeholder="Commencez à écrire votre contenu..."
                       value={formData.content}
                       onChange={handleContentChange}

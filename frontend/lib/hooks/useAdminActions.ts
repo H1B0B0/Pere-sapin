@@ -1,16 +1,20 @@
 import { useAdminStore } from "@/lib/stores/admin-store";
-import { chaletService } from "@/lib/services/chalets";
-import { pageService } from "@/lib/services/pages";
-import { Chalet, Page } from "@/types";
+import {
+  createChalet,
+  updateChalet,
+  deleteChalet,
+} from "@/lib/services/chalets";
+import { createPage, updatePage, deletePage } from "@/lib/services/pages";
+import { CreateChaletDto, CreatePageDto } from "@/types";
 
 export const useAdminActions = () => {
   const store = useAdminStore();
 
   return {
     // Chalet actions with API calls and store updates
-    createChalet: async (chaletData: Omit<Chalet, "_id">) => {
+    createChalet: async (chaletData: CreateChaletDto) => {
       try {
-        const newChalet = await chaletService.create(chaletData);
+        const newChalet = await createChalet(chaletData);
 
         store.addChalet(newChalet);
 
@@ -21,9 +25,9 @@ export const useAdminActions = () => {
       }
     },
 
-    updateChalet: async (id: string, chaletData: Partial<Chalet>) => {
+    updateChalet: async (id: string, chaletData: Partial<CreateChaletDto>) => {
       try {
-        const updatedChalet = await chaletService.update(id, chaletData);
+        const updatedChalet = await updateChalet(id, chaletData);
 
         store.updateChalet(id, updatedChalet);
 
@@ -36,7 +40,7 @@ export const useAdminActions = () => {
 
     deleteChalet: async (id: string) => {
       try {
-        await chaletService.delete(id);
+        await deleteChalet(id);
         store.removeChalet(id);
       } catch (error) {
         console.error("Erreur lors de la suppression du chalet:", error);
@@ -45,9 +49,9 @@ export const useAdminActions = () => {
     },
 
     // Page actions with API calls and store updates
-    createPage: async (pageData: Omit<Page, "_id">) => {
+    createPage: async (pageData: CreatePageDto) => {
       try {
-        const newPage = await pageService.create(pageData);
+        const newPage = await createPage(pageData);
 
         store.addPage(newPage);
 
@@ -58,9 +62,9 @@ export const useAdminActions = () => {
       }
     },
 
-    updatePage: async (id: string, pageData: Partial<Page>) => {
+    updatePage: async (id: string, pageData: Partial<CreatePageDto>) => {
       try {
-        const updatedPage = await pageService.update(id, pageData);
+        const updatedPage = await updatePage(id, pageData);
 
         store.updatePage(id, updatedPage);
 
@@ -73,7 +77,7 @@ export const useAdminActions = () => {
 
     deletePage: async (id: string) => {
       try {
-        await pageService.delete(id);
+        await deletePage(id);
         store.removePage(id);
       } catch (error) {
         console.error("Erreur lors de la suppression de la page:", error);

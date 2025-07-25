@@ -1,26 +1,34 @@
-import api from "@/lib/api";
+"use server";
+
+import { createApiClient } from "@/lib/api";
 import { User, LoginDto, CreateUserDto } from "@/types";
 
-export const authService = {
-  async login(credentials: LoginDto): Promise<{ user: User; token: string }> {
-    const response = await api.post("/auth/login", credentials);
+export async function loginUser(
+  credentials: LoginDto
+): Promise<{ user: User }> {
+  const api = await createApiClient();
+  const response = await api.post("/auth/login", credentials);
+  console.log("Login response:", response.status, response.data);
 
-    return response.data;
-  },
+  // Cookie is now set by the backend as HTTP-only
+  return response.data;
+}
 
-  async register(userData: CreateUserDto): Promise<User> {
-    const response = await api.post("/auth/register", userData);
+export async function registerUser(userData: CreateUserDto): Promise<User> {
+  const api = await createApiClient();
+  const response = await api.post("/auth/register", userData);
 
-    return response.data;
-  },
+  return response.data;
+}
 
-  async getProfile(): Promise<User> {
-    const response = await api.get("/auth/profile");
+export async function getUserProfile(): Promise<User> {
+  const api = await createApiClient();
+  const response = await api.get("/auth/profile");
 
-    return response.data;
-  },
+  return response.data;
+}
 
-  async logout(): Promise<void> {
-    await api.post("/auth/logout");
-  },
-};
+export async function logoutUser(): Promise<void> {
+  const api = await createApiClient();
+  await api.post("/auth/logout");
+}

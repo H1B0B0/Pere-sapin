@@ -14,7 +14,8 @@ import {
 import Link from "next/link";
 
 import {
-  dashboardService,
+  getDashboardStats,
+  getRecentActivity,
   DashboardStats,
   RecentActivity,
 } from "@/lib/services/dashboard";
@@ -34,8 +35,8 @@ export default function AdminDashboard() {
       try {
         setLoading(true);
         const [dashboardStats, recentActivityData] = await Promise.all([
-          dashboardService.getStats(),
-          dashboardService.getRecentActivity(),
+          getDashboardStats(),
+          getRecentActivity(),
         ]);
 
         setStats(dashboardStats);

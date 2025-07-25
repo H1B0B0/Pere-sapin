@@ -14,8 +14,10 @@ import { motion } from "framer-motion";
 import { BsArrowLeft, BsTree, BsCheck } from "react-icons/bs";
 import Link from "next/link";
 
-import { chaletService } from "@/lib/services/chalets";
-import { Chalet, UpdateChaletDto } from "@/types";
+import { getChaletById, updateChalet } from "@/lib/services/chalets";
+import { Chalet, CreateChaletDto } from "@/types";
+
+type UpdateChaletDto = Partial<CreateChaletDto>;
 
 export default function EditChaletPage() {
   const [chalet, setChalet] = useState<Chalet | null>(null);
@@ -33,7 +35,7 @@ export default function EditChaletPage() {
     const fetchChalet = async () => {
       try {
         const chaletId = params.chaletId as string;
-        const chaletData = await chaletService.getById(chaletId);
+        const chaletData = await getChaletById(chaletId);
 
         setChalet(chaletData);
         setFormData({
@@ -66,7 +68,7 @@ export default function EditChaletPage() {
     setError(null);
 
     try {
-      await chaletService.update(chalet._id, formData);
+      await updateChalet(chalet._id, formData);
       router.push(`/admin/chalets/${chalet._id}`);
     } catch (err) {
       console.error("Erreur lors de la modification:", err);

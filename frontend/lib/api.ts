@@ -1,35 +1,35 @@
+"use server";
 import axios from "axios";
-import Cookies from "js-cookie";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5042";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://backend:5042";
 
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  withCredentials: true,
-});
+export async function createApiClient() {
+  const cookieStore = await cookies();
+  const authToken = cookieStore.get("auth-token")?.value;
 
-// Add auth token to requests if available
-api.interceptors.request.use((config) => {
-  const token = Cookies.get("auth-token");
+  const headers: Record<string, string> = {};
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  const api = axios.create({
+    baseURL: API_BASE_URL,
+    headers,
+    timeout: 10000,
+    withCredentials: true,
+  });
 
-  return config;
-});
+  // Handle auth errors
+  api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      console.error("API Response Error:", error.code, error.message);
+      if (error.response?.status === 401) {
+        redirect("/admin/login");
+      }
 
-// Handle auth errors
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      Cookies.remove("auth-token");
-      window.location.href = "/admin/login";
+      return Promise.reject(error);
     }
+  );
 
-    return Promise.reject(error);
-  },
-);
-
-export default api;
+  return api;
+}

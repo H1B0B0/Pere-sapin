@@ -14,7 +14,7 @@ import { motion } from "framer-motion";
 import { BsArrowLeft, BsTree, BsCheck } from "react-icons/bs";
 import Link from "next/link";
 
-import { chaletService } from "@/lib/services/chalets";
+import { createChalet } from "@/lib/services/chalets";
 import { CreateChaletDto } from "@/types";
 
 export default function NewChaletPage() {
@@ -39,7 +39,7 @@ export default function NewChaletPage() {
     setError(null);
 
     try {
-      const newChalet = await chaletService.create(formData);
+      const newChalet = await createChalet(formData);
 
       router.push(`/admin/chalets/${newChalet._id}`);
     } catch (err) {

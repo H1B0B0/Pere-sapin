@@ -36,10 +36,11 @@ import ActionMenuList, {
 } from "@yoopta/action-menu-list";
 import Toolbar, { DefaultToolbarRender } from "@yoopta/toolbar";
 import LinkTool, { DefaultLinkToolRender } from "@yoopta/link-tool";
+
 import { WITH_BASIC_INIT_VALUE } from "./initValue";
 
-import { chaletService } from "@/lib/services/chalets";
-import { pageService } from "@/lib/services/pages";
+import { getChaletById } from "@/lib/services/chalets";
+import { createPage } from "@/lib/services/pages";
 import { Chalet, CreatePageDto } from "@/types";
 
 const plugins = [
@@ -151,10 +152,9 @@ export default function NewPagePage() {
   const editor = useMemo(() => createYooptaEditor(), []);
   const selectionRef = useRef(null);
 
-
   const onChange = (
     newValue: YooptaContentValue,
-    options: YooptaOnChangeOptions
+    options: YooptaOnChangeOptions,
   ) => {
     setValue(newValue);
   };
@@ -167,12 +167,11 @@ export default function NewPagePage() {
     }
   }, [editor]);
 
-
   useEffect(() => {
     const fetchChalet = async () => {
       try {
         const chaletId = params.chaletId as string;
-        const chaletData = await chaletService.getById(chaletId);
+        const chaletData = await getChaletById(chaletId);
 
         setChalet(chaletData);
         setFormData((prev) => ({ ...prev, chalet: chaletId }));
@@ -245,7 +244,7 @@ export default function NewPagePage() {
         content: formData.content,
       };
 
-      await pageService.create(pageData);
+      await createPage(pageData);
       router.push(`/admin/chalets/${params.chaletId}`);
     } catch (err: any) {
       console.error("Erreur lors de la création:", err);
@@ -374,20 +373,20 @@ export default function NewPagePage() {
               </p>
             </div>
             <div
-              className="bg-background border border-border rounded-lg p-6 min-h-[400px] w-full yoopta-editor-container shadow-sm"
               ref={selectionRef}
+              className="bg-background border border-border rounded-lg p-6 min-h-[400px] w-full yoopta-editor-container shadow-sm"
             >
               <div className="prose prose-lg max-w-none dark:prose-invert">
                 <YooptaEditor
-                  editor={editor}
-                  plugins={plugins}
-                  tools={TOOLS}
-                  marks={MARKS}
-                  selectionBoxRoot={selectionRef}
-                  value={value}
-                  onChange={onChange}
                   autoFocus
                   className="yoopta-editor"
+                  editor={editor}
+                  marks={MARKS}
+                  plugins={plugins}
+                  selectionBoxRoot={selectionRef}
+                  tools={TOOLS}
+                  value={value}
+                  onChange={onChange}
                 />
               </div>
             </div>

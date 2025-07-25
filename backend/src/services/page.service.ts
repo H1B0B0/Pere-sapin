@@ -15,7 +15,7 @@ export class PageService {
 
   async create(createPageDto: CreatePageDto): Promise<Page> {
     // Generate QR code URL
-    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const baseUrl = process.env.FRONTEND_URL || 'http://frontend:3000';
     const pageUrl = `${baseUrl}/page/${createPageDto.slug}`;
     const qrCodeUrl = await QRCode.toDataURL(pageUrl);
 
@@ -60,7 +60,7 @@ export class PageService {
 
     // If slug is updated, regenerate QR code
     if (updatePageDto.slug) {
-      const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      const baseUrl = process.env.FRONTEND_URL || 'http://frontend:3000';
       const pageUrl = `${baseUrl}/page/${updatePageDto.slug}`;
       updateData['qrCodeUrl'] = await QRCode.toDataURL(pageUrl);
     }
@@ -82,7 +82,7 @@ export class PageService {
     const page = await this.findOne(id);
     if (!page) return null;
 
-    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const baseUrl = process.env.FRONTEND_URL || 'http://frontend:3000';
     const pageUrl = `${baseUrl}/page/${page.slug}`;
     const qrCodeUrl = await QRCode.toDataURL(pageUrl);
 
