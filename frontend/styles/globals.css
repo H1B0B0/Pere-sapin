@@ -166,33 +166,3 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 }
-
-.yoopta-action-menu-list-content {
-  background: hsl(var(--popover));
-  color: hsl(var(--popover-foreground));
-}
-
-.dark .yoopta-action-menu-list-content {
-  background: hsl(var(--card));
-  color: hsl(var(--card-foreground));
-  border: 1px solid hsl(var(--border));
-  box-shadow: 0 4px 24px 0 hsl(var(--border) / 0.18);
-}
-
-.dark .yoopta-block-actions-plus {
-  color: hsl(var(--accent));
-  background: hsl(var(--accent) / 0.18);
-}
-.dark .yoopta-block-actions-plus:hover {
-  background: hsl(var(--accent) / 0.28);
-  color: hsl(var(--accent-foreground));
-}
-
-.dark .yoopta-block-actions-drag {
-  color: hsl(var(--muted-foreground));
-  background: transparent;
-}
-.dark .yoopta-block-actions-drag:hover {
-  color: hsl(var(--primary));
-  background: hsl(var(--primary) / 0.14);
-}
