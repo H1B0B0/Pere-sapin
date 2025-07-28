@@ -20,9 +20,13 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req, @Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
+  async login(
+    @Request() req,
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const result = await this.authService.login(req.user);
-    
+
     // Set HTTP-only cookie
     res.cookie('auth-token', result.token, {
       httpOnly: true,

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getUserProfile } from "./services/auth";
+
+import { getUserProfileClient } from "./services/client-auth";
 
 import { User } from "@/types";
 
@@ -44,7 +45,7 @@ export const useAuthStore = create<AuthState>()(
 
         try {
           // Check authentication with server using HTTP-only cookies
-          const user = await getUserProfile();
+          const user = await getUserProfileClient();
 
           console.log("[AUTH] Store: User authenticated:", user);
           set({
@@ -78,6 +79,6 @@ export const useAuthStore = create<AuthState>()(
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
-    }
-  )
+    },
+  ),
 );

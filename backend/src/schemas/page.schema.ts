@@ -5,7 +5,6 @@ export type PageDocument = Page & Document;
 
 @Schema({ timestamps: true })
 export class Page {
-
   @Prop({ required: true })
   title: string;
 
@@ -35,6 +34,26 @@ export class Page {
     default: [],
   })
   viewHistory: { ip: string; timestamp: Date; userAgent: string }[];
+
+  @Prop({
+    type: [{
+      filename: String,
+      originalName: String,
+      mimetype: String,
+      size: Number,
+      data: String, // Base64 encoded image data
+      uploadedAt: { type: Date, default: Date.now }
+    }],
+    default: [],
+  })
+  images: {
+    filename: string;
+    originalName: string;
+    mimetype: string;
+    size: number;
+    data: string;
+    uploadedAt: Date;
+  }[];
 }
 
 export const PageSchema = SchemaFactory.createForClass(Page);

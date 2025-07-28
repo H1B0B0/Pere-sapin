@@ -14,7 +14,7 @@ import { motion } from "framer-motion";
 import { BsArrowLeft, BsTree, BsCheck } from "react-icons/bs";
 import Link from "next/link";
 
-import { createChalet } from "@/lib/services/chalets";
+import { createChaletAction } from "@/lib/actions/chalets";
 import { CreateChaletDto } from "@/types";
 
 export default function NewChaletPage() {
@@ -39,12 +39,11 @@ export default function NewChaletPage() {
     setError(null);
 
     try {
-      const newChalet = await createChalet(formData);
-
-      router.push(`/admin/chalets/${newChalet._id}`);
+      await createChaletAction(formData);
+      // La redirection est gérée dans l'action
     } catch (err) {
       console.error("Erreur lors de la création:", err);
-      setError("Erreur lors de la création du chalet");
+      setError(err instanceof Error ? err.message : "Erreur lors de la création du chalet");
     } finally {
       setLoading(false);
     }

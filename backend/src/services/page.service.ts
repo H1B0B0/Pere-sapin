@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Page, PageDocument } from '../schemas/page.schema';
@@ -191,6 +191,63 @@ export class PageService {
       uniqueViews: new Set(page.viewHistory.map((v) => v.ip)).size,
       dailyViews,
       topUserAgents,
+    };
+  }
+
+  async addImage(
+    pageId: string,
+    imageData: {
+      filename: string;
+      originalName: string;
+      mimetype: string;
+      size: number;
+      data: string;
+    },
+  ): Promise<{ url: string; filename: string }> {
+    const page = await this.pageModel.findById(pageId);
+    if (!page) {
+      throw new NotFoundException('Page not found');
+    }
+
+    // Add image to page
+    const updatedPage = await this.pageModel.findByIdAndUpdate(
+      pageId,
+      {
+        $push: {
+          images: {
+            ...imageData,
+            uploadedAt: new Date(),
+          },
+        },
+      },
+      { new: true },
+    );
+
+    // Return URL to access the image
+    const baseUrl = process.env.FRONTEND_URL || 'http://frontend:3000';
+    return {
+      url: `${baseUrl}/api/proxy/pages/${pageId}/images/${imageData.filename}`,
+      filename: imageData.filename,
+    };
+  }
+
+  async getImage(
+    pageId: string,
+    filename: string,
+  ): Promise<{ data: string; mimetype: string } | null> {
+    const page = await this.pageModel.findById(pageId);
+    if (!page) {
+      throw new NotFoundException('Page not found');
+    }
+
+    const image = page.images.find((img) => img.filename === filename);
+    if (!image) {
+      throw new NotFoundException('Image not found');
+    }
+
+    return {
+      data: image.data,
+      mimetype: image.mimetype,
     };
   }
 }

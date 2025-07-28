@@ -1,16 +1,142 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Card, CardBody, CardHeader, Button, Input, Chip } from "@heroui/react";
 import { motion } from "framer-motion";
 import { BsArrowLeft, BsFileText, BsCheck, BsPlus, BsX } from "react-icons/bs";
 import Link from "next/link";
-import YooptaEditor from "@yoopta/editor";
+import YooptaEditor, { createYooptaEditor } from "@yoopta/editor";
 
-import { getChaletById } from "@/lib/services/chalets";
-import { getPageById, updatePage } from "@/lib/services/pages";
+import Paragraph from "@yoopta/paragraph";
+import Blockquote from "@yoopta/blockquote";
+import Embed from "@yoopta/embed";
+import Image from "@yoopta/image";
+import YooptaLink from "@yoopta/link";
+import Callout from "@yoopta/callout";
+import Video from "@yoopta/video";
+import File from "@yoopta/file";
+import { NumberedList, BulletedList, TodoList } from "@yoopta/lists";
+import { Bold, Italic, CodeMark, Underline, Strike, Highlight } from "@yoopta/marks";
+import { HeadingOne, HeadingThree, HeadingTwo } from "@yoopta/headings";
+import Code from "@yoopta/code";
+import Table from "@yoopta/table";
+import Divider from "@yoopta/divider";
+import ActionMenuList, { DefaultActionMenuRender } from "@yoopta/action-menu-list";
+import Toolbar, { DefaultToolbarRender } from "@yoopta/toolbar";
+import LinkTool, { DefaultLinkToolRender } from "@yoopta/link-tool";
+
+import { getChaletByIdClient } from "@/lib/services/client-chalets";
+import { getPagesByChaletIdClient, updatePageClient } from "@/lib/services/client-pages";
 import { Chalet, Page, UpdatePageDto } from "@/types";
+
+const plugins = [
+  Paragraph,
+  Table,
+  Divider,
+  HeadingOne,
+  HeadingTwo,
+  HeadingThree,
+  Blockquote,
+  Callout,
+  NumberedList,
+  BulletedList,
+  TodoList,
+  Code,
+  YooptaLink,
+  Embed,
+  Image.extend({
+    options: {
+      async onUpload(file) {
+        console.log('[YOOPTA IMAGE] Starting upload for:', file.name, `(${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+        
+        // Vérifier la taille du fichier original
+        if (file.size > 10 * 1024 * 1024) { // 10MB max
+          console.error('[YOOPTA IMAGE] File too large:', file.size);
+          throw new Error('Le fichier est trop volumineux (maximum 10MB)');
+        }
+
+        try {
+          // Lire le fichier sans compression
+          const dataUrl = await new Promise<string>((resolve, reject) => {
+            console.log('[YOOPTA IMAGE] Creating FileReader...');
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+              console.log('[YOOPTA IMAGE] FileReader loaded successfully');
+              const result = e.target?.result;
+              if (result && typeof result === 'string') {
+                resolve(result);
+              } else {
+                reject(new Error('Erreur lors de la lecture du fichier'));
+              }
+            };
+
+            reader.onerror = (e) => {
+              console.error('[YOOPTA IMAGE] FileReader error:', e);
+              reject(new Error('Erreur lors de la lecture du fichier'));
+            };
+
+            reader.readAsDataURL(file);
+          });
+
+          console.log('[YOOPTA IMAGE] File read successfully, getting dimensions...');
+
+          // Obtenir les dimensions de l'image originale
+          const imageDimensions = await new Promise<{width: number, height: number}>((resolve, reject) => {
+            const imgElement = new window.Image();
+            
+            imgElement.onload = () => {
+              console.log('[YOOPTA IMAGE] Image loaded, dimensions:', imgElement.width, 'x', imgElement.height);
+              resolve({
+                width: imgElement.width,
+                height: imgElement.height,
+              });
+            };
+
+            imgElement.onerror = (e) => {
+              console.error('[YOOPTA IMAGE] Error loading image element:', e);
+              reject(new Error('Erreur lors du chargement de l\'image'));
+            };
+
+            imgElement.src = dataUrl;
+          });
+
+          console.log('[YOOPTA IMAGE] Upload process completed successfully');
+
+          return {
+            src: dataUrl,
+            alt: file.name,
+            sizes: imageDimensions,
+          };
+
+        } catch (error) {
+          console.error('[YOOPTA IMAGE] Upload failed:', error);
+          throw error;
+        }
+      },
+    },
+  }),
+  Video,
+  File,
+];
+
+const TOOLS = {
+  ActionMenu: {
+    render: DefaultActionMenuRender,
+    tool: ActionMenuList,
+  },
+  Toolbar: {
+    render: DefaultToolbarRender,
+    tool: Toolbar,
+  },
+  LinkTool: {
+    render: DefaultLinkToolRender,
+    tool: LinkTool,
+  },
+};
+
+const MARKS = [Bold, Italic, CodeMark, Underline, Strike, Highlight];
 
 export default function EditPagePage() {
   const [chalet, setChalet] = useState<Chalet | null>(null);
@@ -25,8 +151,12 @@ export default function EditPagePage() {
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [value, setValue] = useState({});
   const router = useRouter();
   const params = useParams();
+  
+  const editor = useMemo(() => createYooptaEditor(), []);
+  const selectionRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,8 +165,8 @@ export default function EditPagePage() {
         const pageSlug = params.pageSlug as string;
 
         const [chaletData, pagesData] = await Promise.all([
-          getChaletById(chaletId),
-          getPageById(chaletId),
+          getChaletByIdClient(chaletId),
+          getPagesByChaletIdClient(chaletId),
         ]);
 
         const pageData = pagesData.find((p) => p.slug === pageSlug);
@@ -55,6 +185,17 @@ export default function EditPagePage() {
           slug: pageData.slug,
           tags: pageData.tags || [],
         });
+        
+        // Parser le contenu pour YooptaEditor
+        try {
+          const parsedContent = typeof pageData.content === "string" 
+            ? JSON.parse(pageData.content) 
+            : pageData.content;
+          setValue(parsedContent || {});
+        } catch (e) {
+          console.error("Erreur lors du parsing du contenu:", e);
+          setValue({});
+        }
       } catch (err) {
         console.error("Erreur lors du chargement:", err);
         setError("Erreur lors du chargement des données");
@@ -108,8 +249,11 @@ export default function EditPagePage() {
     }));
   };
 
-  const handleContentChange = (markdown: string) => {
-    setFormData((prev) => ({ ...prev, content: markdown }));
+  const handleContentChange = (newValue: any) => {
+    setValue(newValue);
+    // Sérialiser le contenu pour le formulaire
+    const serializedContent = JSON.stringify(newValue);
+    setFormData((prev) => ({ ...prev, content: serializedContent }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -120,7 +264,7 @@ export default function EditPagePage() {
     setError(null);
 
     try {
-      await updatePage(page._id, formData);
+      await updatePageClient(page._id, formData);
       router.push(`/admin/chalets/${params.chaletId}`);
     } catch (err: any) {
       console.error("Erreur lors de la mise à jour:", err);
@@ -265,13 +409,20 @@ export default function EditPagePage() {
               <h3 className="text-lg font-semibold">Éditeur de contenu</h3>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Contenu</label>
-                <Card className="p-10">
+                <Card className="p-4">
                   <CardBody>
-                    <YooptaEditor
-                      placeholder="Commencez à écrire votre contenu..."
-                      value={formData.content}
-                      onChange={handleContentChange}
-                    />
+                    <div ref={selectionRef}>
+                      <YooptaEditor
+                        editor={editor}
+                        plugins={plugins}
+                        tools={TOOLS}
+                        marks={MARKS}
+                        selectionBoxRoot={selectionRef}
+                        value={value}
+                        onChange={handleContentChange}
+                        autoFocus
+                      />
+                    </div>
                   </CardBody>
                 </Card>
               </div>

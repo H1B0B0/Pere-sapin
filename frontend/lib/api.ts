@@ -1,15 +1,9 @@
-"use server";
 import axios from "axios";
-import { redirect } from "next/navigation";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://backend:5042";
-
+// Client-side API client only
 export async function createApiClient() {
-  const headers: Record<string, string> = {};
-
   const api = axios.create({
-    baseURL: API_BASE_URL,
-    headers,
+    baseURL: "/api/proxy",
     timeout: 10000,
     withCredentials: true,
   });
@@ -20,7 +14,9 @@ export async function createApiClient() {
     (error) => {
       console.error("API Response Error:", error.code, error.message);
       if (error.response?.status === 401) {
-        redirect("/admin/login");
+        if (typeof window !== "undefined") {
+          window.location.href = "/admin/login";
+        }
       }
 
       return Promise.reject(error);

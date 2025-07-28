@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   BadRequestException,
+  ConflictException,
 } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { ChaletService } from '../services/chalet.service';
@@ -20,13 +21,34 @@ export class ChaletController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  create(@Body() createChaletDto: CreateChaletDto) {
-    return this.chaletService.create(createChaletDto);
+  async create(@Body() createChaletDto: CreateChaletDto) {
+    try {
+      return await this.chaletService.create(createChaletDto);
+    } catch (error: any) {
+      if (error.code === 11000) {
+        // MongoDB duplicate key error
+        if (error.keyPattern?.name) {
+          throw new ConflictException(`Un chalet avec le nom "${createChaletDto.name}" existe déjà`);
+        }
+        throw new ConflictException('Un chalet avec ces données existe déjà');
+      }
+      throw error;
+    }
   }
 
   @Get()
   findAll() {
     return this.chaletService.findAll();
+  }
+
+  @Get('check-name/:name')
+  @UseGuards(JwtAuthGuard)
+  async checkNameAvailability(@Param('name') name: string) {
+    const existingChalet = await this.chaletService.findByName(name);
+    return { 
+      available: !existingChalet,
+      message: existingChalet ? `Le nom "${name}" est déjà utilisé` : `Le nom "${name}" est disponible`
+    };
   }
 
   @Get(':id')
@@ -39,11 +61,22 @@ export class ChaletController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  update(@Param('id') id: string, @Body() updateChaletDto: UpdateChaletDto) {
+  async update(@Param('id') id: string, @Body() updateChaletDto: UpdateChaletDto) {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid chalet ID format');
     }
-    return this.chaletService.update(id, updateChaletDto);
+    try {
+      return await this.chaletService.update(id, updateChaletDto);
+    } catch (error: any) {
+      if (error.code === 11000) {
+        // MongoDB duplicate key error
+        if (error.keyPattern?.name) {
+          throw new ConflictException(`Un chalet avec le nom "${updateChaletDto.name}" existe déjà`);
+        }
+        throw new ConflictException('Un chalet avec ces données existe déjà');
+      }
+      throw error;
+    }
   }
 
   @Delete(':id')

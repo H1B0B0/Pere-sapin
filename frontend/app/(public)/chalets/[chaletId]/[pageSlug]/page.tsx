@@ -1,19 +1,107 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useParams, notFound } from "next/navigation";
-import YooptaEditor from "@yoopta/editor";
+import { Card, CardBody, Chip, Spinner } from "@heroui/react";
+import YooptaEditor, { createYooptaEditor } from "@yoopta/editor";
+
+import Paragraph from "@yoopta/paragraph";
+import Blockquote from "@yoopta/blockquote";
+import Embed from "@yoopta/embed";
+import Image from "@yoopta/image";
+import Link from "@yoopta/link";
+import Callout from "@yoopta/callout";
+import Video from "@yoopta/video";
+import File from "@yoopta/file";
+import { NumberedList, BulletedList, TodoList } from "@yoopta/lists";
+import {
+  Bold,
+  Italic,
+  CodeMark,
+  Underline,
+  Strike,
+  Highlight,
+} from "@yoopta/marks";
+import { HeadingOne, HeadingThree, HeadingTwo } from "@yoopta/headings";
+import Code from "@yoopta/code";
+import Table from "@yoopta/table";
+import Divider from "@yoopta/divider";
+import ActionMenuList, {
+  DefaultActionMenuRender,
+} from "@yoopta/action-menu-list";
+import Toolbar, { DefaultToolbarRender } from "@yoopta/toolbar";
+import LinkTool, { DefaultLinkToolRender } from "@yoopta/link-tool";
 
 import { getChaletById } from "@/lib/services/chalets";
 import { getPagesByChaletId } from "@/lib/services/pages";
 import { usePageViews } from "@/lib/hooks/usePageViews";
 import { Chalet, Page } from "@/types";
 
+const plugins = [
+  Paragraph,
+  Table,
+  Divider,
+  HeadingOne,
+  HeadingTwo,
+  HeadingThree,
+  Blockquote,
+  Callout,
+  NumberedList,
+  BulletedList,
+  TodoList,
+  Code,
+  Link,
+  Embed,
+  Image.extend({
+    options: {
+      async onUpload(file) {
+        // Pour le mode lecture seule, on convertit en base64
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            resolve({
+              src: reader.result as string,
+              alt: file.name,
+              sizes: {
+                width: 800,
+                height: 600,
+              },
+            });
+          };
+          reader.readAsDataURL(file);
+        });
+      },
+    },
+  }),
+  Video,
+  File,
+];
+
+const TOOLS = {
+  ActionMenu: {
+    render: DefaultActionMenuRender,
+    tool: ActionMenuList,
+  },
+  Toolbar: {
+    render: DefaultToolbarRender,
+    tool: Toolbar,
+  },
+  LinkTool: {
+    render: DefaultLinkToolRender,
+    tool: LinkTool,
+  },
+};
+
+const MARKS = [Bold, Italic, CodeMark, Underline, Strike, Highlight];
+
 export default function NotionStylePageViewer() {
   const [chalet, setChalet] = useState<Chalet | null>(null);
   const [page, setPage] = useState<Page | null>(null);
   const [loading, setLoading] = useState(true);
   const params = useParams();
+
+  const editor = useMemo(() => createYooptaEditor(), []);
+  const selectionRef = useRef(null);
 
   usePageViews(page?._id || "");
 
@@ -63,17 +151,7 @@ export default function NotionStylePageViewer() {
         }}
       >
         <div style={{ textAlign: "center" }}>
-          <div
-            style={{
-              width: "32px",
-              height: "32px",
-              border: "3px solid rgba(255, 255, 255, 0.1)",
-              borderTop: "3px solid rgba(255, 255, 255, 0.9)",
-              borderRadius: "50%",
-              animation: "spin 1s linear infinite",
-              margin: "0 auto 16px",
-            }}
-          />
+          <Spinner size="lg" color="primary" style={{ marginBottom: "16px" }} />
           <p
             style={{
               color: "rgba(255, 255, 255, 0.6)",
@@ -93,128 +171,83 @@ export default function NotionStylePageViewer() {
   }
 
   return (
-    <>
-      <style jsx>{`
-        @keyframes spin {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
-
-      <div
-        style={{
-          minHeight: "100vh",
-          backgroundColor: "rgb(37, 37, 37)",
-          color: "rgba(255, 255, 255, 0.9)",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "708px",
-            margin: "0 auto",
-            padding: "96px 96px 40px",
-            minHeight: "100vh",
-          }}
-        >
-          {/* Titre principal - Style Notion */}
-          <div style={{ marginBottom: "24px" }}>
-            <h1
-              style={{
-                fontSize: "40px",
-                lineHeight: "1.2",
-                fontWeight: "700",
-                color: "rgba(255, 255, 255, 0.9)",
-                margin: "0 0 8px 0",
-                wordBreak: "break-word",
-              }}
-            >
-              {page.title}
-            </h1>
-          </div>
-
-          {/* Tags - Style Notion sombre */}
-          {page.tags && page.tags.length > 0 && (
-            <div style={{ marginBottom: "24px" }}>
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="max-w-4xl mx-auto px-8 py-12">
+        {/* Header avec titre et meta */}
+        <div className="mb-12">
+          <h1 className="text-4xl font-bold mb-6 text-foreground">
+            {page.title}
+          </h1>
+          
+          {/* Tags */}
+          {page.tags && Array.isArray(page.tags) && page.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-6">
               {page.tags.map((tag, index) => (
-                <span
-                  key={tag}
-                  style={{
-                    display: "inline-block",
-                    backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    color: "rgba(255, 255, 255, 0.7)",
-                    padding: "2px 6px",
-                    borderRadius: "3px",
-                    fontSize: "12px",
-                    fontWeight: "500",
-                    marginRight: index < page.tags.length - 1 ? "6px" : "0",
-                    marginBottom: "4px",
-                  }}
+                <Chip
+                  key={`${tag}-${index}`}
+                  variant="flat"
+                  size="sm"
+                  color="primary"
                 >
                   {tag}
-                </span>
+                </Chip>
               ))}
             </div>
           )}
 
           {/* Meta info */}
-          <div
-            style={{
-              fontSize: "14px",
-              color: "rgba(255, 255, 255, 0.4)",
-              marginBottom: "48px",
-              display: "flex",
-              alignItems: "center",
-              gap: "16px",
-            }}
-          >
-            <span>{chalet.name}</span>
-            {page.views && page.views > 0 && <span>{page.views} vues</span>}
-          </div>
-
-          {/* Contenu - Yoopta Editor en mode lecture seule */}
-          <div
-            style={{
-              fontSize: "16px",
-              lineHeight: "1.5",
-            }}
-          >
-            <YooptaEditor className="" readOnly={true} value={page.content} />
-          </div>
-
-          {/* Footer minimaliste */}
-          <div
-            style={{
-              marginTop: "64px",
-              paddingTop: "24px",
-              borderTop: "1px solid rgba(255, 255, 255, 0.09)",
-              textAlign: "center",
-            }}
-          >
-            <p
-              style={{
-                fontSize: "14px",
-                color: "rgba(255, 255, 255, 0.4)",
-                margin: "0 0 8px 0",
-              }}
-            >
-              Besoin d'aide avec autre chose ?
-            </p>
-            <p
-              style={{
-                fontSize: "14px",
-                color: "rgba(255, 255, 255, 0.4)",
-                margin: "0",
-              }}
-            >
-              Scannez un autre QR code ou contactez-nous.
-            </p>
+          <div className="flex items-center gap-4 text-sm text-default-500 border-b border-divider pb-6">
+            <span className="flex items-center gap-2">
+              📍 {chalet.name}
+            </span>
+            {page.views && page.views > 0 && (
+              <span className="flex items-center gap-2">
+                👁️ {page.views} vue{page.views !== 1 ? 's' : ''}
+              </span>
+            )}
           </div>
         </div>
+
+        {/* Contenu */}
+        <Card className="bg-content1">
+          <CardBody className="p-8">
+            <div ref={selectionRef}>
+              <YooptaEditor
+                editor={editor}
+                plugins={plugins}
+                tools={TOOLS}
+                marks={MARKS}
+                selectionBoxRoot={selectionRef}
+                value={(() => {
+                  try {
+                    const parsedContent =
+                      typeof page.content === "string"
+                        ? JSON.parse(page.content)
+                        : page.content;
+
+                    if (!parsedContent || typeof parsedContent !== "object") {
+                      return {};
+                    }
+
+                    return parsedContent;
+                  } catch (e) {
+                    console.error("Erreur lors du parsing du contenu:", e);
+                    return {};
+                  }
+                })()}
+                readOnly
+              />
+            </div>
+          </CardBody>
+        </Card>
+
+        {/* Footer */}
+        <div className="mt-16 pt-8 border-t border-divider text-center">
+          <p className="text-default-500 text-sm">
+            💡 Besoin d'aide ? Scannez un autre QR code ou contactez-nous
+          </p>
+        </div>
       </div>
-    </>
+    </div>
   );
 }

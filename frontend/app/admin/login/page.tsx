@@ -58,7 +58,7 @@ export default function LoginPage() {
             </p>
           </CardHeader>
           <CardBody>
-            <form className="flex flex-col gap-4" action={formAction}>
+            <form action={formAction} className="flex flex-col gap-4">
               <Input
                 required
                 label="Email"

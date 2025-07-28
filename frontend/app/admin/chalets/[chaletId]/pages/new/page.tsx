@@ -36,14 +36,14 @@ import ActionMenuList, {
 } from "@yoopta/action-menu-list";
 import Toolbar, { DefaultToolbarRender } from "@yoopta/toolbar";
 import LinkTool, { DefaultLinkToolRender } from "@yoopta/link-tool";
+import { Card, CardBody, CardHeader } from "@heroui/react";
+import { Divider as HeroDivider } from "@heroui/react";
 
 import { WITH_BASIC_INIT_VALUE } from "./initValue";
 
-import { getChaletById } from "@/lib/services/chalets";
-import { createPage } from "@/lib/services/pages";
+import { getChaletByIdClient } from "@/lib/services/client-chalets";
+import { createPageClient } from "@/lib/services/client-pages";
 import { Chalet, CreatePageDto } from "@/types";
-import { Card, CardBody, CardHeader } from "@heroui/react";
-import { Divider as HeroDivider } from "@heroui/react";
 
 const plugins = [
   Paragraph,
@@ -70,17 +70,23 @@ const plugins = [
   Embed,
   Image.extend({
     options: {
-      // async onUpload(file) {
-      //   const data = await uploadToCloudinary(file, "image");
-      //   return {
-      //     src: data.secure_url,
-      //     alt: "cloudinary",
-      //     sizes: {
-      //       width: data.width,
-      //       height: data.height,
-      //     },
-      //   };
-      // },
+      async onUpload(file) {
+        // Pour le moment, on convertit en base64 pour éviter de devoir créer la page d'abord
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            resolve({
+              src: reader.result as string,
+              alt: file.name,
+              sizes: {
+                width: 800, // Valeur par défaut
+                height: 600, // Valeur par défaut
+              },
+            });
+          };
+          reader.readAsDataURL(file);
+        });
+      },
     },
   }),
   Video.extend({
@@ -156,16 +162,21 @@ export default function NewPagePage() {
 
   const onChange = (
     newValue: YooptaContentValue,
-    options: YooptaOnChangeOptions
+    options: YooptaOnChangeOptions,
   ) => {
     setValue(newValue);
+    // Serialize the content for the form
+    const serializedContent = JSON.stringify(newValue);
+    setFormData((prev) => ({ ...prev, content: serializedContent }));
   };
 
-  // Force editor reset with our chalet content
+  // Initialize content when editor is ready
   useEffect(() => {
     if (editor) {
-      // Reset the editor value to ensure our chalet content is loaded
       setValue(WITH_BASIC_INIT_VALUE);
+      // Initialize form content with initial value
+      const serializedContent = JSON.stringify(WITH_BASIC_INIT_VALUE);
+      setFormData((prev) => ({ ...prev, content: serializedContent }));
     }
   }, [editor]);
 
@@ -173,7 +184,7 @@ export default function NewPagePage() {
     const fetchChalet = async () => {
       try {
         const chaletId = params.chaletId as string;
-        const chaletData = await getChaletById(chaletId);
+        const chaletData = await getChaletByIdClient(chaletId);
 
         setChalet(chaletData);
         setFormData((prev) => ({ ...prev, chalet: chaletId }));
@@ -230,10 +241,6 @@ export default function NewPagePage() {
     }));
   };
 
-  const handleContentChange = (markdown: string) => {
-    setFormData((prev) => ({ ...prev, content: markdown }));
-    console.log("Contenu mis à jour:", markdown);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -246,7 +253,8 @@ export default function NewPagePage() {
         content: formData.content,
       };
 
-      await createPage(pageData);
+      const newPage = await createPageClient(pageData);
+      console.log("Page créée avec succès:", newPage);
       router.push(`/admin/chalets/${params.chaletId}`);
     } catch (err: any) {
       console.error("Erreur lors de la création:", err);
