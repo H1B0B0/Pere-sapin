@@ -24,23 +24,29 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   // Utilisation du store global
-  const { chalets, loading, initialized, initialize, getPagesForChalet, refreshData } =
-    useAdminStore();
+  const {
+    chalets,
+    loading,
+    initialized,
+    initialize,
+    getPagesForChalet,
+    refreshData,
+  } = useAdminStore();
 
   // Initialiser le store au montage et si nécessaire
   useEffect(() => {
     if (!initialized && !loading) {
       console.log("[SIDEBAR] Initializing store...");
       initialize();
-    } else if (initialized && chalets.length === 0 && !loading) {
-      console.log("[SIDEBAR] Store initialized but no data, refreshing...");
-      initialize();
     }
   }, [initialized, loading, chalets.length, initialize]);
 
   // Rafraîchir quand on navigue sur certaines pages
   useEffect(() => {
-    if (initialized && (pathname.includes('/admin/chalets') || pathname === '/admin')) {
+    if (
+      initialized &&
+      (pathname.includes("/admin/chalets") || pathname === "/admin")
+    ) {
       console.log("[SIDEBAR] Navigation detected, refreshing data...");
       refreshData();
     }
@@ -53,14 +59,14 @@ export function AdminSidebar() {
       className={clsx(
         "overflow-y-auto border-r border-border/20 transition-all duration-300 ease-in-out m-2 rounded-lg",
         isCollapsed ? "w-30" : "w-80",
-        "h-[calc(100%-1rem)]",
+        "h-[calc(100%-1rem)]"
       )}
     >
       <Card className="alpine-card h-full rounded-none border-0 border-r border-border/20">
         <div
           className={clsx(
             "transition-all duration-300 flex flex-col h-full",
-            isCollapsed ? "p-3" : "p-6",
+            isCollapsed ? "p-3" : "p-6"
           )}
         >
           {/* Logo/Titre Admin avec bouton collapse */}
@@ -99,7 +105,7 @@ export function AdminSidebar() {
                   "w-full gap-3 h-12 transition-all duration-300",
                   isActiveLink("/admin") &&
                     "btn-alpine text-primary-foreground",
-                  isCollapsed ? "justify-center px-0" : "justify-start",
+                  isCollapsed ? "justify-center px-0" : "justify-start"
                 )}
                 color={isActiveLink("/admin") ? "primary" : "default"}
                 startContent={<BsHouse className="h-5 w-5" />}
@@ -115,7 +121,7 @@ export function AdminSidebar() {
                   "w-full gap-3 h-12 transition-all duration-300",
                   isActiveLink("/admin/chalets") &&
                     "btn-alpine text-primary-foreground",
-                  isCollapsed ? "justify-center px-0" : "justify-start",
+                  isCollapsed ? "justify-center px-0" : "justify-start"
                 )}
                 color={isActiveLink("/admin/chalets") ? "primary" : "default"}
                 startContent={<BsGear className="h-5 w-5" />}
@@ -198,7 +204,7 @@ export function AdminSidebar() {
                     const chaletPages = getPagesForChalet(chalet._id);
                     const totalViews = chaletPages.reduce(
                       (sum, page) => sum + (page.views || 0),
-                      0,
+                      0
                     );
 
                     return (
@@ -337,14 +343,14 @@ export function AdminSidebar() {
             <div
               className={clsx(
                 "flex gap-2",
-                isCollapsed ? "justify-center" : "justify-start",
+                isCollapsed ? "justify-center" : "justify-start"
               )}
             >
               <Link href="/admin/settings">
                 <Button
                   className={clsx(
                     "gap-3 transition-all duration-300",
-                    isCollapsed ? "justify-center" : "justify-start",
+                    isCollapsed ? "justify-center" : "justify-start"
                   )}
                   isIconOnly={isCollapsed}
                   startContent={<BsGear className="h-4 w-4" />}
