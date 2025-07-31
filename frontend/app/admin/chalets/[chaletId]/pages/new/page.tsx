@@ -162,7 +162,7 @@ export default function NewPagePage() {
 
   const onChange = (
     newValue: YooptaContentValue,
-    options: YooptaOnChangeOptions,
+    options: YooptaOnChangeOptions
   ) => {
     setValue(newValue);
     // Serialize the content for the form
@@ -240,7 +240,6 @@ export default function NewPagePage() {
       tags: prev.tags?.filter((tag) => tag !== tagToRemove) || [],
     }));
   };
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

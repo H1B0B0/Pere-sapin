@@ -179,6 +179,7 @@ export function AdminSidebar() {
                     <Button
                       color="primary"
                       size="sm"
+                      className="mt-3"
                       startContent={<BsPlus className="h-4 w-4" />}
                       variant="flat"
                     >
@@ -359,21 +360,6 @@ export function AdminSidebar() {
                   {!isCollapsed && "Paramètres"}
                 </Button>
               </Link>
-
-              <Button
-                isIconOnly
-                className="min-w-unit-8 w-8 h-8"
-                size="sm"
-                variant="light"
-                onClick={() => {
-                  console.log("[SIDEBAR] Manual refresh triggered");
-                  refreshData();
-                }}
-                title="Rafraîchir les données"
-              >
-                <BsArrowClockwise className="h-4 w-4" />
-              </Button>
-
               <ThemeSwitcher />
             </div>
           </div>

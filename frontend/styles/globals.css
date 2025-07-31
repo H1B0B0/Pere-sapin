@@ -73,6 +73,98 @@
     --sidebar-accent-foreground: 200 25% 88%;
     --sidebar-border: 210 25% 20%;
     --sidebar-ring: 158 50% 45%;
+
+    & .yoopta-block-options-menu-content {
+      background-color: #27272A;
+      color: #fff;
+    }
+
+    & .yoopta-block-options-separator  {
+      background-color: #ffffff;
+    }
+        & .yoopta-block-options-button {
+        color: #fff !important;
+        transition: color 0.2s ease;
+    
+        &[data-state="checked"] {
+            color: var(--primary) !important;
+        }
+    
+        &[style*="background-color"] {
+            color: #27272A !important;
+        }
+    }
+
+    & .yoopta-extended-block-actions {
+      background-color: #27272A;
+      color: #fff;
+    }
+
+    & .yoopta-block-actions-drag {
+      color: #fff !important;
+    }
+    & .yoopta-block-actions-plus {
+      color: #fff !important;
+    }
+
+    & .yoopta-action-menu-list-content {
+      background-color: #27272A;
+      color: #fff;
+    }
+
+    & .yoo-action-menu-flex {
+      background-color: #27272A;
+      color: #fff;
+    }
+
+    & .yoopta-button {
+      background-color: #27272A !important;
+      color: #fff !important;
+    }
+
+    & .lucide {
+      color: #fff !important;
+      stroke: #fff !important;
+    }
+
+    & .yoo-embed-flex {
+      background-color: #27272A !important;
+      color: #fff !important;
+    }
+
+    & .yoo-embed-flex input {
+      border: 1px solid #ffffff !important;
+    }
+
+    & .yoo-image-flex {
+      background-color: #27272A !important;
+      color: #fff !important;
+    }
+
+    & .yoo-image-flex label {
+      border: 1px solid #ffffff !important;
+      border-radius: 4px;
+    }
+
+    & .yoo-video-flex {
+      background-color: #27272A !important;
+      color: #fff !important;
+    }
+
+    & .yoo-video-flex label {
+      border: 1px solid #ffffff !important;
+      border-radius: 4px;
+    }
+
+    & .yoo-file-flex {
+      background-color: #27272A !important;
+      color: #fff !important;
+    }
+
+    & .yoo-file-flex label {
+      border: 1px solid #ffffff !important;
+      border-radius: 4px;
+    }
   }
 }
 
