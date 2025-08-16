@@ -1,5 +1,10 @@
 "use server";
-import { serverGet, serverPost, serverPatch, serverDelete } from "@/lib/server-api";
+import {
+  serverGet,
+  serverPost,
+  serverPatch,
+  serverDelete,
+} from "@/lib/server-api";
 import { Page, CreatePageDto } from "@/types";
 
 export async function getAllPages(): Promise<Page[]> {

@@ -9,6 +9,9 @@ import {
   Button,
   Input,
   Textarea,
+  Tabs,
+  Tab,
+  Chip,
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import { BsArrowLeft, BsTree, BsCheck } from "react-icons/bs";
@@ -21,9 +24,28 @@ export default function NewChaletPage() {
   const [formData, setFormData] = useState<CreateChaletDto>({
     name: "",
     description: "",
+    location: "",
+    address: "",
+    capacity: undefined,
+    pricePerNight: undefined,
+    rooms: "",
+    bedrooms: "",
+    bathrooms: "",
+    prices: { weekend: "", week: "", holidays: "", cleaning: "" },
+    amenities: [],
+    features: [],
+    highlights: [],
+    images: [],
+    mainImage: "",
+    contactEmail: "",
+    contactPhone: "",
+    isActive: true,
+    color: "",
+    icon: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [newAmenity, setNewAmenity] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,15 +65,39 @@ export default function NewChaletPage() {
       // La redirection est gérée dans l'action
     } catch (err) {
       console.error("Erreur lors de la création:", err);
-      setError(err instanceof Error ? err.message : "Erreur lors de la création du chalet");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Erreur lors de la création du chalet",
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const handleChange = (field: keyof CreateChaletDto, value: string) => {
+  const handleChange = (
+    field: keyof CreateChaletDto,
+    value: string | number | boolean | string[],
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (error) setError(null);
+  };
+
+  const addAmenity = () => {
+    if (newAmenity.trim() && !formData.amenities?.includes(newAmenity.trim())) {
+      setFormData((prev) => ({
+        ...prev,
+        amenities: [...(prev.amenities || []), newAmenity.trim()],
+      }));
+      setNewAmenity("");
+    }
+  };
+
+  const removeAmenity = (amenity: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      amenities: prev.amenities?.filter((a) => a !== amenity) || [],
+    }));
   };
 
   return (
@@ -101,44 +147,397 @@ export default function NewChaletPage() {
             </h2>
           </CardHeader>
           <CardBody>
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 gap-6">
-                <Input
-                  isRequired
-                  classNames={{
-                    input: "bg-transparent",
-                    inputWrapper:
-                      "border-border/50 hover:border-border focus-within:!border-primary",
-                  }}
-                  label="Nom du chalet"
-                  placeholder="ex: Chalet des Sapins"
-                  value={formData.name}
-                  variant="bordered"
-                  onChange={(e) => handleChange("name", e.target.value)}
-                />
+            <form onSubmit={handleSubmit}>
+              <Tabs aria-label="Sections du formulaire" className="w-full">
+                <Tab key="basic" title="Informations de base">
+                  <div className="space-y-6 py-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <Input
+                        isRequired
+                        classNames={{
+                          input: "bg-transparent",
+                          inputWrapper:
+                            "border-border/50 hover:border-border focus-within:!border-primary",
+                        }}
+                        label="Nom du chalet"
+                        placeholder="ex: Chalet des Sapins"
+                        value={formData.name}
+                        variant="bordered"
+                        onChange={(e) => handleChange("name", e.target.value)}
+                      />
 
-                <Textarea
-                  classNames={{
-                    input: "bg-transparent",
-                    inputWrapper:
-                      "border-border/50 hover:border-border focus-within:!border-primary",
-                  }}
-                  label="Description"
-                  placeholder="Décrivez votre chalet, ses équipements, sa situation..."
-                  rows={4}
-                  value={formData.description || ""}
-                  variant="bordered"
-                  onChange={(e) => handleChange("description", e.target.value)}
-                />
-              </div>
+                      <Input
+                        classNames={{
+                          input: "bg-transparent",
+                          inputWrapper:
+                            "border-border/50 hover:border-border focus-within:!border-primary",
+                        }}
+                        label="Lieu"
+                        placeholder="ex: Chamonix, France"
+                        value={formData.location || ""}
+                        variant="bordered"
+                        onChange={(e) =>
+                          handleChange("location", e.target.value)
+                        }
+                      />
+                    </div>
+
+                    <Textarea
+                      classNames={{
+                        input: "bg-transparent",
+                        inputWrapper:
+                          "border-border/50 hover:border-border focus-within:!border-primary",
+                      }}
+                      label="Description"
+                      placeholder="Décrivez votre chalet, ses équipements, sa situation..."
+                      rows={4}
+                      value={formData.description || ""}
+                      variant="bordered"
+                      onChange={(e) =>
+                        handleChange("description", e.target.value)
+                      }
+                    />
+
+                    <Textarea
+                      classNames={{
+                        input: "bg-transparent",
+                        inputWrapper:
+                          "border-border/50 hover:border-border focus-within:!border-primary",
+                      }}
+                      label="Adresse complète"
+                      placeholder="Adresse complète du chalet"
+                      rows={2}
+                      value={formData.address || ""}
+                      variant="bordered"
+                      onChange={(e) => handleChange("address", e.target.value)}
+                    />
+                  </div>
+                </Tab>
+
+                <Tab key="details" title="Détails">
+                  <div className="space-y-6 py-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <Input
+                        classNames={{
+                          input: "bg-transparent",
+                          inputWrapper:
+                            "border-border/50 hover:border-border focus-within:!border-primary",
+                        }}
+                        label="Capacité (personnes)"
+                        placeholder="ex: 6"
+                        type="number"
+                        value={formData.capacity?.toString() || ""}
+                        variant="bordered"
+                        onChange={(e) =>
+                          handleChange(
+                            "capacity",
+                            parseInt(e.target.value) || undefined,
+                          )
+                        }
+                      />
+
+                      <Input
+                        classNames={{
+                          input: "bg-transparent",
+                          inputWrapper:
+                            "border-border/50 hover:border-border focus-within:!border-primary",
+                        }}
+                        label="Prix par nuit (€)"
+                        placeholder="ex: 150"
+                        type="number"
+                        value={formData.pricePerNight?.toString() || ""}
+                        variant="bordered"
+                        onChange={(e) =>
+                          handleChange(
+                            "pricePerNight",
+                            parseInt(e.target.value) || undefined,
+                          )
+                        }
+                      />
+                      <Input
+                        classNames={{
+                          input: "bg-transparent",
+                          inputWrapper:
+                            "border-border/50 hover:border-border focus-within:!border-primary",
+                        }}
+                        label="Pièces (résumé)"
+                        placeholder="ex: 5 chambres"
+                        value={formData.rooms || ""}
+                        variant="bordered"
+                        onChange={(e) => handleChange("rooms", e.target.value)}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <Input
+                        classNames={{
+                          input: "bg-transparent",
+                          inputWrapper:
+                            "border-border/50 hover:border-border focus-within:!border-primary",
+                        }}
+                        label="Chambres (détails)"
+                        placeholder="Description lits/chambres"
+                        value={formData.bedrooms || ""}
+                        variant="bordered"
+                        onChange={(e) =>
+                          handleChange("bedrooms", e.target.value)
+                        }
+                      />
+                      <Input
+                        classNames={{
+                          input: "bg-transparent",
+                          inputWrapper:
+                            "border-border/50 hover:border-border focus-within:!border-primary",
+                        }}
+                        label="Salles de bain / WC"
+                        placeholder="Détails salles de bain"
+                        value={formData.bathrooms || ""}
+                        variant="bordered"
+                        onChange={(e) =>
+                          handleChange("bathrooms", e.target.value)
+                        }
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-2 block">
+                        Équipements et services
+                      </label>
+                      <div className="flex gap-2 mb-3">
+                        <Input
+                          placeholder="Ajouter un équipement"
+                          value={newAmenity}
+                          variant="bordered"
+                          onChange={(e) => setNewAmenity(e.target.value)}
+                          onKeyPress={(e) =>
+                            e.key === "Enter" &&
+                            (e.preventDefault(), addAmenity())
+                          }
+                        />
+                        <Button
+                          color="primary"
+                          variant="flat"
+                          onPress={addAmenity}
+                        >
+                          Ajouter
+                        </Button>
+                      </div>
+                      {formData.amenities && formData.amenities.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {formData.amenities.map((amenity) => (
+                            <Chip
+                              key={amenity}
+                              color="primary"
+                              variant="flat"
+                              onClose={() => removeAmenity(amenity)}
+                            >
+                              {amenity}
+                            </Chip>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-2 block">
+                        Caractéristiques (features)
+                      </label>
+                      <Textarea
+                        classNames={{
+                          input: "bg-transparent",
+                          inputWrapper:
+                            "border-border/50 hover:border-border focus-within:!border-primary",
+                        }}
+                        placeholder="Une par ligne"
+                        rows={3}
+                        value={(formData.features || []).join("\n")}
+                        variant="bordered"
+                        onChange={(e) =>
+                          handleChange(
+                            "features",
+                            e.target.value.split(/\n+/).filter(Boolean),
+                          )
+                        }
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-2 block">
+                        Points forts (highlights)
+                      </label>
+                      <Textarea
+                        classNames={{
+                          input: "bg-transparent",
+                          inputWrapper:
+                            "border-border/50 hover:border-border focus-within:!border-primary",
+                        }}
+                        placeholder="Une par ligne"
+                        rows={3}
+                        value={(formData.highlights || []).join("\n")}
+                        variant="bordered"
+                        onChange={(e) =>
+                          handleChange(
+                            "highlights",
+                            e.target.value.split(/\n+/).filter(Boolean),
+                          )
+                        }
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <Input
+                        classNames={{
+                          input: "bg-transparent",
+                          inputWrapper:
+                            "border-border/50 hover:border-border focus-within:!border-primary",
+                        }}
+                        label="Couleur (slug/theme)"
+                        placeholder="ex: primary"
+                        value={formData.color || ""}
+                        variant="bordered"
+                        onChange={(e) => handleChange("color", e.target.value)}
+                      />
+                      <Input
+                        classNames={{
+                          input: "bg-transparent",
+                          inputWrapper:
+                            "border-border/50 hover:border-border focus-within:!border-primary",
+                        }}
+                        label="Icône"
+                        placeholder="ex: pine-tree"
+                        value={formData.icon || ""}
+                        variant="bordered"
+                        onChange={(e) => handleChange("icon", e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </Tab>
+
+                <Tab key="pricing" title="Tarifs détaillés">
+                  <div className="space-y-6 py-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <Input
+                        label="Week-end"
+                        placeholder="ex: 800-900€"
+                        value={formData.prices?.weekend || ""}
+                        variant="bordered"
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            prices: { ...prev.prices, weekend: e.target.value },
+                          }))
+                        }
+                      />
+                      <Input
+                        label="Semaine"
+                        placeholder="ex: 1100-1900€"
+                        value={formData.prices?.week || ""}
+                        variant="bordered"
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            prices: { ...prev.prices, week: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <Input
+                        label="Vacances"
+                        placeholder="ex: 2200€"
+                        value={formData.prices?.holidays || ""}
+                        variant="bordered"
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            prices: {
+                              ...prev.prices,
+                              holidays: e.target.value,
+                            },
+                          }))
+                        }
+                      />
+                      <Input
+                        label="Ménage"
+                        placeholder="ex: 100€"
+                        value={formData.prices?.cleaning || ""}
+                        variant="bordered"
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            prices: {
+                              ...prev.prices,
+                              cleaning: e.target.value,
+                            },
+                          }))
+                        }
+                      />
+                    </div>
+                  </div>
+                </Tab>
+
+                <Tab key="contact" title="Contact">
+                  <div className="space-y-6 py-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <Input
+                        classNames={{
+                          input: "bg-transparent",
+                          inputWrapper:
+                            "border-border/50 hover:border-border focus-within:!border-primary",
+                        }}
+                        label="Email de contact"
+                        placeholder="contact@example.com"
+                        type="email"
+                        value={formData.contactEmail || ""}
+                        variant="bordered"
+                        onChange={(e) =>
+                          handleChange("contactEmail", e.target.value)
+                        }
+                      />
+
+                      <Input
+                        classNames={{
+                          input: "bg-transparent",
+                          inputWrapper:
+                            "border-border/50 hover:border-border focus-within:!border-primary",
+                        }}
+                        label="Téléphone de contact"
+                        placeholder="+33 1 23 45 67 89"
+                        type="tel"
+                        value={formData.contactPhone || ""}
+                        variant="bordered"
+                        onChange={(e) =>
+                          handleChange("contactPhone", e.target.value)
+                        }
+                      />
+                    </div>
+
+                    <Input
+                      classNames={{
+                        input: "bg-transparent",
+                        inputWrapper:
+                          "border-border/50 hover:border-border focus-within:!border-primary",
+                      }}
+                      label="Image principale (URL)"
+                      placeholder="https://example.com/image.jpg"
+                      type="url"
+                      value={formData.mainImage || ""}
+                      variant="bordered"
+                      onChange={(e) =>
+                        handleChange("mainImage", e.target.value)
+                      }
+                    />
+                  </div>
+                </Tab>
+              </Tabs>
 
               {error && (
-                <div className="p-4 rounded-lg bg-danger/20 border border-danger/30">
+                <div className="p-4 rounded-lg bg-danger/20 border border-danger/30 mt-6">
                   <p className="text-danger text-sm">{error}</p>
                 </div>
               )}
 
-              <div className="flex gap-4 pt-4">
+              <div className="flex gap-4 pt-6">
                 <Link className="flex-1" href="/admin/chalets">
                   <Button
                     className="w-full"

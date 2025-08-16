@@ -20,7 +20,7 @@ export async function createApiClient() {
       }
 
       return Promise.reject(error);
-    }
+    },
   );
 
   return api;

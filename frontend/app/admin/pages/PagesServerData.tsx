@@ -1,7 +1,8 @@
+import PagesManagementClient from "./PagesManagementClient";
+
 import { getAllPages } from "@/lib/services/pages";
 import { getAllChalets } from "@/lib/services/chalets";
-import { Page, Chalet } from "@/types";
-import PagesManagementClient from "./PagesManagementClient";
+import { Page } from "@/types";
 
 interface PageWithChalet extends Page {
   chaletName?: string;
@@ -18,6 +19,7 @@ export default async function PagesServerData() {
     const pagesWithChalets: PageWithChalet[] = pagesData.map((page) => {
       const chalet = chaletsData.find((c) => {
         if (!page.chalet) return false;
+
         return typeof page.chalet === "string"
           ? c._id === page.chalet
           : c._id === page.chalet._id;
@@ -29,12 +31,15 @@ export default async function PagesServerData() {
       };
     });
 
-    return <PagesManagementClient 
-      initialPages={pagesWithChalets} 
-      initialChalets={chaletsData} 
-    />;
+    return (
+      <PagesManagementClient
+        initialChalets={chaletsData}
+        initialPages={pagesWithChalets}
+      />
+    );
   } catch (error) {
     console.error("Erreur lors du chargement des pages:", error);
-    return <PagesManagementClient initialPages={[]} initialChalets={[]} />;
+
+    return <PagesManagementClient initialChalets={[]} initialPages={[]} />;
   }
 }

@@ -74,6 +74,7 @@ const plugins = [
         // Pour le moment, on convertit en base64 pour éviter de devoir créer la page d'abord
         return new Promise((resolve) => {
           const reader = new FileReader();
+
           reader.onload = () => {
             resolve({
               src: reader.result as string,
@@ -162,11 +163,12 @@ export default function NewPagePage() {
 
   const onChange = (
     newValue: YooptaContentValue,
-    options: YooptaOnChangeOptions
+    options: YooptaOnChangeOptions,
   ) => {
     setValue(newValue);
     // Serialize the content for the form
     const serializedContent = JSON.stringify(newValue);
+
     setFormData((prev) => ({ ...prev, content: serializedContent }));
   };
 
@@ -176,6 +178,7 @@ export default function NewPagePage() {
       setValue(WITH_BASIC_INIT_VALUE);
       // Initialize form content with initial value
       const serializedContent = JSON.stringify(WITH_BASIC_INIT_VALUE);
+
       setFormData((prev) => ({ ...prev, content: serializedContent }));
     }
   }, [editor]);
@@ -253,6 +256,7 @@ export default function NewPagePage() {
       };
 
       const newPage = await createPageClient(pageData);
+
       console.log("Page créée avec succès:", newPage);
       router.push(`/admin/chalets/${params.chaletId}`);
     } catch (err: any) {

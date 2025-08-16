@@ -4,11 +4,8 @@ export const usePageViews = (pageId: string) => {
   useEffect(() => {
     const incrementView = async () => {
       try {
-        const API_BASE_URL =
-          process.env.NEXT_PUBLIC_API_URL || "http://backend:5042";
-
         console.log(`Incrémentation de la vue pour la page ${pageId}`);
-        const response = await fetch(`${API_BASE_URL}/pages/${pageId}/view`, {
+        const response = await fetch(`/api/proxy/pages/${pageId}/view`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -37,9 +34,7 @@ export const usePageViews = (pageId: string) => {
 export const usePageStats = (pageId: string) => {
   const fetchStats = async () => {
     try {
-      const API_BASE_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://backend:5042";
-      const response = await fetch(`${API_BASE_URL}/pages/${pageId}/stats`, {
+      const response = await fetch(`/api/proxy/pages/${pageId}/stats`, {
         headers: {
           "Content-Type": "application/json",
         },

@@ -20,13 +20,15 @@ export interface RecentActivity {
 export async function getDashboardStats(): Promise<DashboardStats> {
   try {
     console.log("[DASHBOARD] Fetching dashboard stats...");
-    
+
     console.log("[DASHBOARD] Fetching chalets...");
     const chalets = await getAllChalets();
+
     console.log("[DASHBOARD] Chalets fetched:", chalets.length);
-    
+
     console.log("[DASHBOARD] Fetching pages...");
     const pages = await getAllPages();
+
     console.log("[DASHBOARD] Pages fetched:", pages.length);
 
     const stats = {
@@ -35,8 +37,9 @@ export async function getDashboardStats(): Promise<DashboardStats> {
       totalQRCodes: pages.length, // Each page has a QR code
       recentViews: 0, // TODO: Implement analytics
     };
-    
+
     console.log("[DASHBOARD] Stats calculated:", stats);
+
     return stats;
   } catch (error) {
     console.error("Error fetching dashboard stats:", error);

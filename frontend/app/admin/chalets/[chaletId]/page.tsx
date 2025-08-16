@@ -18,6 +18,12 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import {
@@ -30,12 +36,14 @@ import {
   BsDownload,
   BsThreeDotsVertical,
   BsArrowLeft,
+  BsCalendar,
 } from "react-icons/bs";
 import Link from "next/link";
 
 import { getChaletById } from "@/lib/services/chalets";
 import { getPagesByChaletId } from "@/lib/services/pages";
 import { downloadQRCodesPDFAction } from "@/lib/actions/download";
+import { deleteChaletAction } from "@/lib/actions/chalets";
 import { Chalet, Page } from "@/types";
 
 export default function ChaletDetail() {
@@ -44,6 +52,7 @@ export default function ChaletDetail() {
   const [chalet, setChalet] = useState<Chalet | null>(null);
   const [pages, setPages] = useState<Page[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     const fetchChaletData = async () => {
@@ -94,6 +103,17 @@ export default function ChaletDetail() {
     };
 
     return colors[tag as keyof typeof colors] || "default";
+  };
+
+  const handleDeleteChalet = async () => {
+    if (!chalet) return;
+
+    try {
+      await deleteChaletAction(chalet._id);
+      router.push("/admin/chalets");
+    } catch (error) {
+      console.error("Erreur lors de la suppression:", error);
+    }
   };
 
   if (loading) {
@@ -155,6 +175,33 @@ export default function ChaletDetail() {
               <p className="text-sm text-muted-foreground mt-2">
                 Créé le {formatDate(chalet.createdAt)}
               </p>
+              <div className="flex flex-wrap gap-2 mt-2 text-xs">
+                {chalet.rooms && (
+                  <Chip size="sm" variant="flat">
+                    {chalet.rooms}
+                  </Chip>
+                )}
+                {chalet.bedrooms && (
+                  <Chip color="primary" size="sm" variant="flat">
+                    Chambres détaillées
+                  </Chip>
+                )}
+                {chalet.bathrooms && (
+                  <Chip color="secondary" size="sm" variant="flat">
+                    Salles de bain
+                  </Chip>
+                )}
+                {chalet.color && (
+                  <Chip color="success" size="sm" variant="flat">
+                    Couleur: {chalet.color}
+                  </Chip>
+                )}
+                {chalet.icon && (
+                  <Chip color="warning" size="sm" variant="flat">
+                    Icône: {chalet.icon}
+                  </Chip>
+                )}
+              </div>
             </div>
           </div>
           <div className="flex gap-3">
@@ -165,6 +212,15 @@ export default function ChaletDetail() {
                 variant="flat"
               >
                 Modifier
+              </Button>
+            </Link>
+            <Link href={`/admin/chalets/${chalet._id}/calendar`}>
+              <Button
+                color="secondary"
+                startContent={<BsCalendar className="h-4 w-4" />}
+                variant="flat"
+              >
+                Calendrier
               </Button>
             </Link>
             <Button
@@ -195,6 +251,14 @@ export default function ChaletDetail() {
               }}
             >
               Export PDF
+            </Button>
+            <Button
+              color="danger"
+              startContent={<BsTrash className="h-4 w-4" />}
+              variant="flat"
+              onPress={onOpen}
+            >
+              Supprimer
             </Button>
           </div>
         </div>
@@ -251,6 +315,108 @@ export default function ChaletDetail() {
       </motion.div>
 
       {/* Pages du chalet */}
+      <motion.div
+        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5, delay: 0.15 }}
+      >
+        <Card className="alpine-card">
+          <CardHeader className="pb-4">
+            <h2 className="text-xl font-semibold text-foreground">
+              Informations structure
+            </h2>
+          </CardHeader>
+          <CardBody>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+              {chalet.bedrooms && (
+                <div>
+                  <p className="font-medium mb-1">Chambres</p>
+                  <p className="text-muted-foreground whitespace-pre-line">
+                    {chalet.bedrooms}
+                  </p>
+                </div>
+              )}
+              {chalet.bathrooms && (
+                <div>
+                  <p className="font-medium mb-1">Salles de bain / WC</p>
+                  <p className="text-muted-foreground whitespace-pre-line">
+                    {chalet.bathrooms}
+                  </p>
+                </div>
+              )}
+              {chalet.prices && (
+                <div className="md:col-span-2">
+                  <p className="font-medium mb-2">Tarifs</p>
+                  <div className="flex flex-wrap gap-2">
+                    {chalet.prices.weekend && (
+                      <Chip color="primary" size="sm" variant="flat">
+                        Week-end: {chalet.prices.weekend}
+                      </Chip>
+                    )}
+                    {chalet.prices.week && (
+                      <Chip color="success" size="sm" variant="flat">
+                        Semaine: {chalet.prices.week}
+                      </Chip>
+                    )}
+                    {chalet.prices.holidays && (
+                      <Chip color="warning" size="sm" variant="flat">
+                        Vacances: {chalet.prices.holidays}
+                      </Chip>
+                    )}
+                    {chalet.prices.cleaning && (
+                      <Chip color="secondary" size="sm" variant="flat">
+                        Ménage: {chalet.prices.cleaning}
+                      </Chip>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardBody>
+        </Card>
+      </motion.div>
+
+      <motion.div
+        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5, delay: 0.18 }}
+      >
+        <Card className="alpine-card">
+          <CardHeader className="pb-4">
+            <h2 className="text-xl font-semibold text-foreground">
+              Caractéristiques & Points forts
+            </h2>
+          </CardHeader>
+          <CardBody>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {chalet.features && chalet.features.length > 0 && (
+                <div>
+                  <p className="font-medium mb-2 text-sm">Caractéristiques</p>
+                  <div className="flex flex-wrap gap-2">
+                    {chalet.features.map((f) => (
+                      <Chip key={f} size="sm" variant="flat">
+                        {f}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {chalet.highlights && chalet.highlights.length > 0 && (
+                <div>
+                  <p className="font-medium mb-2 text-sm">Points forts</p>
+                  <div className="flex flex-wrap gap-2">
+                    {chalet.highlights.map((h) => (
+                      <Chip key={h} color="success" size="sm" variant="flat">
+                        {h}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardBody>
+        </Card>
+      </motion.div>
       <motion.div
         animate={{ opacity: 1, y: 0 }}
         initial={{ opacity: 0, y: 20 }}
@@ -400,6 +566,45 @@ export default function ChaletDetail() {
           </CardBody>
         </Card>
       </motion.div>
+
+      {/* Modal de confirmation de suppression */}
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Confirmer la suppression
+              </ModalHeader>
+              <ModalBody>
+                <p>
+                  Êtes-vous sûr de vouloir supprimer le chalet "{chalet?.name}"
+                  ? Cette action est irréversible.
+                </p>
+                {pages.length > 0 && (
+                  <p className="text-warning text-sm">
+                    Attention : Ce chalet contient {pages.length} page(s) qui
+                    seront également supprimées.
+                  </p>
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <Button color="default" variant="light" onPress={onClose}>
+                  Annuler
+                </Button>
+                <Button
+                  color="danger"
+                  onPress={() => {
+                    handleDeleteChalet();
+                    onClose();
+                  }}
+                >
+                  Supprimer
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

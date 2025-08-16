@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { useParams, notFound } from "next/navigation";
 import { Card, CardBody, Chip, Spinner } from "@heroui/react";
 import YooptaEditor, { createYooptaEditor } from "@yoopta/editor";
-
 import Paragraph from "@yoopta/paragraph";
 import Blockquote from "@yoopta/blockquote";
 import Embed from "@yoopta/embed";
@@ -58,6 +57,7 @@ const plugins = [
         // Pour le mode lecture seule, on convertit en base64
         return new Promise((resolve) => {
           const reader = new FileReader();
+
           reader.onload = () => {
             resolve({
               src: reader.result as string,
@@ -117,7 +117,7 @@ export default function NotionStylePageViewer() {
         ]);
 
         const pageData = pagesData.find(
-          (p) => p.slug === pageSlug && p.isActive !== false
+          (p) => p.slug === pageSlug && p.isActive !== false,
         );
 
         if (!pageData) {
@@ -151,7 +151,7 @@ export default function NotionStylePageViewer() {
         }}
       >
         <div style={{ textAlign: "center" }}>
-          <Spinner size="lg" color="primary" style={{ marginBottom: "16px" }} />
+          <Spinner color="primary" size="lg" style={{ marginBottom: "16px" }} />
           <p
             style={{
               color: "rgba(255, 255, 255, 0.6)",
@@ -178,16 +178,16 @@ export default function NotionStylePageViewer() {
           <h1 className="text-4xl font-bold mb-6 text-foreground">
             {page.title}
           </h1>
-          
+
           {/* Tags */}
           {page.tags && Array.isArray(page.tags) && page.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-6">
               {page.tags.map((tag, index) => (
                 <Chip
                   key={`${tag}-${index}`}
-                  variant="flat"
-                  size="sm"
                   color="primary"
+                  size="sm"
+                  variant="flat"
                 >
                   {tag}
                 </Chip>
@@ -197,12 +197,10 @@ export default function NotionStylePageViewer() {
 
           {/* Meta info */}
           <div className="flex items-center gap-4 text-sm text-default-500 border-b border-divider pb-6">
-            <span className="flex items-center gap-2">
-              📍 {chalet.name}
-            </span>
+            <span className="flex items-center gap-2">📍 {chalet.name}</span>
             {page.views && page.views > 0 && (
               <span className="flex items-center gap-2">
-                👁️ {page.views} vue{page.views !== 1 ? 's' : ''}
+                👁️ {page.views} vue{page.views !== 1 ? "s" : ""}
               </span>
             )}
           </div>
@@ -213,11 +211,12 @@ export default function NotionStylePageViewer() {
           <CardBody className="p-8">
             <div ref={selectionRef}>
               <YooptaEditor
+                readOnly
                 editor={editor}
-                plugins={plugins}
-                tools={TOOLS}
                 marks={MARKS}
+                plugins={plugins}
                 selectionBoxRoot={selectionRef}
+                tools={TOOLS}
                 value={(() => {
                   try {
                     const parsedContent =
@@ -232,10 +231,10 @@ export default function NotionStylePageViewer() {
                     return parsedContent;
                   } catch (e) {
                     console.error("Erreur lors du parsing du contenu:", e);
+
                     return {};
                   }
                 })()}
-                readOnly
               />
             </div>
           </CardBody>

@@ -30,6 +30,7 @@ import {
   BsQrCode,
 } from "react-icons/bs";
 import Link from "next/link";
+
 import { Page, Chalet } from "@/types";
 import { regeneratePageQRCodeClient } from "@/lib/services/client-pages";
 
@@ -42,25 +43,37 @@ interface Props {
   initialChalets: Chalet[];
 }
 
-export default function PagesManagementClient({ initialPages, initialChalets }: Props) {
+export default function PagesManagementClient({
+  initialPages,
+  initialChalets,
+}: Props) {
   const [pages, setPages] = useState<PageWithChalet[]>(initialPages);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedChalet, setSelectedChalet] = useState<string>("all");
 
   // Filter pages based on search and chalet selection
   const filteredPages = pages.filter((page) => {
-    const matchesSearch = page.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch =
+      page.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       page.chaletName?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesChalet = selectedChalet === "all" || 
-      (typeof page.chalet === "string" ? page.chalet === selectedChalet : page.chalet?._id === selectedChalet);
-    
+    const matchesChalet =
+      selectedChalet === "all" ||
+      (typeof page.chalet === "string"
+        ? page.chalet === selectedChalet
+        : page.chalet?._id === selectedChalet);
+
     return matchesSearch && matchesChalet;
   });
 
   const handleRegenerateQRCode = async (pageId: string) => {
     try {
       const updatedPage = await regeneratePageQRCodeClient(pageId);
-      setPages(prev => prev.map(p => p._id === pageId ? { ...updatedPage, chaletName: p.chaletName } : p));
+
+      setPages((prev) =>
+        prev.map((p) =>
+          p._id === pageId ? { ...updatedPage, chaletName: p.chaletName } : p,
+        ),
+      );
     } catch (error) {
       console.error("Erreur lors de la régénération du QR code:", error);
     }
@@ -69,8 +82,8 @@ export default function PagesManagementClient({ initialPages, initialChalets }: 
   return (
     <div className="space-y-6">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5 }}
       >
         <Card>
@@ -154,18 +167,18 @@ export default function PagesManagementClient({ initialPages, initialChalets }: 
                         <DropdownMenu>
                           <DropdownItem
                             key="view"
-                            startContent={<BsEye />}
                             as={Link}
-                            href={`/chalets/${typeof page.chalet === 'string' ? page.chalet : page.chalet?._id}/${page.slug}`}
+                            href={`/chalets/${typeof page.chalet === "string" ? page.chalet : page.chalet?._id}/${page.slug}`}
+                            startContent={<BsEye />}
                             target="_blank"
                           >
                             Voir la page
                           </DropdownItem>
                           <DropdownItem
                             key="edit"
-                            startContent={<BsPencil />}
                             as={Link}
-                            href={`/admin/chalets/${typeof page.chalet === 'string' ? page.chalet : page.chalet?._id}/pages/${page.slug}/edit`}
+                            href={`/admin/chalets/${typeof page.chalet === "string" ? page.chalet : page.chalet?._id}/pages/${page.slug}/edit`}
+                            startContent={<BsPencil />}
                           >
                             Modifier
                           </DropdownItem>

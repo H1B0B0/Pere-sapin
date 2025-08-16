@@ -73,9 +73,15 @@ export const useAdminStore = create<AdminState>()(
 
         if (!state.initialized && !state.loading) {
           const { fetchData } = get();
+
           await fetchData();
-        } else if (state.initialized && state.chalets.length === 0 && !state.loading) {
+        } else if (
+          state.initialized &&
+          state.chalets.length === 0 &&
+          !state.loading
+        ) {
           const { fetchData } = get();
+
           await fetchData();
         }
       },
@@ -169,7 +175,8 @@ export const useAdminStore = create<AdminState>()(
           try {
             return localStorage.getItem(name);
           } catch (error) {
-            console.warn('Failed to read from localStorage:', error);
+            console.warn("Failed to read from localStorage:", error);
+
             return null;
           }
         },
@@ -177,13 +184,19 @@ export const useAdminStore = create<AdminState>()(
           try {
             localStorage.setItem(name, value);
           } catch (error) {
-            console.warn('Failed to write to localStorage (quota exceeded):', error);
+            console.warn(
+              "Failed to write to localStorage (quota exceeded):",
+              error,
+            );
             // Clear old data to make space
             try {
               localStorage.removeItem(name);
               localStorage.setItem(name, value);
             } catch (retryError) {
-              console.error('Failed to save to localStorage even after clearing:', retryError);
+              console.error(
+                "Failed to save to localStorage even after clearing:",
+                retryError,
+              );
               // Continue without persistence
             }
           }
@@ -192,7 +205,7 @@ export const useAdminStore = create<AdminState>()(
           try {
             localStorage.removeItem(name);
           } catch (error) {
-            console.warn('Failed to remove from localStorage:', error);
+            console.warn("Failed to remove from localStorage:", error);
           }
         },
       },

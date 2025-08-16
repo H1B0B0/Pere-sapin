@@ -100,6 +100,7 @@ async function handleRequest(
 
     if (contentType?.includes("application/json")) {
       const jsonData = await response.json();
+
       responseData = JSON.stringify(jsonData);
       responseHeaders["content-type"] = "application/json";
     } else if (
@@ -122,9 +123,10 @@ async function handleRequest(
 
     // Forward additional headers (content-type is already handled above)
     const additionalHeaders = ["content-disposition", "cache-control"];
-    
+
     additionalHeaders.forEach((headerName) => {
       const headerValue = response.headers.get(headerName);
+
       if (headerValue) {
         nextResponse.headers.set(headerName, headerValue);
       }

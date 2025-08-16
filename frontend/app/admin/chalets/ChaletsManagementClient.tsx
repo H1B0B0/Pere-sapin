@@ -35,6 +35,7 @@ import {
   BsQrCode,
 } from "react-icons/bs";
 import Link from "next/link";
+
 import { Chalet } from "@/types";
 import { deleteChaletAction } from "@/lib/actions/chalets";
 
@@ -48,7 +49,9 @@ interface Props {
 
 export default function ChaletsManagementClient({ initialChalets }: Props) {
   const [chalets, setChalets] = useState<ChaletWithPages[]>(initialChalets);
-  const [selectedChalet, setSelectedChalet] = useState<ChaletWithPages | null>(null);
+  const [selectedChalet, setSelectedChalet] = useState<ChaletWithPages | null>(
+    null,
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDeleteChalet = async (chalet: ChaletWithPages) => {
@@ -87,8 +90,10 @@ export default function ChaletsManagementClient({ initialChalets }: Props) {
             <Table aria-label="Chalets table">
               <TableHeader>
                 <TableColumn>NOM</TableColumn>
+                <TableColumn>LIEU</TableColumn>
+                <TableColumn>CAPACITÉ</TableColumn>
+                <TableColumn>PRIX/NUIT</TableColumn>
                 <TableColumn>PAGES</TableColumn>
-                <TableColumn>CRÉÉ LE</TableColumn>
                 <TableColumn>STATUT</TableColumn>
                 <TableColumn>ACTIONS</TableColumn>
               </TableHeader>
@@ -99,11 +104,46 @@ export default function ChaletsManagementClient({ initialChalets }: Props) {
                       <div>
                         <p className="font-semibold">{chalet.name}</p>
                         {chalet.description && (
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-gray-500 line-clamp-2">
                             {chalet.description}
                           </p>
                         )}
                       </div>
+                    </TableCell>
+                    <TableCell>
+                      <div>
+                        {chalet.location && (
+                          <p className="text-sm font-medium">
+                            {chalet.location}
+                          </p>
+                        )}
+                        {chalet.address && (
+                          <p className="text-xs text-gray-500 line-clamp-1">
+                            {chalet.address}
+                          </p>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {chalet.capacity ? (
+                        <Chip color="primary" size="sm" variant="flat">
+                          {chalet.capacity} pers.
+                        </Chip>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {chalet.pricePerNight ? (
+                        <div className="text-sm">
+                          <span className="font-semibold">
+                            {chalet.pricePerNight}€
+                          </span>
+                          <span className="text-gray-500">/nuit</span>
+                        </div>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
                     </TableCell>
                     <TableCell>
                       <Chip
@@ -115,15 +155,12 @@ export default function ChaletsManagementClient({ initialChalets }: Props) {
                       </Chip>
                     </TableCell>
                     <TableCell>
-                      {new Date(chalet.createdAt).toLocaleDateString("fr-FR")}
-                    </TableCell>
-                    <TableCell>
                       <Chip
-                        color={chalet.pagesCount > 0 ? "success" : "warning"}
+                        color={chalet.isActive ? "success" : "warning"}
                         size="sm"
                         variant="flat"
                       >
-                        {chalet.pagesCount > 0 ? "Actif" : "Inactif"}
+                        {chalet.isActive ? "Actif" : "Inactif"}
                       </Chip>
                     </TableCell>
                     <TableCell>
@@ -136,25 +173,25 @@ export default function ChaletsManagementClient({ initialChalets }: Props) {
                         <DropdownMenu>
                           <DropdownItem
                             key="view"
-                            startContent={<BsEye />}
                             as={Link}
                             href={`/admin/chalets/${chalet._id}`}
+                            startContent={<BsEye />}
                           >
                             Voir détails
                           </DropdownItem>
                           <DropdownItem
                             key="edit"
-                            startContent={<BsPencil />}
                             as={Link}
                             href={`/admin/chalets/${chalet._id}/edit`}
+                            startContent={<BsPencil />}
                           >
                             Modifier
                           </DropdownItem>
                           <DropdownItem
                             key="qrcodes"
-                            startContent={<BsQrCode />}
                             as={Link}
                             href={`/admin/qr-codes?chalet=${chalet._id}`}
+                            startContent={<BsQrCode />}
                           >
                             QR Codes
                           </DropdownItem>
@@ -207,7 +244,9 @@ export default function ChaletsManagementClient({ initialChalets }: Props) {
                 </Button>
                 <Button
                   color="danger"
-                  onPress={() => selectedChalet && handleDeleteChalet(selectedChalet)}
+                  onPress={() =>
+                    selectedChalet && handleDeleteChalet(selectedChalet)
+                  }
                 >
                   Supprimer
                 </Button>

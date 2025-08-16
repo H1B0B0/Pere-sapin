@@ -21,7 +21,7 @@ export async function createChalet(data: CreateChaletDto): Promise<Chalet> {
 
 export async function updateChalet(
   id: string,
-  data: Partial<CreateChaletDto>
+  data: Partial<CreateChaletDto>,
 ): Promise<Chalet> {
   return serverPatch(`/chalets/${id}`, data);
 }
@@ -31,7 +31,8 @@ export async function deleteChalet(id: string): Promise<void> {
 }
 
 export async function downloadChaletQRCodesPDF(id: string): Promise<Blob> {
-  const { serverFetchBlob } = await import("../server-api.js");
+  const { serverFetchBlob } = await import("../server-api");
+
   return serverFetchBlob(`/pdf/chalet/${id}/qr-codes`);
 }
 

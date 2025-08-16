@@ -12,6 +12,7 @@ import {
   BsDownload,
 } from "react-icons/bs";
 import Link from "next/link";
+
 import { DashboardStats, RecentActivity } from "@/lib/services/dashboard";
 
 interface Props {
@@ -203,8 +204,8 @@ export default function DashboardClient({
               <div className="space-y-4">
                 {initialActivity.map((activity) => (
                   <div
-                    className="flex items-center gap-4 p-3 rounded-lg border border-gray-200"
                     key={activity.id}
+                    className="flex items-center gap-4 p-3 rounded-lg border border-gray-200"
                   >
                     <div className="p-2 rounded-full">
                       {getActivityIcon(activity.type)}

@@ -1,5 +1,6 @@
-import { getDashboardStats, getRecentActivity } from "@/lib/services/dashboard";
 import DashboardClient from "./DashboardClient";
+
+import { getDashboardStats, getRecentActivity } from "@/lib/services/dashboard";
 
 export default async function DashboardServerData() {
   try {
@@ -9,14 +10,14 @@ export default async function DashboardServerData() {
     ]);
 
     return (
-      <DashboardClient 
-        initialStats={dashboardStats} 
-        initialActivity={recentActivityData} 
+      <DashboardClient
+        initialActivity={recentActivityData}
+        initialStats={dashboardStats}
       />
     );
   } catch (error) {
     console.error("Erreur lors du chargement du dashboard:", error);
-    
+
     // Retourner des données par défaut en cas d'erreur
     const defaultStats = {
       totalChalets: 0,
@@ -24,12 +25,7 @@ export default async function DashboardServerData() {
       totalQRCodes: 0,
       recentViews: 0,
     };
-    
-    return (
-      <DashboardClient 
-        initialStats={defaultStats} 
-        initialActivity={[]} 
-      />
-    );
+
+    return <DashboardClient initialActivity={[]} initialStats={defaultStats} />;
   }
 }

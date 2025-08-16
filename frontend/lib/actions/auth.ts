@@ -1,7 +1,8 @@
 "use server";
 import { cookies } from "next/headers";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5042";
+const FRONTEND_BASE_URL =
+  process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
 
 export async function loginAction(_prevState: any, formData: FormData) {
   const email = formData.get("email") as string;
@@ -13,10 +14,10 @@ export async function loginAction(_prevState: any, formData: FormData) {
 
   try {
     console.log(
-      `[LOGIN] Attempting login for ${email} to ${API_BASE_URL}/auth/login`
+      `[LOGIN] Attempting login for ${email} to ${FRONTEND_BASE_URL}/api/proxy/auth/login`,
     );
 
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    const response = await fetch(`${FRONTEND_BASE_URL}/api/proxy/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -29,6 +30,7 @@ export async function loginAction(_prevState: any, formData: FormData) {
 
     if (!response.ok) {
       const errorText = await response.text();
+
       console.error(`[LOGIN] Error response:`, errorText);
 
       if (response.status === 401) {
@@ -39,14 +41,18 @@ export async function loginAction(_prevState: any, formData: FormData) {
     }
 
     const data = await response.json();
+
     console.log("[LOGIN] Success response:", data);
 
     // Extract and set the auth cookie from Set-Cookie header
     const setCookieHeader = response.headers.get("set-cookie");
+
     if (setCookieHeader) {
       const authTokenMatch = setCookieHeader.match(/auth-token=([^;]+)/);
+
       if (authTokenMatch) {
         const cookieStore = await cookies();
+
         cookieStore.set("auth-token", authTokenMatch[1], {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",

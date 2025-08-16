@@ -10,18 +10,21 @@ import { AppService } from './app.service';
 import { User, UserSchema } from './schemas/user.schema';
 import { Chalet, ChaletSchema } from './schemas/chalet.schema';
 import { Page, PageSchema } from './schemas/page.schema';
+import { Availability, AvailabilitySchema } from './schemas/availability.schema';
 
 // Services
 import { AuthService } from './services/auth.service';
 import { ChaletService } from './services/chalet.service';
 import { PageService } from './services/page.service';
 import { PdfService } from './services/pdf.service';
+import { AvailabilityService } from './services/availability.service';
 
 // Controllers
 import { AuthController } from './controllers/auth.controller';
 import { ChaletController } from './controllers/chalet.controller';
 import { PageController } from './controllers/page.controller';
 import { PdfController } from './controllers/pdf.controller';
+import { AvailabilityController } from './controllers/availability.controller';
 
 // Strategies
 import { LocalStrategy } from './strategies/local.strategy';
@@ -37,6 +40,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       { name: User.name, schema: UserSchema },
       { name: Chalet.name, schema: ChaletSchema },
       { name: Page.name, schema: PageSchema },
+      { name: Availability.name, schema: AvailabilitySchema },
     ]),
     PassportModule,
     JwtModule.register({
@@ -50,6 +54,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     ChaletController,
     PageController,
     PdfController,
+    AvailabilityController,
   ],
   providers: [
     AppService,
@@ -57,6 +62,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     ChaletService,
     PageService,
     PdfService,
+    AvailabilityService,
     LocalStrategy,
     JwtStrategy,
   ],

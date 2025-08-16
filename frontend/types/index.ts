@@ -15,7 +15,30 @@ export interface Chalet {
   _id: string;
   name: string;
   description?: string;
+  location?: string;
+  address?: string;
+  capacity?: number;
+  rooms?: string;
+  bedrooms?: string;
+  bathrooms?: string;
+  pricePerNight?: number;
+  prices?: {
+    weekend?: string;
+    week?: string;
+    holidays?: string;
+    cleaning?: string;
+  };
+  amenities?: string[];
+  features?: string[];
+  highlights?: string[];
+  images?: string[];
+  mainImage?: string;
+  contactEmail?: string;
+  contactPhone?: string;
   pages: Page[];
+  isActive: boolean;
+  color?: string;
+  icon?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -52,6 +75,29 @@ export interface PageStats {
 export interface CreateChaletDto {
   name: string;
   description?: string;
+  location?: string;
+  address?: string;
+  capacity?: number;
+  rooms?: string;
+  bedrooms?: string;
+  bathrooms?: string;
+  pricePerNight?: number;
+  prices?: {
+    weekend?: string;
+    week?: string;
+    holidays?: string;
+    cleaning?: string;
+  };
+  amenities?: string[];
+  features?: string[];
+  highlights?: string[];
+  images?: string[];
+  mainImage?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  isActive?: boolean;
+  color?: string;
+  icon?: string;
 }
 
 export interface CreatePageDto {
@@ -73,6 +119,29 @@ export interface UpdatePageDto {
 export interface UpdateChaletDto {
   name?: string;
   description?: string;
+  location?: string;
+  address?: string;
+  capacity?: number;
+  rooms?: string;
+  bedrooms?: string;
+  bathrooms?: string;
+  pricePerNight?: number;
+  prices?: {
+    weekend?: string;
+    week?: string;
+    holidays?: string;
+    cleaning?: string;
+  };
+  amenities?: string[];
+  features?: string[];
+  highlights?: string[];
+  images?: string[];
+  mainImage?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  isActive?: boolean;
+  color?: string;
+  icon?: string;
 }
 
 export interface LoginDto {
@@ -84,4 +153,46 @@ export interface CreateUserDto {
   email: string;
   password: string;
   name: string;
+}
+
+export enum AvailabilityStatus {
+  AVAILABLE = "available",
+  BOOKED = "booked",
+  BLOCKED = "blocked",
+  MAINTENANCE = "maintenance",
+}
+
+export interface Availability {
+  _id: string;
+  chalet: Chalet | string;
+  startDate: string;
+  endDate: string;
+  status: AvailabilityStatus;
+  pricePerNight?: number;
+  notes?: string;
+  bookedBy?: string;
+  bookingReference?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateAvailabilityDto {
+  chalet: string;
+  startDate: string;
+  endDate: string;
+  status?: AvailabilityStatus;
+  pricePerNight?: number;
+  notes?: string;
+  bookedBy?: string;
+  bookingReference?: string;
+}
+
+export interface UpdateAvailabilityDto {
+  startDate?: string;
+  endDate?: string;
+  status?: AvailabilityStatus;
+  pricePerNight?: number;
+  notes?: string;
+  bookedBy?: string;
+  bookingReference?: string;
 }
