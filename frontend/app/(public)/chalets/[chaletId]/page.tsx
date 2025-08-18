@@ -18,7 +18,6 @@ import {
   ModalContent,
   ModalBody,
   useDisclosure,
-  Badge,
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import {
@@ -931,33 +930,33 @@ export default function ChaletDetailPage() {
                         {chalet.prices.weekend && (
                           <div className="flex justify-between items-center p-2 bg-content2/30 rounded">
                             <span className="text-sm">Week-end</span>
-                            <Badge color="primary" variant="flat">
+                            <Chip color="primary" variant="bordered">
                               {chalet.prices.weekend}
-                            </Badge>
+                            </Chip>
                           </div>
                         )}
                         {chalet.prices.week && (
                           <div className="flex justify-between items-center p-2 bg-content2/30 rounded">
                             <span className="text-sm">Semaine</span>
-                            <Badge color="success" variant="flat">
+                            <Chip color="success" variant="bordered">
                               {chalet.prices.week}
-                            </Badge>
+                            </Chip>
                           </div>
                         )}
                         {chalet.prices.holidays && (
                           <div className="flex justify-between items-center p-2 bg-content2/30 rounded">
                             <span className="text-sm">Vacances scolaires</span>
-                            <Badge color="warning" variant="flat">
+                            <Chip color="warning" variant="bordered">
                               {chalet.prices.holidays}
-                            </Badge>
+                            </Chip>
                           </div>
                         )}
                         {chalet.prices.cleaning && (
                           <div className="flex justify-between items-center p-2 bg-content2/30 rounded">
                             <span className="text-sm">Ménage (optionnel)</span>
-                            <Badge color="secondary" variant="flat">
+                            <Chip color="secondary" variant="bordered">
                               {chalet.prices.cleaning}
-                            </Badge>
+                            </Chip>
                           </div>
                         )}
                       </div>
