@@ -377,7 +377,6 @@ export default function ChaletDetailPage() {
             <div
               className="relative w-full cursor-pointer group rounded-2xl overflow-hidden"
               style={{
-                height: "min(70vh, 600px)",
                 maxHeight: "600px",
               }}
               onClick={onOpen}
@@ -390,7 +389,6 @@ export default function ChaletDetailPage() {
                   objectFit: "cover",
                   objectPosition: "center",
                 }}
-                radius="none"
               />
             </div>
 
