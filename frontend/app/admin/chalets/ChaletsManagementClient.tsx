@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardBody,
@@ -23,6 +23,7 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  Spinner,
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import {
@@ -36,33 +37,80 @@ import {
 } from "react-icons/bs";
 import Link from "next/link";
 
-import { Chalet } from "@/types";
+import { useChaletsStore } from "@/lib/chalets-store";
 import { deleteChaletAction } from "@/lib/actions/chalets";
 
-interface ChaletWithPages extends Chalet {
+interface ChaletWithPages {
+  _id: string;
+  name: string;
+  description?: string;
+  location?: string;
+  address?: string;
+  capacity?: number;
+  isActive: boolean;
   pagesCount: number;
+  pricePerNight?: number;
 }
 
-interface Props {
-  initialChalets: ChaletWithPages[];
-}
-
-export default function ChaletsManagementClient({ initialChalets }: Props) {
-  const [chalets, setChalets] = useState<ChaletWithPages[]>(initialChalets);
+export default function ChaletsManagementClient() {
+  const {
+    chalets,
+    loading,
+    error,
+    fetchChalets,
+    removeChalet,
+    clearError,
+  } = useChaletsStore();
+  
   const [selectedChalet, setSelectedChalet] = useState<ChaletWithPages | null>(
     null,
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  useEffect(() => {
+    fetchChalets();
+  }, [fetchChalets]);
+
   const handleDeleteChalet = async (chalet: ChaletWithPages) => {
     try {
       await deleteChaletAction(chalet._id);
-      setChalets((prev) => prev.filter((c) => c._id !== chalet._id));
+      removeChalet(chalet._id);
       onClose();
     } catch (error) {
       console.error("Erreur lors de la suppression:", error);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Spinner size="lg" />
+        <span className="ml-2">Chargement des chalets...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardBody className="text-center">
+            <p className="text-danger">{error}</p>
+            <Button
+              color="primary"
+              className="mt-4"
+              onPress={() => {
+                clearError();
+                fetchChalets();
+              }}
+            >
+              Réessayer
+            </Button>
+          </CardBody>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

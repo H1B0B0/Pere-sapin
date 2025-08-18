@@ -1,5 +1,5 @@
-import ChaletsServerData from "./ChaletsServerData";
+import ChaletsManagementClient from "./ChaletsManagementClient";
 
 export default function ChaletsManagement() {
-  return <ChaletsServerData />;
+  return <ChaletsManagementClient />;
 }
