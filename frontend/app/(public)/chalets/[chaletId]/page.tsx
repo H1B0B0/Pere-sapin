@@ -375,21 +375,20 @@ export default function ChaletDetailPage() {
         {images.length > 0 ? (
           <div className="space-y-4">
             <div
-              className="relative w-full cursor-pointer group rounded-2xl overflow-hidden"
-              style={{
-                maxHeight: "600px",
-              }}
+              className="relative w-full h-96 cursor-pointer overflow-hidden rounded-2xl group"
               onClick={onOpen}
             >
-              <Image
+              <img
                 src={images[selectedImageIndex]}
                 alt={chalet.name}
-                className="w-full h-full object-cover"
-                style={{
-                  objectFit: "cover",
-                  objectPosition: "center",
-                }}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                <BsImages className="text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-1 text-white text-sm">
+                {selectedImageIndex + 1} / {images.length}
+              </div>
             </div>
 
             {images.length > 1 && (
@@ -404,11 +403,10 @@ export default function ChaletDetailPage() {
                         : "border-transparent hover:border-primary/50"
                     }`}
                   >
-                    <Image
+                    <img
                       src={image}
                       alt={`${chalet.name} - Image ${index + 1}`}
                       className="w-full h-full object-cover"
-                      radius="none"
                     />
                   </button>
                 ))}
@@ -986,13 +984,12 @@ export default function ChaletDetailPage() {
       >
         <ModalContent>
           <ModalBody className="p-0 relative overflow-hidden">
-            <div className="relative bg-black min-h-[80vh] flex items-center justify-center">
+            <div className="relative bg-black flex items-center justify-center">
               {images[selectedImageIndex] && (
-                <Image
+                <img
                   src={images[selectedImageIndex]}
                   alt={chalet.name}
-                  className="w-full max-h-[80vh] object-contain select-none"
-                  radius="none"
+                  className="w-full h-full object-contain select-none"
                   loading="eager"
                 />
               )}
