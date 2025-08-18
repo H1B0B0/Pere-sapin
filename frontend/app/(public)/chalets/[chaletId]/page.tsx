@@ -375,21 +375,23 @@ export default function ChaletDetailPage() {
         {images.length > 0 ? (
           <div className="space-y-4">
             <div
-              className="relative h-96 w-full cursor-pointer group rounded-2xl overflow-hidden"
+              className="relative w-full cursor-pointer group rounded-2xl overflow-hidden"
+              style={{
+                height: "min(70vh, 600px)",
+                maxHeight: "600px",
+              }}
               onClick={onOpen}
             >
               <Image
                 src={images[selectedImageIndex]}
                 alt={chalet.name}
                 className="w-full h-full object-cover"
+                style={{
+                  objectFit: "cover",
+                  objectPosition: "center",
+                }}
                 radius="none"
               />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                <BsImages className="text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-              <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-1 text-white text-sm">
-                {selectedImageIndex + 1} / {images.length}
-              </div>
             </div>
 
             {images.length > 1 && (
