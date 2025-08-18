@@ -711,12 +711,6 @@ export default function ChaletDetailPage() {
                                     >
                                       {statusLabels[availability.status]}
                                     </Chip>
-                                    {getAvailabilityPrice(availability) > 0 && (
-                                      <div className="text-xs font-semibold text-primary">
-                                        {getAvailabilityPrice(availability)}
-                                        €/nuit
-                                      </div>
-                                    )}
                                   </div>
                                 )}
                               </div>
