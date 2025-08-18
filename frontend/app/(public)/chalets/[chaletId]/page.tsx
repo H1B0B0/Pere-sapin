@@ -20,7 +20,6 @@ import {
   useDisclosure,
   Badge,
 } from "@heroui/react";
-import { Calendar } from "@heroui/calendar";
 import { motion } from "framer-motion";
 import {
   BsArrowLeft,
@@ -34,6 +33,8 @@ import {
   BsShare,
   BsImages,
   BsHouse,
+  BsChevronLeft,
+  BsChevronRight,
 } from "react-icons/bs";
 import {
   FaCheck,
@@ -56,6 +57,20 @@ const fadeInUp = {
   initial: { opacity: 0, y: 30 },
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.6 },
+};
+
+const statusColors = {
+  [AvailabilityStatus.AVAILABLE]: "success",
+  [AvailabilityStatus.BOOKED]: "danger",
+  [AvailabilityStatus.BLOCKED]: "warning",
+  [AvailabilityStatus.MAINTENANCE]: "secondary",
+} as const;
+
+const statusLabels = {
+  [AvailabilityStatus.AVAILABLE]: "Disponible",
+  [AvailabilityStatus.BOOKED]: "Réservé",
+  [AvailabilityStatus.BLOCKED]: "Bloqué",
+  [AvailabilityStatus.MAINTENANCE]: "Maintenance",
 };
 
 const getFeatureIcon = (feature: string) => {
@@ -81,7 +96,46 @@ export default function ChaletDetailPage() {
   const [loading, setLoading] = useState(true);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // Gestion de la navigation au clavier dans le modal
+  useEffect(() => {
+    if (!isOpen || !chalet) return;
+
+    const images =
+      chalet.images && chalet.images.length > 0
+        ? chalet.images
+        : chalet.mainImage
+          ? [chalet.mainImage]
+          : [];
+
+    if (images.length <= 1) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      switch (event.key) {
+        case "ArrowLeft":
+          event.preventDefault();
+          setSelectedImageIndex((prev) =>
+            prev > 0 ? prev - 1 : images.length - 1
+          );
+          break;
+        case "ArrowRight":
+          event.preventDefault();
+          setSelectedImageIndex((prev) =>
+            prev < images.length - 1 ? prev + 1 : 0
+          );
+          break;
+        case "Escape":
+          event.preventDefault();
+          onClose();
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, chalet, onClose, setSelectedImageIndex]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -111,6 +165,78 @@ export default function ChaletDetailPage() {
 
     fetchData();
   }, [params.chaletId]);
+
+  const getDaysInMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+
+    const days = [];
+
+    // Jours du mois précédent pour compléter la première semaine
+    for (let i = startingDayOfWeek; i > 0; i--) {
+      const prevDate = new Date(year, month, -i + 1);
+      days.push({ date: prevDate, isCurrentMonth: false });
+    }
+
+    // Jours du mois courant
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push({ date: new Date(year, month, i), isCurrentMonth: true });
+    }
+
+    // Jours du mois suivant pour compléter la dernière semaine
+    const remainingDays = 42 - days.length; // 6 semaines × 7 jours
+
+    for (let i = 1; i <= remainingDays; i++) {
+      days.push({ date: new Date(year, month + 1, i), isCurrentMonth: false });
+    }
+
+    return days;
+  };
+
+  const getAvailabilityForDate = (date: Date) => {
+    return availabilities.find((availability) => {
+      const start = new Date(availability.startDate);
+      const end = new Date(availability.endDate);
+      return date >= start && date <= end;
+    });
+  };
+
+  const navigateMonth = (direction: "prev" | "next") => {
+    setCurrentDate((prev) => {
+      const newDate = new Date(prev);
+      if (direction === "prev") {
+        newDate.setMonth(prev.getMonth() - 1);
+      } else {
+        newDate.setMonth(prev.getMonth() + 1);
+      }
+      return newDate;
+    });
+  };
+
+  const nextAvailability = availabilities
+    .filter(
+      (a) =>
+        a.status === AvailabilityStatus.AVAILABLE &&
+        new Date(a.startDate) >= new Date()
+    )
+    .sort(
+      (a, b) =>
+        new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+    )[0];
+
+  const availableAvailabilities = availabilities.filter(
+    (a) =>
+      a.status === AvailabilityStatus.AVAILABLE &&
+      new Date(a.startDate) >= new Date()
+  );
+
+  const getAvailabilityPrice = (availability: Availability) => {
+    return availability.pricePerNight || chalet?.pricePerNight || 0;
+  };
 
   if (loading) {
     return (
@@ -158,16 +284,8 @@ export default function ChaletDetailPage() {
         ? [chalet.mainImage]
         : [];
 
-  const nextAvailability = availabilities
-    .filter((a) => a.status === AvailabilityStatus.AVAILABLE)
-    .sort(
-      (a, b) =>
-        new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
-    )[0];
-
   const handleFavoriteToggle = () => {
     setIsFavorite(!isFavorite);
-    // TODO: Persist to localStorage or API
   };
 
   const handleShare = async () => {
@@ -178,10 +296,15 @@ export default function ChaletDetailPage() {
         url: window.location.href,
       });
     } else {
-      // Fallback: copy to clipboard
       navigator.clipboard.writeText(window.location.href);
     }
   };
+
+  const days = getDaysInMonth(currentDate);
+  const monthYear = currentDate.toLocaleDateString("fr-FR", {
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-8">
@@ -194,7 +317,6 @@ export default function ChaletDetailPage() {
 
       {/* Hero Section */}
       <motion.div {...fadeInUp} className="space-y-6">
-        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
@@ -253,7 +375,6 @@ export default function ChaletDetailPage() {
         {/* Image Gallery */}
         {images.length > 0 ? (
           <div className="space-y-4">
-            {/* Main Image */}
             <div
               className="relative h-96 w-full cursor-pointer group rounded-2xl overflow-hidden"
               onClick={onOpen}
@@ -272,7 +393,6 @@ export default function ChaletDetailPage() {
               </div>
             </div>
 
-            {/* Thumbnail Strip */}
             {images.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {images.map((image, index) => (
@@ -376,7 +496,6 @@ export default function ChaletDetailPage() {
                   </h2>
                 </CardHeader>
                 <CardBody className="space-y-8">
-                  {/* Points forts / Highlights */}
                   {chalet.highlights && chalet.highlights.length > 0 && (
                     <div>
                       <h3 className="font-semibold mb-4 flex items-center gap-2 text-lg">
@@ -399,7 +518,6 @@ export default function ChaletDetailPage() {
                     </div>
                   )}
 
-                  {/* Caractéristiques principales */}
                   {chalet.features && chalet.features.length > 0 && (
                     <div>
                       <h3 className="font-semibold mb-4 flex items-center gap-2 text-lg">
@@ -420,7 +538,6 @@ export default function ChaletDetailPage() {
                     </div>
                   )}
 
-                  {/* Commodités supplémentaires */}
                   {chalet.amenities && chalet.amenities.length > 0 && (
                     <div>
                       <h3 className="font-semibold mb-4 flex items-center gap-2 text-lg">
@@ -441,70 +558,6 @@ export default function ChaletDetailPage() {
                       </div>
                     </div>
                   )}
-
-                  {/* Informations pratiques */}
-                  <div>
-                    <h3 className="font-semibold mb-4 flex items-center gap-2 text-lg">
-                      <BsStars className="text-warning" />
-                      Informations pratiques
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-3">
-                        {chalet.bedrooms && (
-                          <div className="flex items-center justify-between p-3 bg-content2/30 rounded-lg">
-                            <span className="text-sm font-medium">
-                              Configuration des chambres
-                            </span>
-                            <span className="text-sm text-muted-foreground">
-                              {chalet.bedrooms}
-                            </span>
-                          </div>
-                        )}
-                        {chalet.bathrooms && (
-                          <div className="flex items-center justify-between p-3 bg-content2/30 rounded-lg">
-                            <span className="text-sm font-medium">
-                              Salles de bain
-                            </span>
-                            <span className="text-sm text-muted-foreground">
-                              {chalet.bathrooms}
-                            </span>
-                          </div>
-                        )}
-                        {chalet.rooms && (
-                          <div className="flex items-center justify-between p-3 bg-content2/30 rounded-lg">
-                            <span className="text-sm font-medium">Pièces</span>
-                            <span className="text-sm text-muted-foreground">
-                              {chalet.rooms}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between p-3 bg-content2/30 rounded-lg">
-                          <span className="text-sm font-medium">
-                            Classement
-                          </span>
-                          <span className="text-sm text-muted-foreground">
-                            3 étoiles
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between p-3 bg-content2/30 rounded-lg">
-                          <span className="text-sm font-medium">Contact</span>
-                          <span className="text-sm text-muted-foreground">
-                            Direct propriétaire
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between p-3 bg-content2/30 rounded-lg">
-                          <span className="text-sm font-medium">
-                            Commission
-                          </span>
-                          <span className="text-sm text-success font-medium">
-                            0% - Sans frais
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </CardBody>
               </Card>
             </motion.div>
@@ -520,133 +573,178 @@ export default function ChaletDetailPage() {
                 </h2>
               </CardHeader>
               <CardBody className="space-y-6">
-                {nextAvailability && (
+                {availabilities.length === 0 ? (
                   <div className="bg-success/10 border border-success/20 rounded-lg p-4">
-                    <div className="flex items-center gap-2 text-success font-medium mb-2">
-                      <BsCalendar />
-                      Prochaine disponibilité
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2 text-success font-medium">
+                        <BsCalendar />
+                        🎉 Chalet disponible toute l'année
+                      </div>
+                      <div className="text-right">
+                        {chalet.pricePerNight && (
+                          <>
+                            <div className="text-xl font-bold text-success">
+                              {chalet.pricePerNight}€
+                            </div>
+                            <div className="text-xs text-success/70">
+                              par nuit
+                            </div>
+                          </>
+                        )}
+                      </div>
                     </div>
-                    <p className="text-sm">
-                      Du{" "}
-                      {new Date(nextAvailability.startDate).toLocaleDateString(
-                        "fr-FR"
-                      )}
-                      au{" "}
-                      {new Date(nextAvailability.endDate).toLocaleDateString(
-                        "fr-FR"
-                      )}
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Aucune période spécifique définie - Contactez le
+                      propriétaire pour réserver aux dates de votre choix !
                     </p>
-                    {nextAvailability.pricePerNight && (
-                      <p className="text-sm font-semibold text-success mt-1">
-                        {nextAvailability.pricePerNight}€/nuit
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {availabilities.length > 0 ? (
-                  <div className="space-y-4">
-                    {/* Calendrier */}
-                    <div className="flex justify-center">
-                      <Calendar
-                        aria-label="Calendrier des disponibilités"
-                        color="primary"
-                        showMonthAndYearPickers
-                        className="max-w-md"
-                      />
+                    <div className="flex items-center gap-4 text-xs text-success">
+                      <span>✓ Réservation possible toute l'année</span>
+                      <span>✓ Choix libre des dates</span>
+                      <span>✓ Contact direct</span>
                     </div>
-
-                    {/* Légende */}
-                    <div className="flex flex-wrap gap-4 justify-center text-sm">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-success"></div>
-                        <span>Disponible</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-danger"></div>
-                        <span>Réservé</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-warning"></div>
-                        <span>Bloqué</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-secondary"></div>
-                        <span>Maintenance</span>
-                      </div>
-                    </div>
-
-                    {/* Liste des périodes */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {availabilities.slice(0, 6).map((availability) => (
-                        <div
-                          key={availability._id}
-                          className="border border-divider rounded-lg p-3 hover:border-primary/50 transition-colors"
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <Chip
-                              size="sm"
-                              color={
-                                availability.status ===
-                                AvailabilityStatus.AVAILABLE
-                                  ? "success"
-                                  : availability.status ===
-                                      AvailabilityStatus.BOOKED
-                                    ? "danger"
-                                    : availability.status ===
-                                        AvailabilityStatus.BLOCKED
-                                      ? "warning"
-                                      : "secondary"
-                              }
-                              variant="flat"
-                            >
-                              {availability.status}
-                            </Chip>
-                            {availability.pricePerNight && (
-                              <span className="font-semibold text-primary">
-                                {availability.pricePerNight}€/nuit
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            {new Date(
-                              availability.startDate
-                            ).toLocaleDateString("fr-FR")}{" "}
-                            -
-                            {new Date(availability.endDate).toLocaleDateString(
-                              "fr-FR"
-                            )}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {Math.ceil(
-                              (new Date(availability.endDate).getTime() -
-                                new Date(availability.startDate).getTime()) /
-                                (1000 * 60 * 60 * 24)
-                            )}{" "}
-                            nuits
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-
-                    {availabilities.length > 6 && (
-                      <div className="text-center">
-                        <Button variant="flat" size="sm">
-                          Voir toutes les disponibilités (
-                          {availabilities.length})
-                        </Button>
-                      </div>
-                    )}
                   </div>
                 ) : (
-                  <div className="text-center py-8">
-                    <BsCalendar className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                    <p className="text-muted-foreground">
-                      Aucune disponibilité définie pour le moment
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Contactez le propriétaire pour plus d'informations
-                    </p>
+                  <div className="space-y-4">
+                    {/* En-tête avec résumé */}
+                    <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-primary font-medium">
+                          <BsCalendar />
+                          Calendrier des disponibilités
+                        </div>
+                        {availableAvailabilities.length > 0 && (
+                          <div className="text-right">
+                            <div className="text-sm font-semibold text-primary">
+                              {availableAvailabilities.length} période
+                              {availableAvailabilities.length > 1
+                                ? "s"
+                                : ""}{" "}
+                              disponible
+                              {availableAvailabilities.length > 1 ? "s" : ""}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Calendrier */}
+                    <Card className="border border-divider">
+                      <CardHeader className="pb-4">
+                        <div className="flex items-center justify-between w-full">
+                          <h3 className="text-xl font-semibold capitalize">
+                            {monthYear}
+                          </h3>
+                          <div className="flex gap-2">
+                            <Button
+                              isIconOnly
+                              size="sm"
+                              variant="flat"
+                              onPress={() => navigateMonth("prev")}
+                            >
+                              <BsChevronLeft />
+                            </Button>
+                            <Button
+                              isIconOnly
+                              size="sm"
+                              variant="flat"
+                              onPress={() => navigateMonth("next")}
+                            >
+                              <BsChevronRight />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardBody>
+                        {/* En-têtes des jours */}
+                        <div className="grid grid-cols-7 gap-1 mb-2">
+                          {[
+                            "Dim",
+                            "Lun",
+                            "Mar",
+                            "Mer",
+                            "Jeu",
+                            "Ven",
+                            "Sam",
+                          ].map((day) => (
+                            <div
+                              key={day}
+                              className="p-2 text-center text-sm font-medium text-muted-foreground"
+                            >
+                              {day}
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Grille du calendrier */}
+                        <div className="grid grid-cols-7 gap-1">
+                          {days.map(({ date, isCurrentMonth }, index) => {
+                            const availability = getAvailabilityForDate(date);
+                            const isToday =
+                              date.toDateString() === new Date().toDateString();
+                            const isPastDate =
+                              date < new Date(new Date().setHours(0, 0, 0, 0));
+
+                            return (
+                              <div
+                                key={index}
+                                className={`
+                                  relative min-h-[80px] p-2 border rounded-lg transition-colors
+                                  ${isCurrentMonth ? "bg-background" : "bg-muted/30"}
+                                  ${isToday ? "ring-2 ring-primary" : ""}
+                                  ${availability ? "hover:bg-muted/50" : "hover:bg-muted/30"}
+                                  ${isPastDate ? "opacity-50" : ""}
+                                `}
+                              >
+                                <div
+                                  className={`text-sm ${isCurrentMonth ? "text-foreground" : "text-muted-foreground"}`}
+                                >
+                                  {date.getDate()}
+                                </div>
+
+                                {availability && (
+                                  <div className="mt-1">
+                                    <Chip
+                                      className="text-xs mb-1"
+                                      color={statusColors[availability.status]}
+                                      size="sm"
+                                      variant="flat"
+                                    >
+                                      {statusLabels[availability.status]}
+                                    </Chip>
+                                    {getAvailabilityPrice(availability) > 0 && (
+                                      <div className="text-xs font-semibold text-primary">
+                                        {getAvailabilityPrice(availability)}
+                                        €/nuit
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Légende */}
+                        <div className="flex flex-wrap gap-4 justify-center text-sm mt-4 pt-4 border-t">
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full bg-success"></div>
+                            <span>Disponible</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full bg-danger"></div>
+                            <span>Réservé</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full bg-warning"></div>
+                            <span>Bloqué</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full bg-secondary"></div>
+                            <span>Maintenance</span>
+                          </div>
+                        </div>
+                      </CardBody>
+                    </Card>
                   </div>
                 )}
               </CardBody>
@@ -684,15 +782,6 @@ export default function ChaletDetailPage() {
                               </h3>
                               <BsArrowLeft className="text-muted-foreground group-hover:text-primary transition-colors rotate-180 flex-shrink-0 ml-2" />
                             </div>
-
-                            <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
-                              {page.content
-                                ?.replace(/[#_*`>/\\-]/g, " ")
-                                .slice(0, 120)}
-                              {page.content && page.content.length > 120
-                                ? "..."
-                                : ""}
-                            </p>
 
                             {page.tags.length > 0 && (
                               <div className="flex flex-wrap gap-1 pt-2">
@@ -757,10 +846,22 @@ export default function ChaletDetailPage() {
                     <p className="text-sm text-muted-foreground mt-1">
                       Prix indicatif de base
                     </p>
-                    {nextAvailability && nextAvailability.pricePerNight && (
-                      <p className="text-xs text-success font-medium mt-1">
-                        Prochaine dispo: {nextAvailability.pricePerNight}€/nuit
-                      </p>
+                    {nextAvailability && (
+                      <div className="mt-2 p-2 bg-success/10 rounded-lg border border-success/20">
+                        <p className="text-xs text-success font-medium">
+                          📅 Prochaine dispo:{" "}
+                          {getAvailabilityPrice(nextAvailability)}€/nuit
+                        </p>
+                        <p className="text-xs text-success/70">
+                          Du{" "}
+                          {new Date(
+                            nextAvailability.startDate
+                          ).toLocaleDateString("fr-FR", {
+                            day: "numeric",
+                            month: "short",
+                          })}
+                        </p>
+                      </div>
                     )}
                   </div>
                 )}
@@ -876,24 +977,6 @@ export default function ChaletDetailPage() {
               </CardBody>
             </Card>
           </motion.div>
-
-          {/* Location Card */}
-          {chalet.address && (
-            <motion.div {...fadeInUp} transition={{ delay: 0.2 }}>
-              <Card>
-                <CardBody className="p-6 space-y-4">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <BsGeoAlt className="text-primary" />
-                    Localisation
-                  </h3>
-                  <p className="text-sm">{chalet.address}</p>
-                  <div className="aspect-video bg-content2 rounded-lg flex items-center justify-center">
-                    <span className="text-muted-foreground">Carte à venir</span>
-                  </div>
-                </CardBody>
-              </Card>
-            </motion.div>
-          )}
         </div>
       </div>
 
@@ -905,28 +988,32 @@ export default function ChaletDetailPage() {
         placement="center"
         className="m-4"
         closeButton={<></>}
+        backdrop="blur"
+        hideCloseButton
       >
         <ModalContent>
-          <ModalBody className="p-0">
-            <div className="relative bg-black">
+          <ModalBody className="p-0 relative overflow-hidden">
+            <div className="relative bg-black min-h-[80vh] flex items-center justify-center">
               {images[selectedImageIndex] && (
                 <Image
                   src={images[selectedImageIndex]}
                   alt={chalet.name}
-                  className="w-full max-h-[80vh] object-contain"
+                  className="w-full max-h-[80vh] object-contain select-none"
                   radius="none"
+                  loading="eager"
                 />
               )}
 
-              {/* Close button */}
+              {/* Bouton de fermeture avec z-index élevé */}
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                className="absolute top-4 right-4 w-10 h-10 bg-black/70 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/90 transition-colors z-50 shadow-lg"
+                aria-label="Fermer la galerie"
               >
                 ✕
               </button>
 
-              {/* Navigation arrows */}
+              {/* Boutons de navigation avec z-index élevé */}
               {images.length > 1 && (
                 <>
                   <button
@@ -935,9 +1022,10 @@ export default function ChaletDetailPage() {
                         prev > 0 ? prev - 1 : images.length - 1
                       )
                     }
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/70 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/90 transition-colors z-50 shadow-lg text-xl"
+                    aria-label="Image précédente"
                   >
-                    ‹
+                    <BsChevronLeft />
                   </button>
                   <button
                     onClick={() =>
@@ -945,35 +1033,43 @@ export default function ChaletDetailPage() {
                         prev < images.length - 1 ? prev + 1 : 0
                       )
                     }
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/70 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/90 transition-colors z-50 shadow-lg text-xl"
+                    aria-label="Image suivante"
                   >
-                    ›
+                    <BsChevronRight />
                   </button>
                 </>
               )}
 
-              {/* Image counter and dots */}
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+              {/* Indicateur de position avec z-index élevé */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50">
                 <div className="flex flex-col items-center gap-3">
-                  <div className="bg-black/50 backdrop-blur-sm rounded-lg px-3 py-1 text-white text-sm">
+                  <div className="bg-black/70 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm font-medium shadow-lg">
                     {selectedImageIndex + 1} / {images.length}
                   </div>
                   {images.length > 1 && images.length <= 10 && (
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 bg-black/50 backdrop-blur-sm rounded-full px-3 py-2">
                       {images.map((_, index) => (
                         <button
                           key={index}
                           onClick={() => setSelectedImageIndex(index)}
-                          className={`w-2 h-2 rounded-full transition-colors ${
+                          className={`w-2 h-2 rounded-full transition-all duration-200 ${
                             index === selectedImageIndex
-                              ? "bg-white"
-                              : "bg-white/50"
+                              ? "bg-white scale-125"
+                              : "bg-white/50 hover:bg-white/75"
                           }`}
+                          aria-label={`Aller à l'image ${index + 1}`}
                         />
                       ))}
                     </div>
                   )}
                 </div>
+              </div>
+
+              {/* Support du clavier */}
+              <div className="sr-only">
+                Utilisez les flèches gauche/droite pour naviguer, Échap pour
+                fermer
               </div>
             </div>
           </ModalBody>
