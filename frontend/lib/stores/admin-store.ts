@@ -10,11 +10,13 @@ interface AdminState {
   pages: Page[];
   loading: boolean;
   initialized: boolean;
+  lastFetch: number | null;
 
   // Actions
   fetchData: () => Promise<void>;
   initialize: () => Promise<void>;
   refreshData: () => Promise<void>;
+  shouldRefetch: () => boolean;
 
   // Chalet actions
   addChalet: (chalet: Chalet) => void;
@@ -31,6 +33,8 @@ interface AdminState {
   getPagesForChalet: (chaletId: string) => Page[];
 }
 
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 export const useAdminStore = create<AdminState>()(
   persist(
     (set, get) => ({
@@ -38,12 +42,14 @@ export const useAdminStore = create<AdminState>()(
       pages: [],
       loading: false,
       initialized: false,
+      lastFetch: null,
 
       fetchData: async () => {
         const state = get();
 
         if (state.loading) return;
 
+        console.log("[ADMIN STORE] Fetching data...");
         try {
           set({ loading: true });
           const [chaletsData, pagesData] = await Promise.all([
@@ -51,11 +57,13 @@ export const useAdminStore = create<AdminState>()(
             getAllPagesClient(),
           ]);
 
+          console.log("[ADMIN STORE] Data fetched successfully");
           set({
             chalets: chaletsData,
             pages: pagesData,
             loading: false,
             initialized: true,
+            lastFetch: Date.now(),
           });
         } catch (error) {
           console.error("Erreur lors du chargement des données:", error);
@@ -64,6 +72,7 @@ export const useAdminStore = create<AdminState>()(
             pages: [],
             loading: false,
             initialized: true,
+            lastFetch: Date.now(),
           });
         }
       },
@@ -71,18 +80,17 @@ export const useAdminStore = create<AdminState>()(
       initialize: async () => {
         const state = get();
 
+        // Ne charger que si pas encore initialisé ou si le cache est expiré
         if (!state.initialized && !state.loading) {
+          console.log("[ADMIN STORE] First initialization");
           const { fetchData } = get();
-
           await fetchData();
-        } else if (
-          state.initialized &&
-          state.chalets.length === 0 &&
-          !state.loading
-        ) {
+        } else if (state.initialized && state.shouldRefetch() && !state.loading) {
+          console.log("[ADMIN STORE] Cache expired, refetching");
           const { fetchData } = get();
-
           await fetchData();
+        } else {
+          console.log("[ADMIN STORE] Using cached data");
         }
       },
 
@@ -157,6 +165,12 @@ export const useAdminStore = create<AdminState>()(
             : page.chalet._id === chaletId;
         });
       },
+
+      shouldRefetch: () => {
+        const state = get();
+        if (!state.lastFetch) return true;
+        return Date.now() - state.lastFetch > CACHE_DURATION;
+      },
     }),
     {
       name: "admin-storage",
@@ -164,6 +178,7 @@ export const useAdminStore = create<AdminState>()(
         chalets: state.chalets,
         pages: state.pages,
         initialized: state.initialized,
+        lastFetch: state.lastFetch,
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {

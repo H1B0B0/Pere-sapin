@@ -29,27 +29,15 @@ export function AdminSidebar() {
     initialized,
     initialize,
     getPagesForChalet,
-    refreshData,
   } = useAdminStore();
 
-  // Initialiser le store au montage et si nécessaire
+  // Initialiser le store au montage seulement si nécessaire
   useEffect(() => {
     if (!initialized && !loading) {
       console.log("[SIDEBAR] Initializing store...");
       initialize();
     }
-  }, [initialized, loading, chalets.length, initialize]);
-
-  // Rafraîchir quand on navigue sur certaines pages
-  useEffect(() => {
-    if (
-      initialized &&
-      (pathname.includes("/admin/chalets") || pathname === "/admin")
-    ) {
-      console.log("[SIDEBAR] Navigation detected, refreshing data...");
-      refreshData();
-    }
-  }, [pathname, initialized, refreshData]);
+  }, [initialized, loading, initialize]);
 
   const isActiveLink = (href: string) => pathname === href;
 
