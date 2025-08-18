@@ -18,6 +18,8 @@ import Link from "next/link";
 import { getChaletById } from "@/lib/services/chalets";
 import { updateChaletAction } from "@/lib/actions/chalets";
 import { Chalet, UpdateChaletDto } from "@/types";
+import { CHALET_COLORS } from "@/config/colors";
+import { CHALET_ICONS } from "@/config/icons";
 
 export default function EditChaletPage() {
   const [chalet, setChalet] = useState<Chalet | null>(null);
@@ -53,6 +55,14 @@ export default function EditChaletPage() {
   const [newImage, setNewImage] = useState("");
   const router = useRouter();
   const params = useParams();
+
+  const getColorHex = (name?: string) =>
+    CHALET_COLORS.find((c) => c.name === name)?.value;
+
+  const getIconComponent = (id?: string) => {
+    const it = CHALET_ICONS.find((i) => i.id === id);
+    return it ? it.icon : BsTree;
+  };
 
   useEffect(() => {
     const fetchChalet = async () => {
@@ -138,7 +148,15 @@ export default function EditChaletPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    console.debug("[ChaletEdit] Validation submit payload", {
+      chaletId: chalet?._id ?? params?.chaletId,
+      formData,
+    });
+
     if (!formData.name?.trim()) {
+      console.warn("[ChaletEdit] Validation failed: nom manquant", {
+        formData,
+      });
       setError("Le nom du chalet est requis");
 
       return;
@@ -151,13 +169,12 @@ export default function EditChaletPage() {
 
     try {
       await updateChaletAction(chalet._id, formData);
-      // La redirection est gérée dans l'action
     } catch (err) {
       console.error("Erreur lors de la modification:", err);
       setError(
         err instanceof Error
           ? err.message
-          : "Erreur lors de la modification du chalet",
+          : "Erreur lors de la modification du chalet"
       );
     } finally {
       setLoading(false);
@@ -166,7 +183,7 @@ export default function EditChaletPage() {
 
   const handleChange = (
     field: keyof UpdateChaletDto,
-    value: string | number | boolean | string[] | undefined,
+    value: string | number | boolean | string[] | undefined
   ) => {
     console.debug("[ChaletEdit] handleChange", field, value);
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -269,9 +286,29 @@ export default function EditChaletPage() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="p-4 rounded-full bg-primary/20">
-            <BsTree className="h-8 w-8 text-primary" />
-          </div>
+          {(() => {
+            const chosenColor = formData.color || chalet?.color || undefined;
+            const colorHex = getColorHex(chosenColor);
+            const chosenIcon =
+              (formData.icon as string) ||
+              (chalet?.icon as string) ||
+              undefined;
+            const IconComp = getIconComponent(chosenIcon);
+
+            return (
+              <div
+                className="p-4 rounded-full"
+                style={
+                  colorHex ? { backgroundColor: `${colorHex}33` } : undefined
+                }
+              >
+                <IconComp
+                  className="h-8 w-8"
+                  style={colorHex ? { color: colorHex } : undefined}
+                />
+              </div>
+            );
+          })()}
           <div>
             <h1 className="text-3xl font-bold font-display gradient-festive bg-clip-text text-transparent">
               Modifier {chalet.name}
@@ -484,7 +521,7 @@ export default function EditChaletPage() {
                             "capacity",
                             e.target.value
                               ? parseInt(e.target.value)
-                              : undefined,
+                              : undefined
                           )
                         }
                       />
@@ -505,7 +542,7 @@ export default function EditChaletPage() {
                             "pricePerNight",
                             e.target.value
                               ? parseInt(e.target.value)
-                              : undefined,
+                              : undefined
                           )
                         }
                       />
@@ -614,7 +651,7 @@ export default function EditChaletPage() {
                         onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                           handleChange(
                             "features",
-                            e.target.value.split(/\n+/).filter(Boolean),
+                            e.target.value.split(/\n+/).filter(Boolean)
                           )
                         }
                       />
@@ -637,41 +674,66 @@ export default function EditChaletPage() {
                         onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                           handleChange(
                             "highlights",
-                            e.target.value.split(/\n+/).filter(Boolean),
+                            e.target.value.split(/\n+/).filter(Boolean)
                           )
                         }
                       />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <Input
-                        classNames={{
-                          input: "bg-transparent",
-                          inputWrapper:
-                            "border-border/50 hover:border-border focus-within:!border-primary",
-                        }}
-                        label="Couleur (slug tailwind / token)"
-                        placeholder="ex: primary, success"
-                        value={formData.color || ""}
-                        variant="bordered"
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                          handleChange("color", e.target.value)
-                        }
-                      />
-                      <Input
-                        classNames={{
-                          input: "bg-transparent",
-                          inputWrapper:
-                            "border-border/50 hover:border-border focus-within:!border-primary",
-                        }}
-                        label="Icône (identifiant)"
-                        placeholder="ex: pine-tree"
-                        value={formData.icon || ""}
-                        variant="bordered"
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                          handleChange("icon", e.target.value)
-                        }
-                      />
+                      <div>
+                        <label className="text-sm font-medium text-foreground mb-2 block">
+                          Couleur
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {CHALET_COLORS.map((c) => (
+                            <button
+                              key={c.name}
+                              type="button"
+                              onClick={() => handleChange("color", c.name)}
+                              className={`flex items-center gap-2 px-2 py-1 rounded border transition-colors text-sm ${
+                                formData.color === c.name
+                                  ? "ring-1 ring-primary bg-primary/10"
+                                  : "bg-transparent hover:bg-muted/10"
+                              }`}
+                            >
+                              <span
+                                className="w-4 h-4 rounded"
+                                style={{ background: c.value }}
+                                aria-hidden
+                              />
+                              <span>{c.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-sm font-medium text-foreground mb-2 block">
+                          Icône
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {CHALET_ICONS.map((it) => {
+                            const IconComp = it.icon;
+
+                            return (
+                              <button
+                                key={it.id}
+                                className={`p-2 rounded border transition-colors ${
+                                  formData.icon === it.id
+                                    ? "ring-1 ring-primary bg-primary/10"
+                                    : "bg-transparent hover:bg-muted/10"
+                                }`}
+                                title={it.label}
+                                type="button"
+                                onClick={() => handleChange("icon", it.id)}
+                              >
+                                <IconComp className="h-5 w-5" />
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}

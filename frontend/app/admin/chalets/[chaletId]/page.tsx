@@ -45,6 +45,8 @@ import { getPagesByChaletId } from "@/lib/services/pages";
 import { downloadQRCodesPDFAction } from "@/lib/actions/download";
 import { deleteChaletAction } from "@/lib/actions/chalets";
 import { Chalet, Page } from "@/types";
+import { CHALET_COLORS } from "@/config/colors";
+import { CHALET_ICONS } from "@/config/icons";
 
 export default function ChaletDetail() {
   const params = useParams();
@@ -53,6 +55,14 @@ export default function ChaletDetail() {
   const [pages, setPages] = useState<Page[]>([]);
   const [loading, setLoading] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const getColorHex = (name?: string) =>
+    CHALET_COLORS.find((c) => c.name === name)?.value;
+
+  const getIconComponent = (id?: string) => {
+    const it = CHALET_ICONS.find((i) => i.id === id);
+    return it ? it.icon : BsTree;
+  };
 
   useEffect(() => {
     const fetchChaletData = async () => {
@@ -70,7 +80,7 @@ export default function ChaletDetail() {
       } catch (error) {
         console.error(
           "Erreur lors du chargement des données du chalet:",
-          error,
+          error
         );
         setChalet(null);
         setPages([]);
@@ -164,9 +174,27 @@ export default function ChaletDetail() {
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="p-4 rounded-full bg-primary/20">
-              <BsTree className="h-8 w-8 text-primary" />
-            </div>
+            {/* dynamic color + icon preview */}
+            {(() => {
+              const colorHex = getColorHex(chalet.color || undefined);
+              const IconComp = getIconComponent(chalet.icon || undefined);
+
+              return (
+                <div
+                  className="p-4 rounded-full"
+                  style={
+                    colorHex
+                      ? { backgroundColor: `${colorHex}33` } // light background using 8-digit hex alpha
+                      : undefined
+                  }
+                >
+                  <IconComp
+                    className="h-8 w-8"
+                    style={colorHex ? { color: colorHex } : undefined}
+                  />
+                </div>
+              );
+            })()}
             <div>
               <h1 className="text-3xl font-bold font-display gradient-festive bg-clip-text text-transparent">
                 {chalet.name}
