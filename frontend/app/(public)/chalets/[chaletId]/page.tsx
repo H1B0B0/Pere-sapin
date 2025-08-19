@@ -74,7 +74,6 @@ const statusLabels = {
   [AvailabilityStatus.MAINTENANCE]: "Maintenance",
 };
 
-// adapt feature icon helper to accept optional color
 const getFeatureIcon = (feature: string, colorHex?: string) => {
   const lower = feature.toLowerCase();
   const style = colorHex ? { color: colorHex } : undefined;
@@ -101,17 +100,14 @@ export default function ChaletDetailPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // helper to get color hex by name
   const getColorHex = (name?: string) =>
     CHALET_COLORS.find((c) => c.name === name)?.value;
 
-  // helper to get icon component by id (fallback to GiMountains)
   const getIconComponent = (id?: string) => {
     const it = CHALET_ICONS.find((i) => i.id === id);
     return it ? it.icon : GiMountains;
   };
 
-  // compute readable contrast (white or black) for a given hex color
   const getContrastColor = (hex?: string) => {
     if (!hex) return undefined;
     try {
