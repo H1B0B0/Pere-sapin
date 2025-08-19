@@ -19,7 +19,7 @@ import {
   ModalBody,
   useDisclosure,
 } from "@heroui/react";
-import { motion } from "framer-motion";
+import { color, motion } from "framer-motion";
 import {
   BsArrowLeft,
   BsPhone,
@@ -51,6 +51,8 @@ import { getChaletByIdClient } from "@/lib/services/client-chalets";
 import { getAvailabilitiesByChaletIdClient } from "@/lib/services/client-availability";
 import { getAllPagesClient } from "@/lib/services/client-pages";
 import { Chalet, Availability, Page, AvailabilityStatus } from "@/types";
+import { CHALET_COLORS } from "@/config/colors";
+import { CHALET_ICONS } from "@/config/icons";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -72,19 +74,20 @@ const statusLabels = {
   [AvailabilityStatus.MAINTENANCE]: "Maintenance",
 };
 
-const getFeatureIcon = (feature: string) => {
+// adapt feature icon helper to accept optional color
+const getFeatureIcon = (feature: string, colorHex?: string) => {
   const lower = feature.toLowerCase();
+  const style = colorHex ? { color: colorHex } : undefined;
   if (lower.includes("wifi") || lower.includes("internet"))
-    return <FaWifi className="text-primary" />;
-  if (lower.includes("parking")) return <FaParking className="text-primary" />;
+    return <FaWifi style={style} />;
+  if (lower.includes("parking")) return <FaParking style={style} />;
   if (lower.includes("animaux") || lower.includes("chien"))
-    return <FaPaw className="text-primary" />;
+    return <FaPaw style={style} />;
   if (lower.includes("cheminée") || lower.includes("feu"))
-    return <FaFire className="text-primary" />;
-  if (lower.includes("piscine"))
-    return <FaSwimmingPool className="text-primary" />;
-  if (lower.includes("cuisine")) return <FaUtensils className="text-primary" />;
-  return <BsCheck2 className="text-success" />;
+    return <FaFire style={style} />;
+  if (lower.includes("piscine")) return <FaSwimmingPool style={style} />;
+  if (lower.includes("cuisine")) return <FaUtensils style={style} />;
+  return <BsCheck2 style={style} />;
 };
 
 export default function ChaletDetailPage() {
@@ -97,6 +100,57 @@ export default function ChaletDetailPage() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // helper to get color hex by name
+  const getColorHex = (name?: string) =>
+    CHALET_COLORS.find((c) => c.name === name)?.value;
+
+  // helper to get icon component by id (fallback to GiMountains)
+  const getIconComponent = (id?: string) => {
+    const it = CHALET_ICONS.find((i) => i.id === id);
+    return it ? it.icon : GiMountains;
+  };
+
+  // compute readable contrast (white or black) for a given hex color
+  const getContrastColor = (hex?: string) => {
+    if (!hex) return undefined;
+    try {
+      const c = hex.replace("#", "");
+      const r = parseInt(c.substring(0, 2), 16);
+      const g = parseInt(c.substring(2, 4), 16);
+      const b = parseInt(c.substring(4, 6), 16);
+      // standard luminance formula
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      return luminance > 0.6 ? "#111827" : "#ffffff";
+    } catch {
+      return undefined;
+    }
+  };
+
+  // compute current color/icon from chalet when available
+  const colorHex = chalet ? getColorHex(chalet.color || undefined) : undefined;
+  const colorStyle = colorHex ? { color: colorHex } : undefined;
+  const bgLightStyle = colorHex
+    ? { backgroundColor: `${colorHex}33` }
+    : undefined;
+  const IconComp = chalet
+    ? getIconComponent(chalet.icon || undefined)
+    : GiMountains;
+
+  const contrastColor = colorHex ? getContrastColor(colorHex) : undefined;
+  const btnCallStyle = colorHex
+    ? {
+        backgroundColor: colorHex,
+        color: contrastColor,
+        borderColor: `${colorHex}cc`,
+      }
+    : undefined;
+  const cardBorderStyle = colorHex
+    ? { border: `1px solid ${colorHex}20` }
+    : undefined;
+  const headerBgStyle = colorHex
+    ? { backgroundColor: `${colorHex}14`, border: `1px solid ${colorHex}20` }
+    : undefined;
 
   // Gestion de la navigation au clavier dans le modal
   useEffect(() => {
@@ -319,7 +373,10 @@ export default function ChaletDetailPage() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
-              <GiMountains className="text-3xl text-primary" />
+              <div className="text-3xl" style={colorStyle}>
+                <IconComp className="h-7 w-7 black" />
+              </div>
+
               <h1 className="text-3xl md:text-4xl font-bold">{chalet.name}</h1>
               {chalet.isActive ? (
                 <Chip
@@ -339,7 +396,7 @@ export default function ChaletDetailPage() {
             <div className="flex items-center gap-4 text-muted-foreground">
               {chalet.location && (
                 <div className="flex items-center gap-1">
-                  <MdLocationOn className="h-4 w-4" />
+                  <MdLocationOn className="h-4 w-4" style={colorStyle} />
                   <span>{chalet.location}</span>
                 </div>
               )}
@@ -353,17 +410,18 @@ export default function ChaletDetailPage() {
               onPress={handleFavoriteToggle}
               className={isFavorite ? "text-danger" : ""}
             >
-              <BsHeart className={isFavorite ? "fill-current" : ""} />
+              <BsHeart style={isFavorite ? { color: "#ef4444" } : colorStyle} />
             </Button>
             <Button isIconOnly variant="flat" onPress={handleShare}>
-              <BsShare />
+              <BsShare style={colorStyle} />
             </Button>
             {chalet.contactPhone && (
               <Button
                 as={Link}
                 href={`tel:${chalet.contactPhone}`}
-                color="success"
+                variant="solid"
                 startContent={<BsPhone />}
+                style={btnCallStyle}
               >
                 Appeler
               </Button>
@@ -374,9 +432,18 @@ export default function ChaletDetailPage() {
         {/* Image Gallery */}
         {images.length > 0 ? (
           <div className="space-y-4">
-            <div
-              className="relative w-full h-96 cursor-pointer overflow-hidden rounded-2xl group"
+            <button
+              type="button"
+              className="relative w-full h-96 cursor-pointer overflow-hidden rounded-2xl group focus:outline-none"
               onClick={onOpen}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onOpen();
+                }
+              }}
+              tabIndex={0}
+              aria-label={`Ouvrir la galerie d'images pour ${chalet.name}`}
             >
               <img
                 src={images[selectedImageIndex]}
@@ -389,7 +456,7 @@ export default function ChaletDetailPage() {
               <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-1 text-white text-sm">
                 {selectedImageIndex + 1} / {images.length}
               </div>
-            </div>
+            </button>
 
             {images.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-2">
@@ -446,7 +513,10 @@ export default function ChaletDetailPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
                   {chalet.capacity && (
                     <div className="text-center p-3 bg-content2 rounded-lg">
-                      <BsPeople className="h-6 w-6 mx-auto mb-2 text-primary" />
+                      <BsPeople
+                        className="h-6 w-6 mx-auto mb-2"
+                        style={colorStyle}
+                      />
                       <div className="font-semibold">{chalet.capacity}</div>
                       <div className="text-sm text-muted-foreground">
                         Voyageurs
@@ -455,7 +525,10 @@ export default function ChaletDetailPage() {
                   )}
                   {chalet.bedrooms && (
                     <div className="text-center p-3 bg-content2 rounded-lg">
-                      <BsHouse className="h-6 w-6 mx-auto mb-2 text-primary" />
+                      <BsHouse
+                        className="h-6 w-6 mx-auto mb-2"
+                        style={colorStyle}
+                      />
                       <div className="font-semibold">{chalet.bedrooms}</div>
                       <div className="text-sm text-muted-foreground">
                         Chambres
@@ -464,7 +537,10 @@ export default function ChaletDetailPage() {
                   )}
                   {chalet.bathrooms && (
                     <div className="text-center p-3 bg-content2 rounded-lg">
-                      <BsStars className="h-6 w-6 mx-auto mb-2 text-primary" />
+                      <BsStars
+                        className="h-6 w-6 mx-auto mb-2"
+                        style={colorStyle}
+                      />
                       <div className="font-semibold">{chalet.bathrooms}</div>
                       <div className="text-sm text-muted-foreground">
                         Salles de bain
@@ -472,7 +548,10 @@ export default function ChaletDetailPage() {
                     </div>
                   )}
                   <div className="text-center p-3 bg-content2 rounded-lg">
-                    <BsStars className="h-6 w-6 mx-auto mb-2 text-primary" />
+                    <BsStars
+                      className="h-6 w-6 mx-auto mb-2"
+                      style={colorStyle}
+                    />
                     <div className="font-semibold">3★</div>
                     <div className="text-sm text-muted-foreground">
                       Classement
@@ -496,17 +575,28 @@ export default function ChaletDetailPage() {
                   {chalet.highlights && chalet.highlights.length > 0 && (
                     <div>
                       <h3 className="font-semibold mb-4 flex items-center gap-2 text-lg">
-                        <BsStars className="text-primary" />
+                        <BsStars style={colorStyle} />
                         Points forts
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {chalet.highlights.map((highlight) => (
                           <div
                             key={highlight}
-                            className="flex items-center gap-3 p-3 bg-primary/5 rounded-lg border border-primary/20"
+                            className="flex items-center gap-3 p-3 rounded-lg"
+                            style={
+                              colorHex
+                                ? {
+                                    backgroundColor: `${colorHex}14`,
+                                    border: `1px solid ${colorHex}20`,
+                                  }
+                                : {}
+                            }
                           >
-                            <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0"></div>
-                            <span className="font-medium text-primary">
+                            <div
+                              className="w-2 h-2 rounded-full"
+                              style={{ background: colorHex || undefined }}
+                            />
+                            <span className="font-medium" style={colorStyle}>
                               {highlight}
                             </span>
                           </div>
@@ -518,7 +608,9 @@ export default function ChaletDetailPage() {
                   {chalet.features && chalet.features.length > 0 && (
                     <div>
                       <h3 className="font-semibold mb-4 flex items-center gap-2 text-lg">
-                        <BsCheck2 className="text-success" />
+                        <BsCheck2
+                          style={colorHex ? { color: colorHex } : undefined}
+                        />
                         Équipements & Installations
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -527,7 +619,7 @@ export default function ChaletDetailPage() {
                             key={feature}
                             className="flex items-center gap-3 p-3 bg-content2/50 rounded-lg hover:bg-content2 transition-colors"
                           >
-                            {getFeatureIcon(feature)}
+                            {getFeatureIcon(feature, colorHex)}
                             <span className="text-sm">{feature}</span>
                           </div>
                         ))}
@@ -565,16 +657,29 @@ export default function ChaletDetailPage() {
             <Card>
               <CardHeader className="pb-3">
                 <h2 className="text-2xl font-bold flex items-center gap-2">
-                  <BsCalendar className="text-primary" />
+                  <BsCalendar style={colorStyle} className="text-primary" />
                   Disponibilités et réservation
                 </h2>
               </CardHeader>
               <CardBody className="space-y-6">
                 {availabilities.length === 0 ? (
-                  <div className="bg-success/10 border border-success/20 rounded-lg p-4">
+                  <div
+                    className="bg-success/10 border border-success/20 rounded-lg p-4"
+                    style={
+                      colorHex
+                        ? {
+                            backgroundColor: `${colorHex}14`,
+                            border: `1px solid ${colorHex}20`,
+                          }
+                        : {}
+                    }
+                  >
                     <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2 text-success font-medium">
-                        <BsCalendar />
+                      <div
+                        className="flex items-center gap-2 text-success font-medium"
+                        style={colorStyle}
+                      >
+                        <BsCalendar style={colorStyle} />
                         🎉 Chalet disponible toute l'année
                       </div>
                       <div className="text-right">
@@ -594,7 +699,10 @@ export default function ChaletDetailPage() {
                       Aucune période spécifique définie - Contactez le
                       propriétaire pour réserver aux dates de votre choix !
                     </p>
-                    <div className="flex items-center gap-4 text-xs text-success">
+                    <div
+                      className="flex items-center gap-4 text-xs text-success"
+                      style={colorStyle}
+                    >
                       <span>✓ Réservation possible toute l'année</span>
                       <span>✓ Choix libre des dates</span>
                       <span>✓ Contact direct</span>
@@ -603,15 +711,21 @@ export default function ChaletDetailPage() {
                 ) : (
                   <div className="space-y-4">
                     {/* En-tête avec résumé */}
-                    <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                    <div className="rounded-lg p-4" style={headerBgStyle}>
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-primary font-medium">
-                          <BsCalendar />
+                        <div
+                          className="flex items-center gap-2 font-medium"
+                          style={colorStyle}
+                        >
+                          <BsCalendar style={colorStyle} />
                           Calendrier des disponibilités
                         </div>
                         {availableAvailabilities.length > 0 && (
                           <div className="text-right">
-                            <div className="text-sm font-semibold text-primary">
+                            <div
+                              className="text-sm font-semibold"
+                              style={colorStyle}
+                            >
                               {availableAvailabilities.length} période
                               {availableAvailabilities.length > 1
                                 ? "s"
@@ -638,7 +752,7 @@ export default function ChaletDetailPage() {
                               variant="flat"
                               onPress={() => navigateMonth("prev")}
                             >
-                              <BsChevronLeft />
+                              <BsChevronLeft style={colorStyle} />
                             </Button>
                             <Button
                               isIconOnly
@@ -646,7 +760,7 @@ export default function ChaletDetailPage() {
                               variant="flat"
                               onPress={() => navigateMonth("next")}
                             >
-                              <BsChevronRight />
+                              <BsChevronRight style={colorStyle} />
                             </Button>
                           </div>
                         </div>
@@ -748,7 +862,7 @@ export default function ChaletDetailPage() {
               <Card>
                 <CardHeader className="pb-3">
                   <h2 className="text-2xl font-bold flex items-center gap-2">
-                    <BsStars className="text-primary" />
+                    <BsStars className="text-primary" style={colorStyle} />
                     Guides et informations utiles
                   </h2>
                 </CardHeader>
@@ -765,23 +879,67 @@ export default function ChaletDetailPage() {
                         href={`/chalets/${chalet._id}/${page.slug}`}
                         className="block group"
                       >
-                        <Card className="h-full hover:shadow-lg transition-all duration-300 border border-divider group-hover:border-primary/50">
+                        <Card
+                          className="h-full hover:shadow-lg transition-all duration-300 border"
+                          style={
+                            colorHex
+                              ? {
+                                  borderColor: `${colorHex}20`,
+                                  transition: "border-color 200ms",
+                                }
+                              : undefined
+                          }
+                          onMouseEnter={(e) => {
+                            if (colorHex)
+                              e.currentTarget.style.borderColor = `${colorHex}40`;
+                          }}
+                          onMouseLeave={(e) => {
+                            if (colorHex)
+                              e.currentTarget.style.borderColor = `${colorHex}20`;
+                          }}
+                        >
+                          {" "}
                           <CardBody className="p-4 space-y-3">
                             <div className="flex items-start justify-between">
-                              <h3 className="font-semibold text-lg group-hover:text-primary transition-colors line-clamp-1">
+                              <h3
+                                className="font-semibold text-lg group-hover:text-primary transition-colors line-clamp-1"
+                                style={colorStyle}
+                              >
                                 {page.title}
                               </h3>
-                              <BsArrowLeft className="text-muted-foreground group-hover:text-primary transition-colors rotate-180 flex-shrink-0 ml-2" />
+                              <BsArrowLeft
+                                className="text-muted-foreground group-hover:text-primary transition-colors rotate-180 flex-shrink-0 ml-2"
+                                onMouseEnter={(e) => {
+                                  if (colorHex)
+                                    e.currentTarget.style.borderColor = `${colorHex}40`;
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (colorHex)
+                                    e.currentTarget.style.borderColor = `${colorHex}20`;
+                                }}
+                              />
                             </div>
 
                             {page.tags.length > 0 && (
-                              <div className="flex flex-wrap gap-1 pt-2">
+                              <div
+                                className="flex flex-wrap gap-1 pt-2"
+                                color=""
+                              >
                                 {page.tags.slice(0, 3).map((tag) => (
                                   <Chip
                                     key={tag}
                                     size="sm"
                                     variant="flat"
                                     className="bg-primary/10 text-primary border border-primary/20"
+                                    style={
+                                      colorHex
+                                        ? {
+                                            backgroundColor: `${colorHex}14`,
+                                            border: `1px solid ${colorHex}20`,
+                                            ...colorStyle,
+                                          }
+                                        : colorStyle
+                                    }
                                   >
                                     {tag}
                                   </Chip>
@@ -791,6 +949,7 @@ export default function ChaletDetailPage() {
                                     size="sm"
                                     variant="flat"
                                     className="bg-content2"
+                                    style={colorStyle}
                                   >
                                     +{page.tags.length - 3}
                                   </Chip>
@@ -819,9 +978,12 @@ export default function ChaletDetailPage() {
         <div className="space-y-6">
           {/* Booking Card */}
           <motion.div {...fadeInUp} transition={{ delay: 0.1 }}>
-            <Card className="sticky top-6 border border-primary/20 shadow-lg">
-              <CardHeader className="pb-3 bg-gradient-to-r from-primary/5 to-success/5">
-                <h3 className="text-xl font-bold text-center w-full">
+            <Card className="sticky top-6 shadow-lg" style={cardBorderStyle}>
+              <CardHeader className="pb-3" style={headerBgStyle}>
+                <h3
+                  className="text-xl font-bold text-center w-full"
+                  style={colorStyle}
+                >
                   Réservation
                 </h3>
               </CardHeader>
@@ -860,7 +1022,7 @@ export default function ChaletDetailPage() {
                 <div className="space-y-4">
                   <div className="text-center">
                     <h4 className="font-semibold mb-2 flex items-center justify-center gap-2">
-                      <BsPhone className="text-primary" />
+                      <BsPhone className="text-primary" style={colorStyle} />
                       Contact direct propriétaire
                     </h4>
                     <p className="text-sm text-muted-foreground mb-4">
@@ -874,12 +1036,16 @@ export default function ChaletDetailPage() {
                       <Button
                         as={Link}
                         href={`mailto:${chalet.contactEmail}?subject=Demande de réservation - ${chalet.name}&body=Bonjour,%0D%0A%0D%0AJe suis intéressé(e) par une réservation pour le chalet ${chalet.name}.%0D%0A%0D%0APériode souhaitée : %0D%0ANombre de personnes : %0D%0A%0D%0AMerci de me faire parvenir vos disponibilités et tarifs.%0D%0A%0D%0ACordialement`}
-                        color="primary"
                         variant="solid"
                         fullWidth
                         size="lg"
-                        startContent={<MdEmail />}
+                        startContent={<MdEmail style={colorStyle} />}
                         className="font-semibold"
+                        style={
+                          colorHex
+                            ? { borderColor: `${colorHex}33` }
+                            : undefined
+                        }
                       >
                         Demander un devis
                       </Button>
@@ -888,12 +1054,11 @@ export default function ChaletDetailPage() {
                       <Button
                         as={Link}
                         href={`tel:${chalet.contactPhone}`}
-                        color="success"
-                        variant="flat"
                         fullWidth
                         size="lg"
                         startContent={<BsPhone />}
                         className="font-semibold"
+                        style={btnCallStyle}
                       >
                         {chalet.contactPhone}
                       </Button>
