@@ -18,7 +18,6 @@ import clsx from "clsx";
 import { useAdminStore } from "@/lib/stores/admin-store";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
-// new imports for chalet colors/icons
 import { CHALET_COLORS } from "@/config/colors";
 import { CHALET_ICONS } from "@/config/icons";
 import { GiMountains } from "react-icons/gi";
@@ -26,6 +25,10 @@ import { GiMountains } from "react-icons/gi";
 export function AdminSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
+
+  const [chaletOverrides, setChaletOverrides] = useState<
+    Record<string, { color?: string; icon?: string }>
+  >({});
 
   // Utilisation du store global
   const { chalets, loading, initialized, initialize, getPagesForChalet } =
@@ -38,6 +41,31 @@ export function AdminSidebar() {
       initialize();
     }
   }, [initialized, loading, initialize]);
+
+  useEffect(() => {
+    const onChaletUpdated = (ev: Event) => {
+      const { detail } = ev as CustomEvent<{
+        id: string;
+        color?: string;
+        icon?: string;
+      }>;
+      if (!detail?.id) return;
+      setChaletOverrides((prev) => ({
+        ...prev,
+        [detail.id]: { color: detail.color, icon: detail.icon },
+      }));
+    };
+    window.addEventListener(
+      "chalets:updated",
+      onChaletUpdated as EventListener
+    );
+    return () => {
+      window.removeEventListener(
+        "chalets:updated",
+        onChaletUpdated as EventListener
+      );
+    };
+  }, []);
 
   const isActiveLink = (href: string) => pathname === href;
 
@@ -214,9 +242,14 @@ export function AdminSidebar() {
                   variant="shadow"
                 >
                   {chalets.map((chalet) => {
+                    const appliedColorName =
+                      chaletOverrides[chalet._id]?.color ?? chalet.color;
+                    const appliedIconId =
+                      chaletOverrides[chalet._id]?.icon ?? chalet.icon;
+
                     // compute per-chalet styles & icon
-                    const colorHex = getColorHex(chalet.color);
-                    const IconComp = getIconComponent(chalet.icon);
+                    const colorHex = getColorHex(appliedColorName);
+                    const IconComp = getIconComponent(appliedIconId);
                     const contrast = getContrastColor(colorHex) || "#fff";
 
                     // styles for buttons / accents

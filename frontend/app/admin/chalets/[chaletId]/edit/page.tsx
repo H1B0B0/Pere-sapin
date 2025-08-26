@@ -168,7 +168,26 @@ export default function EditChaletPage() {
     setError(null);
 
     try {
-      await updateChaletAction(chalet._id, formData);
+      // Appel sans redirection serveur
+      const updated = await updateChaletAction(chalet._id, formData, {
+        redirect: false,
+      });
+
+      // Notifie la sidebar d'une mise à jour (couleur / icône)
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("chalets:updated", {
+            detail: {
+              id: chalet._id,
+              color: updated?.color ?? formData.color,
+              icon: updated?.icon ?? formData.icon,
+            },
+          })
+        );
+      }
+
+      // Conserver le comportement précédent (navigation après sauvegarde)
+      router.push(`/admin/chalets/${chalet._id}`);
     } catch (err) {
       console.error("Erreur lors de la modification:", err);
       setError(

@@ -30,13 +30,19 @@ export async function createChaletAction(data: CreateChaletDto) {
 export async function updateChaletAction(
   id: string,
   data: Partial<CreateChaletDto>,
+  options?: { redirect?: boolean },
 ) {
   try {
     const chalet = await updateChalet(id, data);
 
     revalidatePath("/admin/chalets");
     revalidatePath(`/admin/chalets/${id}`);
-    redirect(`/admin/chalets/${id}`);
+
+    if (options?.redirect !== false) {
+      redirect(`/admin/chalets/${id}`);
+    }
+
+    return chalet;
   } catch (error: any) {
     if (error.message === "NEXT_REDIRECT") {
       throw error;
@@ -44,7 +50,7 @@ export async function updateChaletAction(
     console.error("Error updating chalet:", error);
     throw new Error(
       error.response?.data?.message ||
-        "Erreur lors de la modification du chalet",
+      "Erreur lors de la modification du chalet",
     );
   }
 }
@@ -57,7 +63,7 @@ export async function deleteChaletAction(id: string) {
     console.error("Error deleting chalet:", error);
     throw new Error(
       error.response?.data?.message ||
-        "Erreur lors de la suppression du chalet",
+      "Erreur lors de la suppression du chalet",
     );
   }
 }
