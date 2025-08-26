@@ -94,6 +94,15 @@ export function AdminSidebar() {
     }
   };
 
+  const accordionItemClasses = {
+    base: "py-0 w-full",
+    title: "font-normal text-medium truncate",
+    // apply rounded top on hover for first item and rounded bottom on hover for last item
+    trigger: "px-2 py-0 h-14 flex items-center gap-3",
+    indicator: "text-medium",
+    content: "text-small px-2",
+  };
+
   return (
     <div
       className={clsx(
@@ -230,16 +239,9 @@ export function AdminSidebar() {
               ) : (
                 <Accordion
                   className="px-0"
-                  itemClasses={{
-                    base: "alpine-card mb-2 border border-border/20 hover:border-primary/30 transition-colors",
-                    title: "font-medium text-foreground",
-                    trigger:
-                      "py-3 px-4 hover:bg-muted/20 rounded-t-lg transition-colors",
-                    content: "px-4 pb-4",
-                    indicator: "text-muted-foreground",
-                  }}
+                  variant="bordered"
                   selectionMode="multiple"
-                  variant="shadow"
+                  itemClasses={accordionItemClasses}
                 >
                   {chalets.map((chalet) => {
                     const appliedColorName =
@@ -332,7 +334,7 @@ export function AdminSidebar() {
                           </div>
                         }
                       >
-                        <div className="space-y-3 mt-2">
+                        <div className="space-y-3 mt-2 p-2">
                           {/* Boutons de gestion du chalet */}
                           <div className="flex gap-2">
                             <Link
@@ -383,7 +385,7 @@ export function AdminSidebar() {
                                   className="block group"
                                   href={`/admin/chalets/${chalet._id}/pages/${page.slug}/edit`}
                                 >
-                                  <div className="flex items-center justify-between p-2 rounded-md hover:bg-muted/30 transition-colors">
+                                  <div className="flex items-center justify-between p-2">
                                     <div className="flex items-center gap-2 min-w-0">
                                       <BsFileText
                                         className="h-3 w-3 flex-shrink-0"
