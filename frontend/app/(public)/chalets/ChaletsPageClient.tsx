@@ -21,12 +21,7 @@ import {
   BsHeart,
   BsCalendar,
 } from "react-icons/bs";
-import {
-  FaWifi,
-  FaParking,
-  FaPaw,
-  FaFire,
-} from "react-icons/fa";
+import { FaWifi, FaParking, FaPaw, FaFire } from "react-icons/fa";
 import { GiMountains } from "react-icons/gi";
 import { MdLocationOn, MdEmail } from "react-icons/md";
 
@@ -34,14 +29,7 @@ import { getAllChaletsClient } from "@/lib/services/client-chalets";
 import { getAvailablePeriodsForChaletClient } from "@/lib/services/client-availability";
 import { Chalet, Availability } from "@/types";
 
-
-const ChaletCard = ({
-  chalet,
-  index,
-}: {
-  chalet: Chalet;
-  index: number;
-}) => {
+const ChaletCard = ({ chalet, index }: { chalet: Chalet; index: number }) => {
   const [nextAvailable, setNextAvailable] = useState<Availability | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -66,7 +54,6 @@ const ChaletCard = ({
 
     fetchAvailability();
   }, [chalet._id]);
-
 
   return (
     <motion.div
@@ -163,11 +150,7 @@ const ChaletCard = ({
           {chalet.amenities && chalet.amenities.length > 0 && (
             <div className="flex gap-1 flex-wrap">
               {chalet.amenities.slice(0, 3).map((amenity, idx) => (
-                <Chip
-                  key={idx}
-                  size="sm"
-                  variant="flat"
-                >
+                <Chip key={idx} size="sm" variant="flat">
                   {amenity}
                 </Chip>
               ))}
@@ -336,7 +319,6 @@ export default function ChaletsPageClient() {
           </div>
         </div>
       </motion.div>
-
 
       {/* Grille des chalets */}
       {chalets.length > 0 ? (
