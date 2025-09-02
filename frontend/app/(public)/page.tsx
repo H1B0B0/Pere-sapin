@@ -44,7 +44,8 @@ export default function Home() {
           </Button>
           <Button
             as={Link}
-            className="font-semibold backdrop-blur-sm"
+            className="font-semibold backdrop-blur-sm text-primary border border-primary"
+            color="primary"
             href="/about"
             size="lg"
             variant="bordered"

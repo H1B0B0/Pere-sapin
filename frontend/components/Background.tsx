@@ -64,7 +64,7 @@ const Background: React.FC = () => {
   const colors = useMemo(() => {
     return {
       // Ciel plus dramatique et montagnard
-      sky: isDark ? ["#1a1f2e", "#0f1419"] : ["#87ceeb", "#4682b4"],
+      sky: isDark ? ["#1a1f2e", "#0f1419"] : ["#cae4f3", "#8cbfdc"],
       // Montagnes avec des tons plus rocheux et imposants
       mountain1: isDark ? ["#2c3e50", "#1a252f"] : ["#708090", "#2f4f4f"],
       mountain2: isDark ? ["#34495e", "#2c3e50"] : ["#9ca3af", "#6b7280"],
