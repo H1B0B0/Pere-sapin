@@ -14,8 +14,6 @@ import {
   ModalFooter,
   Input,
   Textarea,
-  Select,
-  SelectItem,
   useDisclosure,
   Chip,
 } from "@heroui/react";
@@ -401,23 +399,25 @@ export default function ChaletCalendarPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Select
-                    label="Statut"
-                    selectedKeys={[
-                      formData.status || AvailabilityStatus.AVAILABLE,
-                    ]}
-                    onSelectionChange={(keys: any) => {
-                      const status = Array.from(keys)[0] as AvailabilityStatus;
-
-                      setFormData((prev) => ({ ...prev, status }));
-                    }}
-                  >
-                    {Object.entries(statusLabels).map(([value, label]) => (
-                      <SelectItem key={value} value={value}>
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </Select>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium">Statut</label>
+                    <select
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={formData.status || AvailabilityStatus.AVAILABLE}
+                      onChange={(e) => {
+                        setFormData((prev) => ({ 
+                          ...prev, 
+                          status: e.target.value as AvailabilityStatus 
+                        }));
+                      }}
+                    >
+                      {Object.entries(statusLabels).map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
                   <Input
                     label="Prix par nuit (€)"

@@ -37,39 +37,43 @@ import {
 } from "react-icons/bs";
 import Link from "next/link";
 
-import { useChaletsStore } from "@/lib/chalets-store";
+import { useChaletsStore, ChaletWithPages } from "@/lib/chalets-store";
 import { deleteChaletAction } from "@/lib/actions/chalets";
 
-interface ChaletWithPages {
-  _id: string;
-  name: string;
-  description?: string;
-  location?: string;
-  address?: string;
-  capacity?: number;
-  isActive: boolean;
-  pagesCount: number;
-  pricePerNight?: number;
-}
+type ChaletsManagementClientProps = {
+  initialChalets: ChaletWithPages[];
+};
 
-export default function ChaletsManagementClient() {
-  const {
-    chalets,
-    loading,
-    error,
-    fetchChalets,
-    removeChalet,
-    clearError,
-  } = useChaletsStore();
-  
+export default function ChaletsManagementClient({
+  initialChalets,
+}: ChaletsManagementClientProps) {
+  const { chalets, loading, error, fetchChalets, removeChalet, clearError } =
+    useChaletsStore();
+
   const [selectedChalet, setSelectedChalet] = useState<ChaletWithPages | null>(
-    null,
+    null
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  // Hydrate the store with server-fetched chalets on first render
   useEffect(() => {
-    fetchChalets();
-  }, [fetchChalets]);
+    if (initialChalets && initialChalets.length > 0) {
+      // Set chalets in store with a fresh timestamp
+      useChaletsStore.setState({
+        chalets: initialChalets,
+        loading: false,
+        error: null,
+        lastFetch: Date.now(),
+      });
+    }
+  }, [initialChalets]);
+
+  // Fetch from API only if store is empty and not already loading
+  useEffect(() => {
+    if (chalets.length === 0) {
+      void fetchChalets();
+    }
+  }, [chalets.length, fetchChalets]);
 
   const handleDeleteChalet = async (chalet: ChaletWithPages) => {
     try {

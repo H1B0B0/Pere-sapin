@@ -5,7 +5,7 @@ import { getAllChalets } from "./services/chalets";
 import { getAllPages } from "./services/pages";
 import { Chalet } from "@/types";
 
-interface ChaletWithPages extends Chalet {
+export interface ChaletWithPages extends Chalet {
   pagesCount: number;
 }
 
@@ -37,9 +37,12 @@ export const useChaletsStore = create<ChaletsState>()(
 
       fetchChalets: async () => {
         const state = get();
-        
+
         // Don't fetch if we're already loading or if cache is still valid
-        if (state.loading || (!state.shouldRefetch() && state.chalets.length > 0)) {
+        if (
+          state.loading ||
+          (!state.shouldRefetch() && state.chalets.length > 0)
+        ) {
           return;
         }
 
@@ -53,16 +56,21 @@ export const useChaletsStore = create<ChaletsState>()(
           ]);
 
           // Add page count to each chalet
-          const chaletsWithPages: ChaletWithPages[] = chaletsData.map((chalet) => ({
-            ...chalet,
-            pagesCount: allPages.filter((page) => {
-              return typeof page.chalet === "string"
-                ? page.chalet === chalet._id
-                : page.chalet._id === chalet._id;
-            }).length,
-          }));
+          const chaletsWithPages: ChaletWithPages[] = chaletsData.map(
+            (chalet) => ({
+              ...chalet,
+              pagesCount: allPages.filter((page) => {
+                return typeof page.chalet === "string"
+                  ? page.chalet === chalet._id
+                  : page.chalet._id === chalet._id;
+              }).length,
+            })
+          );
 
-          console.log("[CHALETS] Store: Successfully fetched chalets:", chaletsWithPages.length);
+          console.log(
+            "[CHALETS] Store: Successfully fetched chalets:",
+            chaletsWithPages.length
+          );
           set({
             chalets: chaletsWithPages,
             loading: false,
@@ -73,7 +81,10 @@ export const useChaletsStore = create<ChaletsState>()(
           console.error("[CHALETS] Store: Error fetching chalets:", error);
           set({
             loading: false,
-            error: error instanceof Error ? error.message : "Erreur lors du chargement des chalets",
+            error:
+              error instanceof Error
+                ? error.message
+                : "Erreur lors du chargement des chalets",
           });
         }
       },
@@ -121,6 +132,6 @@ export const useChaletsStore = create<ChaletsState>()(
         chalets: state.chalets,
         lastFetch: state.lastFetch,
       }),
-    },
-  ),
+    }
+  )
 );

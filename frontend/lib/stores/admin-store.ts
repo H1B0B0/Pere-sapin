@@ -103,19 +103,19 @@ export const useAdminStore = create<AdminState>()(
 
       // Chalet actions
       addChalet: (chalet: Chalet) => {
-        set((state) => ({
+        set((state: AdminState) => ({
           chalets: [...state.chalets, chalet],
         }));
       },
 
       updateChalet: (id: string, chalet: Chalet) => {
-        set((state) => ({
+        set((state: AdminState) => ({
           chalets: state.chalets.map((c) => (c._id === id ? chalet : c)),
         }));
       },
 
       removeChalet: (id: string) => {
-        set((state) => ({
+        set((state: AdminState) => ({
           chalets: state.chalets.filter((c) => c._id !== id),
           // Supprimer aussi les pages associées
           pages: state.pages.filter((p) => {
@@ -130,19 +130,19 @@ export const useAdminStore = create<AdminState>()(
 
       // Page actions
       addPage: (page: Page) => {
-        set((state) => ({
+        set((state: AdminState) => ({
           pages: [...state.pages, page],
         }));
       },
 
       updatePage: (id: string, page: Page) => {
-        set((state) => ({
+        set((state: AdminState) => ({
           pages: state.pages.map((p) => (p._id === id ? page : p)),
         }));
       },
 
       removePage: (id: string) => {
-        set((state) => ({
+        set((state: AdminState) => ({
           pages: state.pages.filter((p) => p._id !== id),
         }));
       },
@@ -174,30 +174,30 @@ export const useAdminStore = create<AdminState>()(
     }),
     {
       name: "admin-storage",
-      partialize: (state) => ({
+      partialize: (state: AdminState) => ({
         chalets: state.chalets,
         pages: state.pages,
         initialized: state.initialized,
         lastFetch: state.lastFetch,
       }),
-      onRehydrateStorage: () => (state) => {
+      onRehydrateStorage: () => (state: AdminState | undefined) => {
         if (state) {
           state.loading = false;
         }
       },
       storage: {
-        getItem: (name) => {
+        getItem: (name: string) => {
           try {
-            return localStorage.getItem(name);
+            const value = localStorage.getItem(name);
+            return value ? JSON.parse(value) : null;
           } catch (error) {
             console.warn("Failed to read from localStorage:", error);
-
             return null;
           }
         },
-        setItem: (name, value) => {
+        setItem: (name: string, value: unknown) => {
           try {
-            localStorage.setItem(name, value);
+            localStorage.setItem(name, JSON.stringify(value));
           } catch (error) {
             console.warn(
               "Failed to write to localStorage (quota exceeded):",
@@ -206,7 +206,7 @@ export const useAdminStore = create<AdminState>()(
             // Clear old data to make space
             try {
               localStorage.removeItem(name);
-              localStorage.setItem(name, value);
+              localStorage.setItem(name, JSON.stringify(value));
             } catch (retryError) {
               console.error(
                 "Failed to save to localStorage even after clearing:",
@@ -216,7 +216,7 @@ export const useAdminStore = create<AdminState>()(
             }
           }
         },
-        removeItem: (name) => {
+        removeItem: (name: string) => {
           try {
             localStorage.removeItem(name);
           } catch (error) {

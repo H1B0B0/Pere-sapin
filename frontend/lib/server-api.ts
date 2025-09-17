@@ -16,7 +16,7 @@ export async function serverFetch(endpoint: string, options: RequestInit = {}) {
     };
 
     if (authToken) {
-      headers.Cookie = `auth-token=${authToken.value}`;
+      (headers as any).Cookie = `auth-token=${authToken.value}`;
     }
 
     const url = `${API_BASE_URL}/api/proxy${endpoint}`;

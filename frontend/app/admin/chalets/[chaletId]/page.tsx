@@ -493,7 +493,7 @@ export default function ChaletDetail() {
                       </TableCell>
                       <TableCell>
                         <p className="text-sm text-foreground max-w-xs truncate">
-                          {page.description}
+                          {page.content.slice(0, 100)}...
                         </p>
                       </TableCell>
                       <TableCell>

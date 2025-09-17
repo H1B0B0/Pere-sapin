@@ -3,7 +3,13 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useParams, notFound } from "next/navigation";
 import { Card, CardBody, Chip, Spinner } from "@heroui/react";
-import YooptaEditor, { createYooptaEditor } from "@yoopta/editor";
+// Use dynamic import to avoid CJS/ESM interop issues in Next.js build
+let YooptaEditor: any;
+let createYooptaEditor: any;
+import("@yoopta/editor").then((mod) => {
+  YooptaEditor = mod.default;
+  createYooptaEditor = mod.createYooptaEditor;
+});
 import Paragraph from "@yoopta/paragraph";
 import Blockquote from "@yoopta/blockquote";
 import Embed from "@yoopta/embed";
@@ -117,7 +123,7 @@ export default function NotionStylePageViewer() {
         ]);
 
         const pageData = pagesData.find(
-          (p) => p.slug === pageSlug && p.isActive !== false,
+          (p) => p.slug === pageSlug && p.isActive !== false
         );
 
         if (!pageData) {

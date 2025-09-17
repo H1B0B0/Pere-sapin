@@ -147,5 +147,7 @@ export default defineConfig([globalIgnores([
             prev: ["const", "let", "var"],
             next: ["const", "let", "var"],
         }],
+        "react/no-unescaped-entities": "off",
+        "@next/next/no-page-custom-font": "off",
     },
 }]);

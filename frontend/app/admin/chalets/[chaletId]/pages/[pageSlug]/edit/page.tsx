@@ -368,7 +368,7 @@ export default function EditPagePage() {
                   placeholder="Entrez le titre de la page"
                   value={formData.title}
                   variant="bordered"
-                  onChange={(e) => handleTitleChange(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleTitleChange(e.target.value)}
                 />
                 <Input
                   isRequired
@@ -376,7 +376,7 @@ export default function EditPagePage() {
                   placeholder="url-de-la-page"
                   value={formData.slug}
                   variant="bordered"
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setFormData((prev) => ({ ...prev, slug: e.target.value }))
                   }
                 />
@@ -391,8 +391,8 @@ export default function EditPagePage() {
                     placeholder="Ajouter un tag"
                     value={tagInput}
                     variant="bordered"
-                    onChange={(e) => setTagInput(e.target.value)}
-                    onKeyPress={(e) => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTagInput(e.target.value)}
+                    onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
                         addTag();
@@ -445,7 +445,7 @@ export default function EditPagePage() {
                         autoFocus
                         editor={editor}
                         marks={MARKS}
-                        plugins={plugins}
+                        plugins={plugins as any}
                         selectionBoxRoot={selectionRef}
                         tools={TOOLS}
                         value={value}

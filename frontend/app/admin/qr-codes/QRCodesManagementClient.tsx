@@ -14,8 +14,6 @@ import {
   TableCell,
   Chip,
   Input,
-  Select,
-  SelectItem,
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import {
@@ -127,25 +125,21 @@ export default function QRCodesManagementClient({
                 value={searchTerm}
                 onValueChange={setSearchTerm}
               />
-              <Select
-                className="max-w-xs"
-                label="Chalet"
-                selectedKeys={[selectedChalet]}
-                onSelectionChange={(keys) => {
-                  const key = Array.from(keys)[0] as string;
-
-                  setSelectedChalet(key || "all");
-                }}
-              >
-                <SelectItem key="all" value="all">
-                  Tous les chalets
-                </SelectItem>
-                {initialChalets.map((chalet) => (
-                  <SelectItem key={chalet._id} value={chalet._id}>
-                    {chalet.name}
-                  </SelectItem>
-                ))}
-              </Select>
+              <div className="flex flex-col gap-2 max-w-xs">
+                <label className="text-sm font-medium">Chalet</label>
+                <select
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={selectedChalet}
+                  onChange={(e) => setSelectedChalet(e.target.value || "all")}
+                >
+                  <option value="all">Tous les chalets</option>
+                  {initialChalets.map((chalet) => (
+                    <option key={chalet._id} value={chalet._id}>
+                      {chalet.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             {/* Quick actions for chalets */}

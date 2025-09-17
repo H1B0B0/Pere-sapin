@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   Card,
   CardBody,
@@ -9,10 +8,9 @@ import {
   Button,
   Input,
   Textarea,
-  Tabs,
-  Tab,
   Chip,
 } from "@heroui/react";
+import { Tabs, Tab } from "@heroui/tabs";
 import { motion } from "framer-motion";
 import { BsArrowLeft, BsTree, BsCheck } from "react-icons/bs";
 import Link from "next/link";
@@ -46,7 +44,7 @@ export default function NewChaletPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [newAmenity, setNewAmenity] = useState("");
-  const router = useRouter();
+  // const router = useRouter(); // Will be used for navigation after creation
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +62,7 @@ export default function NewChaletPage() {
       await createChaletAction(formData);
       // La redirection est gérée dans l'action
     } catch (err) {
-      console.error("Erreur lors de la création:", err);
+      // console.error("Erreur lors de la création:", err);
       setError(
         err instanceof Error
           ? err.message
@@ -77,7 +75,7 @@ export default function NewChaletPage() {
 
   const handleChange = (
     field: keyof CreateChaletDto,
-    value: string | number | boolean | string[],
+    value: string | number | boolean | string[] | undefined,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (error) setError(null);
@@ -148,6 +146,7 @@ export default function NewChaletPage() {
           </CardHeader>
           <CardBody>
             <form onSubmit={handleSubmit}>
+              {/* @ts-expect-error HeroUI Tabs component type issue */}
               <Tabs aria-label="Sections du formulaire" className="w-full">
                 <Tab key="basic" title="Informations de base">
                   <div className="space-y-6 py-4">
@@ -163,7 +162,9 @@ export default function NewChaletPage() {
                         placeholder="ex: Chalet des Sapins"
                         value={formData.name}
                         variant="bordered"
-                        onChange={(e) => handleChange("name", e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          handleChange("name", e.target.value)
+                        }
                       />
 
                       <Input
@@ -176,7 +177,7 @@ export default function NewChaletPage() {
                         placeholder="ex: Chamonix, France"
                         value={formData.location || ""}
                         variant="bordered"
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           handleChange("location", e.target.value)
                         }
                       />
@@ -193,7 +194,7 @@ export default function NewChaletPage() {
                       rows={4}
                       value={formData.description || ""}
                       variant="bordered"
-                      onChange={(e) =>
+                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                         handleChange("description", e.target.value)
                       }
                     />
@@ -209,7 +210,9 @@ export default function NewChaletPage() {
                       rows={2}
                       value={formData.address || ""}
                       variant="bordered"
-                      onChange={(e) => handleChange("address", e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                        handleChange("address", e.target.value)
+                      }
                     />
                   </div>
                 </Tab>
@@ -228,10 +231,12 @@ export default function NewChaletPage() {
                         type="number"
                         value={formData.capacity?.toString() || ""}
                         variant="bordered"
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           handleChange(
                             "capacity",
-                            parseInt(e.target.value) || undefined,
+                            e.target.value
+                              ? parseInt(e.target.value)
+                              : undefined,
                           )
                         }
                       />
@@ -247,10 +252,12 @@ export default function NewChaletPage() {
                         type="number"
                         value={formData.pricePerNight?.toString() || ""}
                         variant="bordered"
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           handleChange(
                             "pricePerNight",
-                            parseInt(e.target.value) || undefined,
+                            e.target.value
+                              ? parseInt(e.target.value)
+                              : undefined,
                           )
                         }
                       />
@@ -264,7 +271,9 @@ export default function NewChaletPage() {
                         placeholder="ex: 5 chambres"
                         value={formData.rooms || ""}
                         variant="bordered"
-                        onChange={(e) => handleChange("rooms", e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          handleChange("rooms", e.target.value)
+                        }
                       />
                     </div>
 
@@ -279,7 +288,7 @@ export default function NewChaletPage() {
                         placeholder="Description lits/chambres"
                         value={formData.bedrooms || ""}
                         variant="bordered"
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           handleChange("bedrooms", e.target.value)
                         }
                       />
@@ -293,23 +302,31 @@ export default function NewChaletPage() {
                         placeholder="Détails salles de bain"
                         value={formData.bathrooms || ""}
                         variant="bordered"
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           handleChange("bathrooms", e.target.value)
                         }
                       />
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">
+                      <label
+                        className="text-sm font-medium text-foreground mb-2 block"
+                        htmlFor="amenities-input"
+                      >
                         Équipements et services
                       </label>
                       <div className="flex gap-2 mb-3">
                         <Input
+                          id="amenities-input"
                           placeholder="Ajouter un équipement"
                           value={newAmenity}
                           variant="bordered"
-                          onChange={(e) => setNewAmenity(e.target.value)}
-                          onKeyPress={(e) =>
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setNewAmenity(e.target.value)
+                          }
+                          onKeyPress={(
+                            e: React.KeyboardEvent<HTMLInputElement>,
+                          ) =>
                             e.key === "Enter" &&
                             (e.preventDefault(), addAmenity())
                           }
@@ -339,7 +356,10 @@ export default function NewChaletPage() {
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">
+                      <label
+                        className="text-sm font-medium text-foreground mb-2 block"
+                        htmlFor="features-textarea"
+                      >
                         Caractéristiques (features)
                       </label>
                       <Textarea
@@ -348,11 +368,12 @@ export default function NewChaletPage() {
                           inputWrapper:
                             "border-border/50 hover:border-border focus-within:!border-primary",
                         }}
+                        id="features-textarea"
                         placeholder="Une par ligne"
                         rows={3}
                         value={(formData.features || []).join("\n")}
                         variant="bordered"
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                           handleChange(
                             "features",
                             e.target.value.split(/\n+/).filter(Boolean),
@@ -362,7 +383,10 @@ export default function NewChaletPage() {
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">
+                      <label
+                        className="text-sm font-medium text-foreground mb-2 block"
+                        htmlFor="highlights-textarea"
+                      >
                         Points forts (highlights)
                       </label>
                       <Textarea
@@ -371,11 +395,12 @@ export default function NewChaletPage() {
                           inputWrapper:
                             "border-border/50 hover:border-border focus-within:!border-primary",
                         }}
+                        id="highlights-textarea"
                         placeholder="Une par ligne"
                         rows={3}
                         value={(formData.highlights || []).join("\n")}
                         variant="bordered"
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                           handleChange(
                             "highlights",
                             e.target.value.split(/\n+/).filter(Boolean),
@@ -395,7 +420,9 @@ export default function NewChaletPage() {
                         placeholder="ex: primary"
                         value={formData.color || ""}
                         variant="bordered"
-                        onChange={(e) => handleChange("color", e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          handleChange("color", e.target.value)
+                        }
                       />
                       <Input
                         classNames={{
@@ -407,7 +434,9 @@ export default function NewChaletPage() {
                         placeholder="ex: pine-tree"
                         value={formData.icon || ""}
                         variant="bordered"
-                        onChange={(e) => handleChange("icon", e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          handleChange("icon", e.target.value)
+                        }
                       />
                     </div>
                   </div>
@@ -421,7 +450,7 @@ export default function NewChaletPage() {
                         placeholder="ex: 800-900€"
                         value={formData.prices?.weekend || ""}
                         variant="bordered"
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           setFormData((prev) => ({
                             ...prev,
                             prices: { ...prev.prices, weekend: e.target.value },
@@ -433,7 +462,7 @@ export default function NewChaletPage() {
                         placeholder="ex: 1100-1900€"
                         value={formData.prices?.week || ""}
                         variant="bordered"
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           setFormData((prev) => ({
                             ...prev,
                             prices: { ...prev.prices, week: e.target.value },
@@ -447,7 +476,7 @@ export default function NewChaletPage() {
                         placeholder="ex: 2200€"
                         value={formData.prices?.holidays || ""}
                         variant="bordered"
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           setFormData((prev) => ({
                             ...prev,
                             prices: {
@@ -462,7 +491,7 @@ export default function NewChaletPage() {
                         placeholder="ex: 100€"
                         value={formData.prices?.cleaning || ""}
                         variant="bordered"
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           setFormData((prev) => ({
                             ...prev,
                             prices: {
@@ -490,7 +519,7 @@ export default function NewChaletPage() {
                         type="email"
                         value={formData.contactEmail || ""}
                         variant="bordered"
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           handleChange("contactEmail", e.target.value)
                         }
                       />
@@ -506,7 +535,7 @@ export default function NewChaletPage() {
                         type="tel"
                         value={formData.contactPhone || ""}
                         variant="bordered"
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           handleChange("contactPhone", e.target.value)
                         }
                       />
@@ -523,7 +552,7 @@ export default function NewChaletPage() {
                       type="url"
                       value={formData.mainImage || ""}
                       variant="bordered"
-                      onChange={(e) =>
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         handleChange("mainImage", e.target.value)
                       }
                     />

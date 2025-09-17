@@ -134,7 +134,7 @@ export default function PagesManagementClient({
                       <div>
                         <p className="font-semibold">{page.title}</p>
                         <p className="text-sm text-gray-500 truncate max-w-48">
-                          {page.description}
+                          {page.content.slice(0, 100)}...
                         </p>
                       </div>
                     </TableCell>
