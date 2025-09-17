@@ -1,0 +1,14 @@
+replicaCount: 1
+image:
+  repository: ghcr.io/H1B0B0/pere-sapin-frontend
+  tag: "latest"
+  pullPolicy: IfNotPresent
+imagePullSecrets:
+  - name: ghcr-secret
+service:
+  type: ClusterIP
+  port: 3000
+env:
+  NODE_ENV: production
+  NEXT_PUBLIC_API_URL: http://backend:5042
+resources: {}
