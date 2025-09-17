@@ -10,5 +10,54 @@ service:
   port: 3000
 env:
   NODE_ENV: production
-  NEXT_PUBLIC_API_URL: http://backend:5042
+  NEXT_PUBLIC_API_URL: http://backend.default.svc.cluster.local.:5042
 resources: {}
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  hosts:
+    - host: les-chalets-du-pere-sapin.seafarer-cloud.io
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: les-chalets-du-pere-sapin-tls
+      hosts:
+        - les-chalets-du-pere-sapin.seafarer-cloud.io
+
+autoscaling:
+  enabled: false
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+podAnnotations: {}
+
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+livenessProbe: {}
+
+readinessProbe: {}
+
+volumeMounts: []
+
+volumes: []

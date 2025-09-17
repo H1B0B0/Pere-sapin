@@ -3,21 +3,47 @@ kind: Deployment
 metadata:
   name: {{ include "backend.fullname" . }}
   labels:
-    app: {{ include "backend.name" . }}
+    {{- include "backend.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
-      app: {{ include "backend.name" . }}
+      {{- include "backend.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        app: {{ include "backend.name" . }}
+        {{- include "backend.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "backend.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
-        - name: backend
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        - name: {{ .Chart.Name }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
           env:
             - name: NODE_ENV
               value: {{ .Values.env.NODE_ENV | quote }}
@@ -26,15 +52,45 @@ spec:
             - name: MONGODB_URI
               value: {{ .Values.env.MONGODB_URI | quote }}
             - name: JWT_SECRET
-              value: {{ .Values.env.JWT_SECRET | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "backend.fullname" . }}-secret
+                  key: jwt-secret
             - name: FRONTEND_URL
               value: {{ .Values.env.FRONTEND_URL | quote }}
             - name: PUPPETEER_EXECUTABLE_PATH
               value: {{ .Values.env.PUPPETEER_EXECUTABLE_PATH | quote }}
             - name: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
-              value:
-                {{ .Values.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD | quote }}
-          ports:
-            - containerPort: 5042
-          resources: {{- toYaml .Values.resources | nindent 12 }}
-      imagePullSecrets: {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+              value: {{ .Values.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD | quote }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

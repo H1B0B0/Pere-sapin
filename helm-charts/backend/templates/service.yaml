@@ -3,11 +3,13 @@ kind: Service
 metadata:
   name: {{ include "backend.fullname" . }}
   labels:
-    app: {{ include "backend.name" . }}
+    {{- include "backend.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: 5042
+      targetPort: http
+      protocol: TCP
+      name: http
   selector:
-    app: {{ include "backend.name" . }}
+    {{- include "backend.selectorLabels" . | nindent 4 }}
