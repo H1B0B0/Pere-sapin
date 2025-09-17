@@ -19,7 +19,7 @@ import {
   ModalBody,
   useDisclosure,
 } from "@heroui/react";
-import { color, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   BsArrowLeft,
   BsPhone,
@@ -885,11 +885,15 @@ export default function ChaletDetailPage() {
                                 }
                               : undefined
                           }
-                          onMouseEnter={(e) => {
+                          onMouseEnter={(
+                            e: React.MouseEvent<HTMLDivElement>
+                          ) => {
                             if (colorHex)
                               e.currentTarget.style.borderColor = `${colorHex}40`;
                           }}
-                          onMouseLeave={(e) => {
+                          onMouseLeave={(
+                            e: React.MouseEvent<HTMLDivElement>
+                          ) => {
                             if (colorHex)
                               e.currentTarget.style.borderColor = `${colorHex}20`;
                           }}

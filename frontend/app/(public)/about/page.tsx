@@ -29,8 +29,8 @@ export default function AboutPage() {
           <BsTree className="h-10 w-10 text-primary" />À propos du Père Sapin
         </h1>
         <p className="text-xl text-default-600 max-w-3xl mx-auto">
-          Découvrez l'histoire de nos chalets d'exception dans les Vosges et
-          notre passion pour l'accueil de qualité.
+          Découvrez l&#39;histoire de nos chalets d&#39;exception dans les
+          Vosges et notre passion pour l&#39;accueil de qualité.
         </p>
       </motion.div>
 
@@ -48,27 +48,27 @@ export default function AboutPage() {
           </CardHeader>
           <CardBody className="space-y-4">
             <p className="text-default-600">
-              C'est en 1995 que M. STEPHAN a eu l'idée de créer ces chalets
-              d'exception dans les Vosges, motivé par sa passion pour la
-              montagne et l'accueil de qualité. Ancien guide de montagne et
-              amoureux de la nature, il souhaitait offrir aux familles et
-              groupes d'amis un lieu unique pour se ressourcer et créer des
-              souvenirs inoubliables.
+              C&#39;est en 1995 que M. STEPHAN a eu l&#39;idée de créer ces
+              chalets d&#39;exception dans les Vosges, motivé par sa passion
+              pour la montagne et l&#39;accueil de qualité. Ancien guide de
+              montagne et amoureux de la nature, il souhaitait offrir aux
+              familles et groupes d&#39;amis un lieu unique pour se ressourcer
+              et créer des souvenirs inoubliables.
             </p>
             <p className="text-default-600">
               Situés à Cornimont, à seulement 12 km de Gérardmer et 8 km de la
-              Bresse, nos chalets bénéficient d'un emplacement privilégié au
+              Bresse, nos chalets bénéficient d&#39;un emplacement privilégié au
               cœur du massif vosgien. Chaque construction a été pensée dans le
-              respect de l'environnement, utilisant des matériaux locaux et des
-              techniques traditionnelles revisitées.
+              respect de l&#39;environnement, utilisant des matériaux locaux et
+              des techniques traditionnelles revisitées.
             </p>
             <p className="text-default-600">
-              Aujourd'hui, nos quatre chalets - Cèdre, Épicéa, Mélèze et Douglas
-              - portent chacun le nom d'une essence d'arbre emblématique de nos
-              forêts vosgiennes. Tous classés 3 étoiles, ils proposent des
-              équipements haut de gamme : jacuzzi, sauna finlandais, espaces de
-              jeux, cheminée à foyer ouvert, et une décoration soignée alliant
-              authenticité et modernité.
+              Aujourd&#39;hui, nos quatre chalets - Cèdre, Épicéa, Mélèze et
+              Douglas - portent chacun le nom d&#39;une essence d&#39;arbre
+              emblématique de nos forêts vosgiennes. Tous classés 3 étoiles, ils
+              proposent des équipements haut de gamme : jacuzzi, sauna
+              finlandais, espaces de jeux, cheminée à foyer ouvert, et une
+              décoration soignée alliant authenticité et modernité.
             </p>
           </CardBody>
         </Card>
@@ -162,7 +162,7 @@ export default function AboutPage() {
                   <strong>À proximité :</strong> Lac de Gérardmer (15 min), Parc
                   naturel régional des Ballons des Vosges, Cascade du Saut des
                   Cuves, Col de la Schlucht, et les célèbres marcaires (fermes
-                  d'altitude).
+                  d&#39;altitude).
                 </p>
                 <p className="text-sm text-default-600">
                   <strong>Gastronomie :</strong> Dégustez les spécialités
@@ -232,7 +232,7 @@ export default function AboutPage() {
               <FaPhoneAlt className="text-primary" /> Contactez-nous
             </h2>
             <p className="text-lg text-default-600 mb-6">
-              Une question ? Un projet de séjour ? N'hésitez pas à nous
+              Une question ? Un projet de séjour ? N&#39;hésitez pas à nous
               contacter pour une demande personnalisée.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -3,10 +3,10 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'images.ctfassets.net',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "images.ctfassets.net",
+        port: "",
+        pathname: "/**",
       },
     ],
   },
@@ -17,7 +17,7 @@ const nextConfig = {
   // Increase body size limit for API routes
   api: {
     bodyParser: {
-      sizeLimit: '50mb',
+      sizeLimit: "50mb",
     },
   },
 };
