@@ -9,8 +9,9 @@ import {
   Input,
   Textarea,
   Chip,
+  Tabs,
+  Tab,
 } from "@heroui/react";
-import { Tabs, Tab } from "@heroui/tabs";
 import { motion } from "framer-motion";
 import { BsArrowLeft, BsTree, BsCheck } from "react-icons/bs";
 import Link from "next/link";
@@ -66,7 +67,7 @@ export default function NewChaletPage() {
       setError(
         err instanceof Error
           ? err.message
-          : "Erreur lors de la création du chalet",
+          : "Erreur lors de la création du chalet"
       );
     } finally {
       setLoading(false);
@@ -75,7 +76,7 @@ export default function NewChaletPage() {
 
   const handleChange = (
     field: keyof CreateChaletDto,
-    value: string | number | boolean | string[] | undefined,
+    value: string | number | boolean | string[] | undefined
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (error) setError(null);
@@ -236,7 +237,7 @@ export default function NewChaletPage() {
                             "capacity",
                             e.target.value
                               ? parseInt(e.target.value)
-                              : undefined,
+                              : undefined
                           )
                         }
                       />
@@ -257,7 +258,7 @@ export default function NewChaletPage() {
                             "pricePerNight",
                             e.target.value
                               ? parseInt(e.target.value)
-                              : undefined,
+                              : undefined
                           )
                         }
                       />
@@ -325,7 +326,7 @@ export default function NewChaletPage() {
                             setNewAmenity(e.target.value)
                           }
                           onKeyPress={(
-                            e: React.KeyboardEvent<HTMLInputElement>,
+                            e: React.KeyboardEvent<HTMLInputElement>
                           ) =>
                             e.key === "Enter" &&
                             (e.preventDefault(), addAmenity())
@@ -376,7 +377,7 @@ export default function NewChaletPage() {
                         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                           handleChange(
                             "features",
-                            e.target.value.split(/\n+/).filter(Boolean),
+                            e.target.value.split(/\n+/).filter(Boolean)
                           )
                         }
                       />
@@ -403,7 +404,7 @@ export default function NewChaletPage() {
                         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                           handleChange(
                             "highlights",
-                            e.target.value.split(/\n+/).filter(Boolean),
+                            e.target.value.split(/\n+/).filter(Boolean)
                           )
                         }
                       />
