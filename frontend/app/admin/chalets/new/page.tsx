@@ -220,7 +220,7 @@ export default function NewChaletPage() {
                       rows={4}
                       value={formData.description || ""}
                       variant="bordered"
-                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         handleChange("description", e.target.value)
                       }
                     />
@@ -236,7 +236,7 @@ export default function NewChaletPage() {
                       rows={2}
                       value={formData.address || ""}
                       variant="bordered"
-                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         handleChange("address", e.target.value)
                       }
                     />
@@ -400,7 +400,7 @@ export default function NewChaletPage() {
                         rows={3}
                         value={(formData.features || []).join("\n")}
                         variant="bordered"
-                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           handleChange(
                             "features",
                             e.target.value.split(/\n+/).filter(Boolean)
@@ -427,7 +427,7 @@ export default function NewChaletPage() {
                         rows={3}
                         value={(formData.highlights || []).join("\n")}
                         variant="bordered"
-                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           handleChange(
                             "highlights",
                             e.target.value.split(/\n+/).filter(Boolean)
