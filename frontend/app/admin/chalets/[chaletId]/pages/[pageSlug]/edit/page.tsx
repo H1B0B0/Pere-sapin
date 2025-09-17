@@ -62,7 +62,7 @@ const plugins = [
         console.log(
           "[YOOPTA IMAGE] Starting upload for:",
           file.name,
-          `(${(file.size / 1024 / 1024).toFixed(2)}MB)`,
+          `(${(file.size / 1024 / 1024).toFixed(2)}MB)`
         );
 
         // Vérifier la taille du fichier original
@@ -98,7 +98,7 @@ const plugins = [
           });
 
           console.log(
-            "[YOOPTA IMAGE] File read successfully, getting dimensions...",
+            "[YOOPTA IMAGE] File read successfully, getting dimensions..."
           );
 
           // Obtenir les dimensions de l'image originale
@@ -113,7 +113,7 @@ const plugins = [
                 "[YOOPTA IMAGE] Image loaded, dimensions:",
                 imgElement.width,
                 "x",
-                imgElement.height,
+                imgElement.height
               );
               resolve({
                 width: imgElement.width,
@@ -320,7 +320,7 @@ export default function EditPagePage() {
         <div className="text-center">
           <p className="text-danger mb-4">{error}</p>
           <Link href="/admin/chalets">
-            <Button variant="outline">Retour aux chalets</Button>
+            <Button variant="bordered">Retour aux chalets</Button>
           </Link>
         </div>
       </div>
@@ -368,7 +368,9 @@ export default function EditPagePage() {
                   placeholder="Entrez le titre de la page"
                   value={formData.title}
                   variant="bordered"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleTitleChange(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleTitleChange(e.target.value)
+                  }
                 />
                 <Input
                   isRequired
@@ -391,7 +393,9 @@ export default function EditPagePage() {
                     placeholder="Ajouter un tag"
                     value={tagInput}
                     variant="bordered"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTagInput(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setTagInput(e.target.value)
+                    }
                     onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
                       if (e.key === "Enter") {
                         e.preventDefault();

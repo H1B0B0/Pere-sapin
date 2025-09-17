@@ -163,7 +163,7 @@ export default function NewPagePage() {
 
   const onChange = (
     newValue: YooptaContentValue,
-    options: YooptaOnChangeOptions,
+    options: YooptaOnChangeOptions
   ) => {
     setValue(newValue);
     // Serialize the content for the form
@@ -287,7 +287,7 @@ export default function NewPagePage() {
           <div className="text-center">
             <p className="text-danger mb-4">Chalet introuvable</p>
             <Link href="/admin/chalets">
-              <Button variant="outline">Retour aux chalets</Button>
+              <Button variant="bordered">Retour aux chalets</Button>
             </Link>
           </div>
         </div>
@@ -324,7 +324,9 @@ export default function NewPagePage() {
                   label="Titre"
                   placeholder="Entrez le titre de la page"
                   value={formData.title}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleTitleChange(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleTitleChange(e.target.value)
+                  }
                 />
                 <Input
                   isRequired
@@ -344,7 +346,9 @@ export default function NewPagePage() {
                     label="Tags"
                     placeholder="Ajouter un tag"
                     value={tagInput}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTagInput(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setTagInput(e.target.value)
+                    }
                     onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
