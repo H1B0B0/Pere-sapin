@@ -33,13 +33,13 @@ jobs:
       - name: Deploy backend with Helm
         run: |
           helm upgrade --install backend ./helm-charts/backend \
-            --set image.repository=ghcr.io/${{ github.repository_owner }}/pere-sapin-backend \
+            --set image.repository=ghcr.io/${{ toLower(github.repository_owner) }}/pere-sapin-backend \
             --set image.tag=${{ github.event.workflow_run.head_branch }} \
             --kubeconfig kubeconfig
 
       - name: Deploy frontend with Helm
         run: |
           helm upgrade --install frontend ./helm-charts/frontend \
-            --set image.repository=ghcr.io/${{ github.repository_owner }}/pere-sapin-frontend \
+            --set image.repository=ghcr.io/${{ toLower(github.repository_owner) }}/pere-sapin-frontend \
             --set image.tag=${{ github.event.workflow_run.head_branch }} \
             --kubeconfig kubeconfig

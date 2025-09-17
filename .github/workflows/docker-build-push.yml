@@ -31,6 +31,6 @@ jobs:
           context: ./
           file: ./${{ matrix.service }}/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/pere-sapin-${{ matrix.service }}:${{ github.ref_name }}
+          tags: ghcr.io/${{ toLower(github.repository_owner) }}/pere-sapin-${{ matrix.service }}:${{ github.ref_name }}
           build-args: |
             NODE_ENV=production
