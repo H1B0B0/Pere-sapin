@@ -1,0 +1,19 @@
+# Helm charts - avoid breaking template syntax
+helm-charts/**/*.yaml
+helm-charts/**/*.yml
+**/templates/**
+**/*.tpl
+
+# Build outputs
+.next/
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Environment files
+.env*
+
+# Logs
+*.log

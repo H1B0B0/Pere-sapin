@@ -1,40 +1,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: { { include "backend.fullname" . } }
+  name: {{ include "backend.fullname" . }}
   labels:
-    app: { { include "backend.name" . } }
+    app: {{ include "backend.name" . }}
 spec:
-  replicas: { { .Values.replicaCount } }
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: { { include "backend.name" . } }
+      app: {{ include "backend.name" . }}
   template:
     metadata:
       labels:
-        app: { { include "backend.name" . } }
+        app: {{ include "backend.name" . }}
     spec:
       containers:
         - name: backend
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: { { .Values.image.pullPolicy } }
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: NODE_ENV
-              value: { { .Values.env.NODE_ENV | quote } }
+              value: {{ .Values.env.NODE_ENV | quote }}
             - name: PORT
-              value: { { .Values.env.PORT | quote } }
+              value: {{ .Values.env.PORT | quote }}
             - name: MONGODB_URI
-              value: { { .Values.env.MONGODB_URI | quote } }
+              value: {{ .Values.env.MONGODB_URI | quote }}
             - name: JWT_SECRET
-              value: { { .Values.env.JWT_SECRET | quote } }
+              value: {{ .Values.env.JWT_SECRET | quote }}
             - name: FRONTEND_URL
-              value: { { .Values.env.FRONTEND_URL | quote } }
+              value: {{ .Values.env.FRONTEND_URL | quote }}
             - name: PUPPETEER_EXECUTABLE_PATH
-              value: { { .Values.env.PUPPETEER_EXECUTABLE_PATH | quote } }
+              value: {{ .Values.env.PUPPETEER_EXECUTABLE_PATH | quote }}
             - name: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
               value:
-                { { .Values.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD | quote } }
+                {{ .Values.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD | quote }}
           ports:
             - containerPort: 5042
-          resources: { { - toYaml .Values.resources | nindent 12 } }
-      imagePullSecrets: { { - toYaml .Values.imagePullSecrets | nindent 8 } }
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+      imagePullSecrets: {{- toYaml .Values.imagePullSecrets | nindent 8 }}

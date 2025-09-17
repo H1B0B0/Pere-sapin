@@ -1,29 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: { { include "frontend.fullname" . } }
+  name: {{ include "frontend.fullname" . }}
   labels:
-    app: { { include "frontend.name" . } }
+    app: {{ include "frontend.name" . }}
 spec:
-  replicas: { { .Values.replicaCount } }
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: { { include "frontend.name" . } }
+      app: {{ include "frontend.name" . }}
   template:
     metadata:
       labels:
-        app: { { include "frontend.name" . } }
+        app: {{ include "frontend.name" . }}
     spec:
       containers:
         - name: frontend
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: { { .Values.image.pullPolicy } }
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: NODE_ENV
-              value: { { .Values.env.NODE_ENV | quote } }
+              value: {{ .Values.env.NODE_ENV | quote }}
             - name: NEXT_PUBLIC_API_URL
-              value: { { .Values.env.NEXT_PUBLIC_API_URL | quote } }
+              value: {{ .Values.env.NEXT_PUBLIC_API_URL | quote }}
           ports:
             - containerPort: 3000
-          resources: { { - toYaml .Values.resources | nindent 12 } }
-      imagePullSecrets: { { - toYaml .Values.imagePullSecrets | nindent 8 } }
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+      imagePullSecrets: {{- toYaml .Values.imagePullSecrets | nindent 8 }}
