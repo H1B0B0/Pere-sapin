@@ -9,8 +9,6 @@ import {
   Input,
   Textarea,
   Chip,
-  Tabs,
-  Tab,
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import { BsArrowLeft, BsTree, BsCheck } from "react-icons/bs";
@@ -45,7 +43,14 @@ export default function NewChaletPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [newAmenity, setNewAmenity] = useState("");
-  // const router = useRouter(); // Will be used for navigation after creation
+  const [activeTab, setActiveTab] = useState("basic");
+
+  const tabs = [
+    { key: "basic", title: "Informations de base" },
+    { key: "details", title: "Détails" },
+    { key: "pricing", title: "Tarifs détaillés" },
+    { key: "contact", title: "Contact" },
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,10 +152,30 @@ export default function NewChaletPage() {
           </CardHeader>
           <CardBody>
             <form onSubmit={handleSubmit}>
-              {/* @ts-expect-error HeroUI Tabs component type issue */}
-              <Tabs aria-label="Sections du formulaire" className="w-full">
-                <Tab key="basic" title="Informations de base">
-                  <div className="space-y-6 py-4">
+              {/* Navigation des onglets personnalisée */}
+              <div className="border-b border-border mb-6">
+                <div className="flex space-x-8">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        activeTab === tab.key
+                          ? "border-primary text-primary"
+                          : "border-transparent text-muted-foreground hover:text-foreground hover:border-gray-300"
+                      }`}
+                      onClick={() => setActiveTab(tab.key)}
+                    >
+                      {tab.title}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Contenu des onglets */}
+              <div className="space-y-6 py-4">
+                {activeTab === "basic" && (
+                  <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <Input
                         isRequired
@@ -215,11 +240,11 @@ export default function NewChaletPage() {
                         handleChange("address", e.target.value)
                       }
                     />
-                  </div>
-                </Tab>
+                  </>
+                )}
 
-                <Tab key="details" title="Détails">
-                  <div className="space-y-6 py-4">
+                {activeTab === "details" && (
+                  <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <Input
                         classNames={{
@@ -262,21 +287,22 @@ export default function NewChaletPage() {
                           )
                         }
                       />
-                      <Input
-                        classNames={{
-                          input: "bg-transparent",
-                          inputWrapper:
-                            "border-border/50 hover:border-border focus-within:!border-primary",
-                        }}
-                        label="Pièces (résumé)"
-                        placeholder="ex: 5 chambres"
-                        value={formData.rooms || ""}
-                        variant="bordered"
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          handleChange("rooms", e.target.value)
-                        }
-                      />
                     </div>
+
+                    <Input
+                      classNames={{
+                        input: "bg-transparent",
+                        inputWrapper:
+                          "border-border/50 hover:border-border focus-within:!border-primary",
+                      }}
+                      label="Pièces (résumé)"
+                      placeholder="ex: 5 chambres"
+                      value={formData.rooms || ""}
+                      variant="bordered"
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleChange("rooms", e.target.value)
+                      }
+                    />
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <Input
@@ -440,11 +466,11 @@ export default function NewChaletPage() {
                         }
                       />
                     </div>
-                  </div>
-                </Tab>
+                  </>
+                )}
 
-                <Tab key="pricing" title="Tarifs détaillés">
-                  <div className="space-y-6 py-4">
+                {activeTab === "pricing" && (
+                  <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <Input
                         label="Week-end"
@@ -503,11 +529,11 @@ export default function NewChaletPage() {
                         }
                       />
                     </div>
-                  </div>
-                </Tab>
+                  </>
+                )}
 
-                <Tab key="contact" title="Contact">
-                  <div className="space-y-6 py-4">
+                {activeTab === "contact" && (
+                  <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <Input
                         classNames={{
@@ -557,9 +583,9 @@ export default function NewChaletPage() {
                         handleChange("mainImage", e.target.value)
                       }
                     />
-                  </div>
-                </Tab>
-              </Tabs>
+                  </>
+                )}
+              </div>
 
               {error && (
                 <div className="p-4 rounded-lg bg-danger/20 border border-danger/30 mt-6">
