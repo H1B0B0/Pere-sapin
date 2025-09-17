@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useParams, notFound } from "next/navigation";
-import { Card, CardBody, Chip, Spinner } from "@heroui/react";
-// Use dynamic import to avoid CJS/ESM interop issues in Next.js build
+import { Card, CardBody, Chip, Spinner, Button } from "@heroui/react";
 let YooptaEditor: any;
 let createYooptaEditor: any;
 import("@yoopta/editor").then((mod) => {
@@ -251,6 +250,7 @@ export default function NotionStylePageViewer() {
           <p className="text-default-500 text-sm">
             💡 Besoin d'aide ? Scannez un autre QR code ou contactez-nous
           </p>
+          <Button variant="bordered">Retour aux chalets</Button>
         </div>
       </div>
     </div>
