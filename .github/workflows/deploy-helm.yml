@@ -30,16 +30,19 @@ jobs:
         env:
           KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
 
+      - name: Prepare lowercase owner
+        run: echo "OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+
       - name: Deploy backend with Helm
         run: |
           helm upgrade --install backend ./helm-charts/backend \
-            --set image.repository=ghcr.io/${{ toLower(github.repository_owner) }}/pere-sapin-backend \
+            --set image.repository=ghcr.io/${{ env.OWNER_LC }}/pere-sapin-backend \
             --set image.tag=${{ github.event.workflow_run.head_branch }} \
             --kubeconfig kubeconfig
 
       - name: Deploy frontend with Helm
         run: |
           helm upgrade --install frontend ./helm-charts/frontend \
-            --set image.repository=ghcr.io/${{ toLower(github.repository_owner) }}/pere-sapin-frontend \
+            --set image.repository=ghcr.io/${{ env.OWNER_LC }}/pere-sapin-frontend \
             --set image.tag=${{ github.event.workflow_run.head_branch }} \
             --kubeconfig kubeconfig
