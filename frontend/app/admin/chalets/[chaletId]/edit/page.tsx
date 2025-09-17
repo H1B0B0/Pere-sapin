@@ -420,7 +420,7 @@ export default function EditChaletPage() {
                       rows={4}
                       value={formData.description || ""}
                       variant="bordered"
-                      onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         handleChange("description", e.target.value)
                       }
                     />
@@ -436,7 +436,7 @@ export default function EditChaletPage() {
                       rows={2}
                       value={formData.address || ""}
                       variant="bordered"
-                      onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         handleChange("address", e.target.value)
                       }
                     />
@@ -667,7 +667,7 @@ export default function EditChaletPage() {
                         rows={3}
                         value={(formData.features || []).join("\n")}
                         variant="bordered"
-                        onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
                           handleChange(
                             "features",
                             e.target.value.split(/\n+/).filter(Boolean)
@@ -690,7 +690,7 @@ export default function EditChaletPage() {
                         rows={3}
                         value={(formData.highlights || []).join("\n")}
                         variant="bordered"
-                        onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
                           handleChange(
                             "highlights",
                             e.target.value.split(/\n+/).filter(Boolean)
