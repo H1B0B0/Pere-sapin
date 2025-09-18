@@ -36,20 +36,12 @@ jobs:
       - name: Derive image tag from triggering run
         run: |
           REF="${{ github.event.workflow_run.ref }}"
-          # REF examples:
-          #   refs/tags/v1.2.3
-          #   refs/tags/1.2.3
-          #   refs/heads/main
-          #   refs/heads/feature/super-truc
-          RAW="${REF#refs/tags/}"
-          if [ "$RAW" = "$REF" ]; then
-            RAW="${REF#refs/heads/}"
-            # Branche -> on remplace les slashes
-            RAW="${RAW//\//-}"
+          if echo "$REF" | grep -q '^refs/tags/'; then
+            TAG="${REF#refs/tags/}"
+          else
+            TAG="${REF#refs/heads/}"
           fi
-          # On ne touche pas au préfixe 'v' si présent
-          echo "IMAGE_TAG=$RAW" >> $GITHUB_ENV
-          echo "Resolved IMAGE_TAG=$RAW"
+          echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
 
       - name: Deploy backend with Helm
         run: |
