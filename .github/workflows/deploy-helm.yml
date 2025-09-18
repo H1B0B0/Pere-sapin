@@ -37,9 +37,9 @@ jobs:
         run: |
           REF="${{ github.event.workflow_run.ref }}"
           if echo "$REF" | grep -q '^refs/tags/'; then
-            TAG="${REF#refs/tags/}"
+            TAG="v${REF#refs/tags/}"
           else
-            TAG="${REF#refs/heads/}"
+            TAG="v${REF#refs/heads/}"
           fi
           echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
 
@@ -47,7 +47,7 @@ jobs:
         run: |
           helm upgrade --install backend ./helm-charts/backend \
             --set image.repository=ghcr.io/${{ env.OWNER_LC }}/pere-sapin-backend \
-            --set image.tag=v${{ env.IMAGE_TAG }} \
+            --set image.tag=${{ env.IMAGE_TAG }} \
             --set secrets.jwtSecret="${{ secrets.JWT_SECRET }}" \
             --kubeconfig kubeconfig
 
@@ -55,5 +55,5 @@ jobs:
         run: |
           helm upgrade --install frontend ./helm-charts/frontend \
             --set image.repository=ghcr.io/${{ env.OWNER_LC }}/pere-sapin-frontend \
-            --set image.tag=v${{ env.IMAGE_TAG }} \
+            --set image.tag=${{ env.IMAGE_TAG }} \
             --kubeconfig kubeconfig
