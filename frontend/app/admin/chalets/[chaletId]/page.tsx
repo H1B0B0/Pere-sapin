@@ -48,6 +48,7 @@ import { deleteChaletAction } from "@/lib/actions/chalets";
 import { Chalet, Page } from "@/types";
 import { CHALET_COLORS } from "@/config/colors";
 import { CHALET_ICONS } from "@/config/icons";
+import { deletePage } from "@/lib/services/pages";
 
 export default function ChaletDetail() {
   const params = useParams();
@@ -270,12 +271,12 @@ export default function ChaletDetail() {
                     // Simulation du progress
                     setPdfProgress(10);
                     setPdfStatus("Génération des QR codes...");
-                    
+
                     // Petit délai pour montrer le progress
-                    await new Promise(resolve => setTimeout(resolve, 500));
+                    await new Promise((resolve) => setTimeout(resolve, 500));
                     setPdfProgress(40);
                     setPdfStatus("Création du PDF...");
-                    
+
                     const result = await downloadQRCodesPDFAction(chalet._id);
                     setPdfProgress(80);
                     setPdfStatus("Préparation du téléchargement...");
@@ -297,7 +298,7 @@ export default function ChaletDetail() {
                       a.download = result.filename;
                       a.click();
                       URL.revokeObjectURL(url);
-                      
+
                       setPdfProgress(100);
                       setPdfStatus("Téléchargement terminé !");
                     }
@@ -324,16 +325,20 @@ export default function ChaletDetail() {
                 Supprimer
               </Button>
             </div>
-            
+
             {/* Indicateur de progression pour l'export PDF */}
             {pdfloading && (
               <div className="w-full max-w-md">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm text-muted-foreground">{pdfStatus}</span>
-                  <span className="text-sm text-muted-foreground">{pdfProgress}%</span>
+                  <span className="text-sm text-muted-foreground">
+                    {pdfStatus}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    {pdfProgress}%
+                  </span>
                 </div>
-                <Progress 
-                  value={pdfProgress} 
+                <Progress
+                  value={pdfProgress}
                   color="success"
                   className="max-w-md"
                 />
@@ -602,14 +607,15 @@ export default function ChaletDetail() {
                               Modifier
                             </DropdownItem>
                             <DropdownItem
-                              key="qr"
-                              startContent={<BsQrCode className="h-4 w-4" />}
-                            >
-                              QR Code
-                            </DropdownItem>
-                            <DropdownItem
                               key="delete"
                               color="danger"
+                              onPress={() =>
+                                deletePage(page._id).then(() => {
+                                  setPages((prev) =>
+                                    prev.filter((p) => p._id !== page._id)
+                                  );
+                                })
+                              }
                               startContent={<BsTrash className="h-4 w-4" />}
                             >
                               Supprimer

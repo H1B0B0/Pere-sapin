@@ -58,9 +58,11 @@ export class PageService {
   async update(id: string, updatePageDto: UpdatePageDto): Promise<Page | null> {
     const updateData = { ...updatePageDto };
 
-    // If slug is updated, regenerate QR code
     if (updatePageDto.slug) {
-      const baseUrl = process.env.FRONTEND_URL || 'http://frontend:3000';
+      const baseUrl =
+        process.env.NODE_ENV === 'production'
+          ? 'https://les-chalets-du-pere-sapin.seafarer-cloud.io'
+          : process.env.FRONTEND_URL || 'http://frontend:3000';
       const pageUrl = `${baseUrl}/page/${updatePageDto.slug}`;
       updateData['qrCodeUrl'] = await QRCode.toDataURL(pageUrl);
     }
