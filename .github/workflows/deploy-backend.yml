@@ -1,16 +1,16 @@
-name: Build and Deploy Both Frontend and Backend
+name: Deploy Backend Only
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to deploy (e.g., v1.0.0)'
+        required: true
+        type: string
 
 jobs:
-  build-and-push:
+  build-and-push-backend:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [frontend, backend]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -30,26 +30,28 @@ jobs:
 
       - name: Derive SHORT_TAG (drop leading v only)
         run: |
-          if [[ "${GITHUB_REF_NAME}" == v* ]]; then
-            echo "SHORT_TAG=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+          TAG="${{ inputs.tag }}"
+          if [[ "$TAG" == v* ]]; then
+            echo "SHORT_TAG=${TAG#v}" >> $GITHUB_ENV
           else
-            echo "SHORT_TAG=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+            echo "SHORT_TAG=$TAG" >> $GITHUB_ENV
           fi
 
-      - name: Build and push ${{ matrix.service }} image
+      - name: Build and push backend image
         uses: docker/build-push-action@v5
         with:
-          context: ./${{ matrix.service }}
-          file: ./${{ matrix.service }}/Dockerfile
+          context: ./backend
+          file: ./backend/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ env.OWNER_LC }}/pere-sapin-${{ matrix.service }}:${{ github.ref_name }}
-            ghcr.io/${{ env.OWNER_LC }}/pere-sapin-${{ matrix.service }}:latest
-            ghcr.io/${{ env.OWNER_LC }}/pere-sapin-${{ matrix.service }}:${{ env.SHORT_TAG }}
+            ghcr.io/${{ env.OWNER_LC }}/pere-sapin-backend:${{ inputs.tag }}
+            ghcr.io/${{ env.OWNER_LC }}/pere-sapin-backend:latest
+            ghcr.io/${{ env.OWNER_LC }}/pere-sapin-backend:${{ env.SHORT_TAG }}
           build-args: |
             NODE_ENV=production
-  deploy:
-    needs: build-and-push
+
+  deploy-backend:
+    needs: build-and-push-backend
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -78,13 +80,6 @@ jobs:
         run: |
           helm upgrade --install backend ./helm-charts/backend \
             --set image.repository=ghcr.io/${{ env.OWNER_LC }}/pere-sapin-backend \
-            --set image.tag=${{ github.ref_name }} \
+            --set image.tag=${{ inputs.tag }} \
             --set secrets.jwtSecret="${{ secrets.JWT_SECRET }}" \
-            --kubeconfig kubeconfig
-
-      - name: Deploy frontend with Helm
-        run: |
-          helm upgrade --install frontend ./helm-charts/frontend \
-            --set image.repository=ghcr.io/${{ env.OWNER_LC }}/pere-sapin-frontend \
-            --set image.tag=${{ github.ref_name }} \
             --kubeconfig kubeconfig

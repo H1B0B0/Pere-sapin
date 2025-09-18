@@ -13,6 +13,7 @@ env:
   PORT: 5042
   MONGODB_URI: mongodb+srv://pere_sapin:0VpQ0ZYRLZIukxHB@pere-sapin.x3xce8o.mongodb.net/?retryWrites=true&w=majority&appName=Pere-sapin
   FRONTEND_URL: http://frontend.default.svc.cluster.local.:3000
+  PUBLIC_FRONTEND_URL: https://les-chalets-du-pere-sapin.seafarer-cloud.io
   PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium-browser
   PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
 

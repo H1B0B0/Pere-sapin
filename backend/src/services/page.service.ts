@@ -15,7 +15,7 @@ export class PageService {
 
   async create(createPageDto: CreatePageDto): Promise<Page> {
     // Generate QR code URL
-    const baseUrl = process.env.FRONTEND_URL || 'http://frontend:3000';
+    const baseUrl = process.env.PUBLIC_FRONTEND_URL || process.env.FRONTEND_URL || 'http://frontend:3000';
     const pageUrl = `${baseUrl}/page/${createPageDto.slug}`;
     const qrCodeUrl = await QRCode.toDataURL(pageUrl);
 
@@ -59,10 +59,7 @@ export class PageService {
     const updateData = { ...updatePageDto };
 
     if (updatePageDto.slug) {
-      const baseUrl =
-        process.env.NODE_ENV === 'production'
-          ? 'https://les-chalets-du-pere-sapin.seafarer-cloud.io'
-          : process.env.FRONTEND_URL || 'http://frontend:3000';
+      const baseUrl = process.env.PUBLIC_FRONTEND_URL || process.env.FRONTEND_URL || 'http://frontend:3000';
       const pageUrl = `${baseUrl}/page/${updatePageDto.slug}`;
       updateData['qrCodeUrl'] = await QRCode.toDataURL(pageUrl);
     }
@@ -84,10 +81,7 @@ export class PageService {
     const page = await this.findOne(id);
     if (!page) return null;
 
-    const baseUrl =
-      process.env.NODE_ENV === 'production'
-        ? 'https://les-chalets-du-pere-sapin.seafarer-cloud.io'
-        : process.env.FRONTEND_URL || 'http://frontend:3000';
+    const baseUrl = process.env.PUBLIC_FRONTEND_URL || process.env.FRONTEND_URL || 'http://frontend:3000';
     const pageUrl = `${baseUrl}/page/${page.slug}`;
     const qrCodeUrl = await QRCode.toDataURL(pageUrl);
 
@@ -215,7 +209,7 @@ export class PageService {
     }
 
     // Add image to page
-    const updatedPage = await this.pageModel.findByIdAndUpdate(
+    await this.pageModel.findByIdAndUpdate(
       pageId,
       {
         $push: {
