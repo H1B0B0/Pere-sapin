@@ -49,6 +49,7 @@ jobs:
           build-args: |
             NODE_ENV=production
   deploy:
+    needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
