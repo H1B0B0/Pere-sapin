@@ -8,6 +8,11 @@ spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       {{- include "backend.selectorLabels" . | nindent 6 }}
@@ -58,6 +63,8 @@ spec:
                   key: jwt-secret
             - name: FRONTEND_URL
               value: {{ .Values.env.FRONTEND_URL | quote }}
+            - name: PUBLIC_FRONTEND_URL
+              value: {{ .Values.env.PUBLIC_FRONTEND_URL | quote }}
             - name: PUPPETEER_EXECUTABLE_PATH
               value: {{ .Values.env.PUPPETEER_EXECUTABLE_PATH | quote }}
             - name: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD

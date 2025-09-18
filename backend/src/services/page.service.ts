@@ -16,7 +16,7 @@ export class PageService {
   async create(createPageDto: CreatePageDto): Promise<Page> {
     // Generate QR code URL
     const baseUrl = process.env.PUBLIC_FRONTEND_URL || process.env.FRONTEND_URL || 'http://frontend:3000';
-    const pageUrl = `${baseUrl}/page/${createPageDto.slug}`;
+    const pageUrl = `${baseUrl}/chalets/${createPageDto.chalet}/${createPageDto.slug}`;
     const qrCodeUrl = await QRCode.toDataURL(pageUrl);
 
     const pageData = {
@@ -59,9 +59,13 @@ export class PageService {
     const updateData = { ...updatePageDto };
 
     if (updatePageDto.slug) {
-      const baseUrl = process.env.PUBLIC_FRONTEND_URL || process.env.FRONTEND_URL || 'http://frontend:3000';
-      const pageUrl = `${baseUrl}/page/${updatePageDto.slug}`;
-      updateData['qrCodeUrl'] = await QRCode.toDataURL(pageUrl);
+      // Get the current page to retrieve the chalet ID
+      const currentPage = await this.pageModel.findById(id);
+      if (currentPage) {
+        const baseUrl = process.env.PUBLIC_FRONTEND_URL || process.env.FRONTEND_URL || 'http://frontend:3000';
+        const pageUrl = `${baseUrl}/chalets/${currentPage.chalet}/${updatePageDto.slug}`;
+        updateData['qrCodeUrl'] = await QRCode.toDataURL(pageUrl);
+      }
     }
 
     return this.pageModel
@@ -82,7 +86,7 @@ export class PageService {
     if (!page) return null;
 
     const baseUrl = process.env.PUBLIC_FRONTEND_URL || process.env.FRONTEND_URL || 'http://frontend:3000';
-    const pageUrl = `${baseUrl}/page/${page.slug}`;
+    const pageUrl = `${baseUrl}/chalets/${page.chalet}/${page.slug}`;
     const qrCodeUrl = await QRCode.toDataURL(pageUrl);
 
     return this.pageModel
