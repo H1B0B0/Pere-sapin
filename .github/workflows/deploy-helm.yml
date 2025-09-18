@@ -33,11 +33,20 @@ jobs:
       - name: Prepare lowercase owner
         run: echo "OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
 
+      - name: get latest tag
+        id: get_latest_tag
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == v* ]]; then
+            echo "SHORT_TAG=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+          else
+            echo "SHORT_TAG=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+          fi
+
       - name: Deploy backend with Helm
         run: |
           helm upgrade --install backend ./helm-charts/backend \
             --set image.repository=ghcr.io/${{ env.OWNER_LC }}/pere-sapin-backend \
-            --set image.tag=latest \
+            --set image.tag=${{ env.SHORT_TAG }} \
             --set secrets.jwtSecret="${{ secrets.JWT_SECRET }}" \
             --kubeconfig kubeconfig
 
@@ -45,5 +54,5 @@ jobs:
         run: |
           helm upgrade --install frontend ./helm-charts/frontend \
             --set image.repository=ghcr.io/${{ env.OWNER_LC }}/pere-sapin-frontend \
-            --set image.tag=latest \
+            --set image.tag=${{ env.SHORT_TAG }} \
             --kubeconfig kubeconfig
