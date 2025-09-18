@@ -82,7 +82,10 @@ export class PageService {
     const page = await this.findOne(id);
     if (!page) return null;
 
-    const baseUrl = process.env.FRONTEND_URL || 'http://frontend:3000';
+    const baseUrl =
+      process.env.NODE_ENV === 'production'
+        ? 'https://les-chalets-du-pere-sapin.seafarer-cloud.io'
+        : process.env.FRONTEND_URL || 'http://frontend:3000';
     const pageUrl = `${baseUrl}/page/${page.slug}`;
     const qrCodeUrl = await QRCode.toDataURL(pageUrl);
 

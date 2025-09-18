@@ -24,6 +24,7 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  Progress,
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import {
@@ -55,6 +56,9 @@ export default function ChaletDetail() {
   const [pages, setPages] = useState<Page[]>([]);
   const [loading, setLoading] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [pdfloading, setPdfLoading] = useState(false);
+  const [pdfProgress, setPdfProgress] = useState(0);
+  const [pdfStatus, setPdfStatus] = useState("");
 
   const getColorHex = (name?: string) =>
     CHALET_COLORS.find((c) => c.name === name)?.value;
@@ -232,62 +236,109 @@ export default function ChaletDetail() {
               </div>
             </div>
           </div>
-          <div className="flex gap-3">
-            <Link href={`/admin/chalets/${chalet._id}/edit`}>
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-3">
+              <Link href={`/admin/chalets/${chalet._id}/edit`}>
+                <Button
+                  color="primary"
+                  startContent={<BsPencil className="h-4 w-4" />}
+                  variant="flat"
+                >
+                  Modifier
+                </Button>
+              </Link>
+              <Link href={`/admin/chalets/${chalet._id}/calendar`}>
+                <Button
+                  color="secondary"
+                  startContent={<BsCalendar className="h-4 w-4" />}
+                  variant="flat"
+                >
+                  Calendrier
+                </Button>
+              </Link>
               <Button
-                color="primary"
-                startContent={<BsPencil className="h-4 w-4" />}
-                variant="flat"
-              >
-                Modifier
-              </Button>
-            </Link>
-            <Link href={`/admin/chalets/${chalet._id}/calendar`}>
-              <Button
-                color="secondary"
-                startContent={<BsCalendar className="h-4 w-4" />}
-                variant="flat"
-              >
-                Calendrier
-              </Button>
-            </Link>
-            <Button
-              className="btn-success text-primary-foreground"
-              color="success"
-              startContent={<BsDownload className="h-4 w-4" />}
-              onClick={async () => {
-                const result = await downloadQRCodesPDFAction(chalet._id);
+                className="btn-success text-primary-foreground"
+                color="success"
+                startContent={<BsDownload className="h-4 w-4" />}
+                loading={pdfloading}
+                onClick={async () => {
+                  setPdfLoading(true);
+                  setPdfProgress(0);
+                  setPdfStatus("Initialisation...");
 
-                if (result.success && result.data && result.filename) {
-                  const binaryString = atob(result.data);
-                  const bytes = new Uint8Array(binaryString.length);
+                  try {
+                    // Simulation du progress
+                    setPdfProgress(10);
+                    setPdfStatus("Génération des QR codes...");
+                    
+                    // Petit délai pour montrer le progress
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    setPdfProgress(40);
+                    setPdfStatus("Création du PDF...");
+                    
+                    const result = await downloadQRCodesPDFAction(chalet._id);
+                    setPdfProgress(80);
+                    setPdfStatus("Préparation du téléchargement...");
 
-                  for (let i = 0; i < binaryString.length; i++) {
-                    bytes[i] = binaryString.charCodeAt(i);
+                    if (result.success && result.data && result.filename) {
+                      const binaryString = atob(result.data);
+                      const bytes = new Uint8Array(binaryString.length);
+
+                      for (let i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                      }
+                      const blob = new Blob([bytes], {
+                        type: result.contentType,
+                      });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+
+                      a.href = url;
+                      a.download = result.filename;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                      
+                      setPdfProgress(100);
+                      setPdfStatus("Téléchargement terminé !");
+                    }
+                  } catch (error) {
+                    console.error("Erreur lors de l'export PDF:", error);
+                    setPdfStatus("Erreur lors de l'export");
+                  } finally {
+                    setTimeout(() => {
+                      setPdfLoading(false);
+                      setPdfProgress(0);
+                      setPdfStatus("");
+                    }, 1000);
                   }
-                  const blob = new Blob([bytes], {
-                    type: result.contentType,
-                  });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-
-                  a.href = url;
-                  a.download = result.filename;
-                  a.click();
-                  URL.revokeObjectURL(url);
-                }
-              }}
-            >
-              Export PDF
-            </Button>
-            <Button
-              color="danger"
-              startContent={<BsTrash className="h-4 w-4" />}
-              variant="flat"
-              onPress={onOpen}
-            >
-              Supprimer
-            </Button>
+                }}
+              >
+                {pdfloading ? pdfStatus || "Export en cours..." : "Export PDF"}
+              </Button>
+              <Button
+                color="danger"
+                startContent={<BsTrash className="h-4 w-4" />}
+                variant="flat"
+                onPress={onOpen}
+              >
+                Supprimer
+              </Button>
+            </div>
+            
+            {/* Indicateur de progression pour l'export PDF */}
+            {pdfloading && (
+              <div className="w-full max-w-md">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm text-muted-foreground">{pdfStatus}</span>
+                  <span className="text-sm text-muted-foreground">{pdfProgress}%</span>
+                </div>
+                <Progress 
+                  value={pdfProgress} 
+                  color="success"
+                  className="max-w-md"
+                />
+              </div>
+            )}
           </div>
         </div>
       </motion.div>
