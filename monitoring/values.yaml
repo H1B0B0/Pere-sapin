@@ -1225,6 +1225,14 @@ alertmanager:
 grafana:
   enabled: true
   namespaceOverride: ""
+  envFromSecret: grafana-smtp
+  env:
+    GF_SMTP_ENABLED: "true"
+    GF_SMTP_HOST: "webhost.dynadot.com:587"
+    GF_SMTP_FROM_ADDRESS: "noreply@seafarer-cloud.io"
+    GF_SMTP_FROM_NAME: "Grafana"
+    GF_SMTP_STARTTLS_POLICY: "OpportunisticStartTLS" # 587 STARTTLS
+    GF_SMTP_SKIP_VERIFY: "false"
 
   ## ForceDeployDatasources Create datasource configmap even if grafana deployment has been disabled
   ##
@@ -1346,15 +1354,15 @@ grafana:
 
   # # To make Grafana persistent (Using Statefulset)
   # #
-  # persistence:
-  #   enabled: true
-  #   type: sts
-  #   storageClassName: "storageClassName"
-  #   accessModes:
-  #     - ReadWriteOnce
-  #   size: 20Gi
-  #   finalizers:
-  #     - kubernetes.io/pvc-protection
+  persistence:
+    enabled: true
+    type: sts
+    storageClassName: "standard"
+    accessModes:
+      - ReadWriteOnce
+    size: 20Gi
+    finalizers:
+      - kubernetes.io/pvc-protection
 
   serviceAccount:
     create: true
